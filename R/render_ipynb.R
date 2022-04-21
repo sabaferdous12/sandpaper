@@ -54,7 +54,7 @@ render_ipynb <- function(path_in, ..., quiet = FALSE) {
   #        the GNU version doesn't require a space.
   #        If not used `-i` the file is not change in place.
   is_mac <- version$os
-  space <- if(grep("darwin", is_mac)) paste(" ") else paste("")
+  space <- if(grepl("darwin", is_mac)) paste(" ") else paste("")
   remove_lines <- paste0("sed -i", space, "'.bak' '/^::::/d' ", path_in)
   system(remove_lines)
   system(htm)
