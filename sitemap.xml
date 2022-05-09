@@ -49,6 +49,9 @@
     <loc>https://carpentries.github.io/sandpaper/news/index.html</loc>
   </url>
   <url>
+    <loc>https://carpentries.github.io/sandpaper/reference/build_agg.html</loc>
+  </url>
+  <url>
     <loc>https://carpentries.github.io/sandpaper/reference/build_episode_html.html</loc>
   </url>
   <url>
@@ -112,6 +115,9 @@
     <loc>https://carpentries.github.io/sandpaper/reference/get_config.html</loc>
   </url>
   <url>
+    <loc>https://carpentries.github.io/sandpaper/reference/get_content.html</loc>
+  </url>
+  <url>
     <loc>https://carpentries.github.io/sandpaper/reference/get_drafts.html</loc>
   </url>
   <url>
@@ -139,7 +145,22 @@
     <loc>https://carpentries.github.io/sandpaper/reference/lesson_storage.html</loc>
   </url>
   <url>
+    <loc>https://carpentries.github.io/sandpaper/reference/make_aio_section.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries.github.io/sandpaper/reference/make_images_section.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries.github.io/sandpaper/reference/make_instructornotes_section.html</loc>
+  </url>
+  <url>
     <loc>https://carpentries.github.io/sandpaper/reference/package_cache.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries.github.io/sandpaper/reference/provision.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries.github.io/sandpaper/reference/read_all_html.html</loc>
   </url>
   <url>
     <loc>https://carpentries.github.io/sandpaper/reference/render_html.html</loc>
@@ -170,6 +191,9 @@
   </url>
   <url>
     <loc>https://carpentries.github.io/sandpaper/reference/serve.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries.github.io/sandpaper/reference/set_config.html</loc>
   </url>
   <url>
     <loc>https://carpentries.github.io/sandpaper/reference/set_dropdown.html</loc>
