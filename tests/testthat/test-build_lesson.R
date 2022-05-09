@@ -13,6 +13,107 @@ test_that("Lessons built for the first time are noisy", {
     expect_output(build_lesson(tmp, preview = FALSE, quiet = FALSE), 
       "ordinary text without R code")
   })
+  htmls <- read_all_html(sitepath)
+  expect_setequal(names(htmls$learner), 
+    c("01-introduction", "index", "LICENSE", "CODE_OF_CONDUCT", "profiles", 
+      "instructor-notes", "key-points", "aio", "images")
+  )
+  expect_setequal(names(htmls$instructor), 
+    c("01-introduction", "index", "LICENSE", "CODE_OF_CONDUCT", "profiles", 
+      "instructor-notes", "key-points", "aio", "images")
+  )
+
+})
+
+htmls <- read_all_html(sitepath)
+pkg <- pkgdown::as_pkgdown(fs::path_dir(sitepath))
+
+test_that("build_lesson() also builds the extra pages", {
+  expect_true(fs::dir_exists(sitepath))
+  expect_true(fs::file_exists(fs::path(sitepath, "instructor-notes.html")))
+  expect_true(fs::file_exists(fs::path(sitepath, "instructor", "instructor-notes.html")))
+  expect_true(fs::file_exists(fs::path(sitepath, "key-points.html")))
+  expect_true(fs::file_exists(fs::path(sitepath, "instructor", "key-points.html")))
+  expect_true(fs::file_exists(fs::path(sitepath, "aio.html")))
+  expect_true(fs::file_exists(fs::path(sitepath, "instructor", "aio.html")))
+  expect_true(fs::file_exists(fs::path(sitepath, "images.html")))
+  expect_true(fs::file_exists(fs::path(sitepath, "instructor", "images.html")))
+})
+
+test_that("aio page can be rebuilt", {
+
+  skip_if_not(rmarkdown::pandoc_available("2.11"))
+  aio <- fs::path(sitepath, "aio.html")
+  iaio <- fs::path(sitepath, "instructor/aio.html")
+  expect_true(fs::file_exists(aio))
+  expect_true(fs::file_exists(iaio))
+  html <- xml2::read_html(aio)
+  content <- get_content(html, "section[starts-with(@id, 'aio-')]")
+  expect_length(content, 1L)
+  expect_equal(xml2::xml_attr(content, "id"), "aio-01-introduction")
+
+  # add an ephemeral section and write it out
+  xml2::xml_add_sibling(content[[1]], "section", id = "ephemeral")
+  writeLines(as.character(html), aio)
+  content <- get_content(aio, "section[@id='ephemeral']", pkg = pkg)
+  expect_length(content, 1L)
+  
+  # rebuild the content and check if the section still exists... it shouldn't
+  build_aio(pkg, pages = htmls, quiet = TRUE)
+  content <- get_content(aio, "section[@id='ephemeral']", pkg = pkg)
+  expect_length(content, 0L)
+
+})
+
+test_that("keypoints page can be rebuilt", {
+
+  skip_if_not(rmarkdown::pandoc_available("2.11"))
+  keypoints <- fs::path(sitepath, "key-points.html")
+  ikeypoints <- fs::path(sitepath, "instructor/key-points.html")
+  expect_true(fs::file_exists(keypoints))
+  expect_true(fs::file_exists(ikeypoints))
+  html <- xml2::read_html(keypoints)
+  content <- get_content(html, "section")
+  expect_length(content, 1L)
+  expect_equal(xml2::xml_attr(content, "id"), "01-introduction")
+
+  # add an ephemeral section and write it out
+  xml2::xml_add_sibling(content[[1]], "section", id = "ephemeral")
+  writeLines(as.character(html), keypoints)
+  content <- get_content(keypoints, "section[@id='ephemeral']", pkg = pkg)
+  expect_length(content, 1L)
+  
+  # rebuild the content and check if the section still exists... it shouldn't
+  build_keypoints(pkg, pages = htmls, quiet = TRUE)
+  content <- get_content(keypoints, "section[@id='ephemeral']", pkg = pkg)
+  expect_length(content, 0L)
+
+})
+
+test_that("instructor-notes page can be rebuilt", {
+
+  skip_if_not(rmarkdown::pandoc_available("2.11"))
+  notes <- fs::path(sitepath, "instructor-notes.html")
+  inotes <- fs::path(sitepath, "instructor/instructor-notes.html")
+  expect_true(fs::file_exists(notes))
+  expect_true(fs::file_exists(inotes))
+  html <- xml2::read_html(inotes)
+  content <- get_content(html, "section[@id='aggregate-instructor-notes']/section")
+  expect_length(content, 1L)
+  expect_equal(xml2::xml_attr(content, "id"), "01-introduction")
+  expect_match(xml2::xml_text(xml2::xml_find_first(content[[1]], ".//p")), 
+    "Inline instructor notes")
+
+  # add an ephemeral section and write it out
+  xml2::xml_add_sibling(content[[1]], "section", id = "ephemeral")
+  writeLines(as.character(html), inotes)
+  content <- get_content(inotes, "/section[@id='ephemeral']", pkg = pkg, instructor = TRUE)
+  expect_length(content, 1L)
+  
+  # rebuild the content and check if the section still exists... it shouldn't
+  build_instructor_notes(pkg, pages = htmls, quiet = TRUE)
+  content <- get_content(inotes, "/section[@id='ephemeral']", pkg = pkg, instructor = TRUE)
+  expect_length(content, 0L)
 
 })
 
@@ -164,6 +265,64 @@ test_that("files will not be rebuilt unless they change in content", {
 
   expect_true(fs::file_exists(fs::path(sitepath, "01-introduction.html")))
   expect_true(fs::file_exists(fs::path(sitepath, "02-second-episode.html")))
+
+})
+
+test_that("keypoints learner and instructor views are identical", {
+
+  pkg <- pkgdown::as_pkgdown(fs::path(tmp, "site"))
+  skip_if_not(rmarkdown::pandoc_available("2.11"))
+  instruct <- fs::path(pkg$dst_path, "instructor", "key-points.html")
+  instruct <- xml2::read_html(instruct)
+
+  # Instructor sidebar is formatted properly
+  sidebar <- xml2::xml_find_all(instruct, ".//div[@class='sidebar']")
+  expect_length(sidebar, 1L)
+  sidelinks <- as.character(xml2::xml_find_all(sidebar, ".//a"))
+  expect_length(sidelinks, 6L)
+  expect_match(sidelinks[[1]], "href=[\"]..[/]key-points.html")
+  expect_match(sidelinks[[2]], "Summary and Schedule")
+
+  learn <- fs::path(pkg$dst_path, "key-points.html")
+  learn <- xml2::read_html(learn)
+  
+  # Learner sidebar is formatted properly
+  sidebar <- xml2::xml_find_all(learn, ".//div[@class='sidebar']")
+  expect_length(sidebar, 1L)
+  sidelinks <- as.character(xml2::xml_find_all(sidebar, ".//a"))
+  expect_match(sidelinks[[1]], "href=[\"]instructor[/]key-points.html")
+  expect_match(sidelinks[[2]], "Summary and Setup")
+
+  # sections are equal
+  learn_sections <- as.character(xml2::xml_find_all(learn, ".//section"))
+  instruct_sections <- as.character(xml2::xml_find_all(instruct, ".//section"))
+  expect_equal(learn_sections, instruct_sections)
+
+  # the instructor metadata contains this page information
+  meta <- xml2::xml_find_first(instruct, ".//script[@type='application/ld+json']")
+  meta <- trimws(xml2::xml_text(meta))
+  expect_match(meta, "lesson-example/instructor/key-points.html")
+
+  # the learner metadata contains this page information
+  meta <- xml2::xml_find_first(learn, ".//script[@type='application/ld+json']")
+  meta <- trimws(xml2::xml_text(meta))
+  expect_match(meta, "lesson-example/key-points.html")
+})
+
+
+test_that("aio page is updated with new pages", {
+
+  skip_if_not(rmarkdown::pandoc_available("2.11"))
+  aio <- fs::path(sitepath, "aio.html")
+  iaio <- fs::path(sitepath, "instructor/aio.html")
+  expect_true(fs::file_exists(aio))
+  expect_true(fs::file_exists(iaio))
+  html <- xml2::read_html(aio)
+  content <- xml2::xml_find_all(html, 
+    ".//div[contains(@class, 'lesson-content')]/section[starts-with(@id, 'aio-')]")
+  expect_length(content, 2L)
+  expect_equal(xml2::xml_attr(content, "id"), 
+    c("aio-01-introduction", "aio-02-second-episode"))
 
 })
 

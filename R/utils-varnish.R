@@ -1,9 +1,33 @@
 varnish_vars <- function() {
   ver <- function(pak) glue::glue(" ({packageVersion(pak)})")
+  cfg <- function(pkg) {
+    desc <- packageDescription(pkg)
+    url <- desc[["RemoteUrl"]]
+    ref <- desc[["RemoteRef"]] %||% "HEAD" # if there is no ref, default to HEAD
+    vsn <- desc[["Version"]]
+    if (!is.null(url) && ref == vsn) {
+      user <- "carpentries"
+      repo <- pkg
+    } else {
+      user <- desc[["RemoteUsername"]]
+      repo <- desc[["RemoteRepo"]]
+    }
+    if (is.null(user) || is.null(repo)) {
+      return(NULL)
+    }
+    if (ref == "HEAD" && !is.null(desc[["RemoteSha"]])) {
+      ref <- desc[["RemoteSha"]]
+    }
+    res <- paste0(user, "/", repo, "/tree/", ref)
+    return(res)
+  }
   list(
     sandpaper_version = ver("sandpaper"),
+    sandpaper_cfg     = cfg("sandpaper"),
     pegboard_version  = ver("pegboard"),
-    varnish_version   = ver("varnish")
+    pegboard_cfg      = cfg("pegboard"),
+    varnish_version   = ver("varnish"),
+    varnish_cfg       = cfg("varnish")
   )
 }
 
@@ -28,6 +52,7 @@ varnish_vars <- function() {
 #'
 #' @keywords internal
 set_globals <- function(path) {
+  template_check$set()
   initialise_metadata(path)
   # get the resources if they exist (but do not destroy the global environment)
   old <- .resources$get()
@@ -55,6 +80,7 @@ set_globals <- function(path) {
 
   learner_globals$set(key = NULL, 
     c(list(
+      aio = TRUE,
       instructor = FALSE,
       sidebar = learner_sidebar,
       more = paste(learner$extras, collapse = ""),
@@ -63,6 +89,7 @@ set_globals <- function(path) {
   )
   instructor_globals$set(key = NULL, 
     c(list(
+      aio = TRUE,
       instructor = TRUE,
       sidebar = instructor_sidebar,
       more = paste(instructor$extras, collapse = ""),

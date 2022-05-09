@@ -1,3 +1,100 @@
+# sandpaper 0.5.1
+
+NEW FEATURES
+------------
+
+* The sidebar now enumerates episodes so it is easier for instructors and
+  learners to indicate episode by number instead of by name (suggested by
+  @fiveop in #276). (@zkamvar, #277)
+
+NEW SUGGESTS
+------------
+
+* {mockr} is now a suggested package (aka soft-dependency) to facilitate testing
+  functions that do not need an entire lesson set up to test their functionality
+
+CONTINUOUS INTEGRATION
+----------------------
+
+ * `setup-r` and `setup-pandoc` actions have been pinned to version 2
+ * `setup-r` action now uses the default R installation on GitHub's runner,
+   which decreases build times by ~ 1 minute.
+ * All R actions will use the RStudio Package Manager, which should avoid overly
+   lengthy build times. 
+ * explicit permissions have been set for the deploy workflow (@zkamvar, #279)
+
+# sandpaper 0.5.0
+
+NEW FEATURES
+------------
+
+ * `images.html` is built with internal function `build_images()`, collecting
+   all images and displaying alt text for non-screen reader users (while
+   marking those paragraphs as `aria-hidden` so that screen reader users do not
+   have it read twice).
+ * `instructor-notes.html` is now built with the internal function
+   `build_instructor_notes()` and now collects instructor notes from the
+   episodes in a section called `aggregate-instructor-notes`.
+
+MISC
+----
+
+ * The internal `build_agg_page()` has a new argument, `append`, which takes an
+   XPath expression of what node should have children appended. Defaults to 
+   `"self::node()"`. An example of alternate usage is in 
+   `build_instructor_notes()`, which uses 
+   `section[@id='aggregate-instructor-notes']`.
+
+# sandpaper 0.4.1
+
+MISC
+----
+
+* The All in One page and Keypoints page have been redesigned. These now both
+  use the underlying internal function `build_agg_page()` (build aggregate
+  page). This allows slow templating processes to be performed once and cached
+  instead of repeated for each page. It provides a framework for future
+  aggregate pages (such as figures, instructor notes, glossary, etc).
+* A message is now printed when Keypoints and All-in-one pages are written to
+  disk if `quiet = FALSE`.
+
+# sandpaper 0.4.0
+
+NEW FEATURES
+------------
+
+* An all-in-one page is now available for lesson websites at `/aio.html` and
+  `instructor/aio.html`. 
+
+MISC
+----
+
+* Provisioning of the global lesson element cache (metadata, AST, and global
+  variables for varnish) is now all executed via `this_lesson()`, which is run
+  during `validate_lesson()`. This simplifies the setup a bit, and provides the
+  same method of cache invalidation (checking git outputs) for all of these
+  elements
+
+
+# sandpaper 0.3.6
+
+MISC
+----
+
+* custom sandpaper and varnish engines will be properly linked to the footer
+  of the lesson pages via this version and varnish 0.1.8.
+* testthat tests have been updated.
+* a diagram in the vingettes has been updated to reflect the parallel roles of
+  sandpaper and pegboard to a lesson.
+
+# sandpaper 0.3.5
+
+BUG FIX
+-------
+
+* `keypoints.html` is now rendered as `key-points.html` to fix navigation error
+  with varnish.
+
 # sandpaper 0.3.4
 
 CONTINUOUS INTEGRATION
