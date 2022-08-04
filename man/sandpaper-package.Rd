@@ -6,14 +6,16 @@
 \alias{sandpaper-package}
 \title{sandpaper: Create and Curate Carpentries Lessons}
 \description{
-\if{html}{\figure{logo.png}{options: align='right' alt='logo' width='120'}}
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
 We provide tools to build a Carpentries-themed lesson repository into an accessible standalone static website. These include local tools and those designed to be used in a continuous integration context so that all the lesson author needs to focus on is writing the content of the actual lesson.
 }
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://carpentries.github.io/sandpaper/}
   \item \url{https://github.com/carpentries/sandpaper/}
+  \item \url{https://carpentries.github.io/workbench/}
   \item Report bugs at \url{https://github.com/carpentries/sandpaper/issues/}
 }
 
@@ -24,6 +26,7 @@ Useful links:
 Other contributors:
 \itemize{
   \item François Michonneau \email{francois@carpentries.org} [contributor]
+  \item Toby Hodges \email{tobyhodges@carpentries.org} [contributor]
 }
 
 }

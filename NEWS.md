@@ -1,3 +1,159 @@
+# sandpaper 0.9.0
+
+MISC
+----
+
+* `set_config()` gains the option `create`, which will create new variables if
+  they do not exist. 
+
+CONTINUOUS INTEGRATION
+----------------------
+
+* A new workflow called `deploy-aws.yaml` has been created to deploy a site to
+  AWS when the right secrets from AWS are available. Because this workflow
+  does not affect normal use, I am relegating this to a patch release.
+
+# sandpaper 0.8.0
+
+CONTINUOUS INTEGRATION
+----------------------
+
+* A new workflow called `pr-preflight.yaml` has been created to perform a quick
+  pre-flight check on the pull request to ensure that there is no malicious
+  activity on the lesson itself, which may look like modifying both workflow
+  and lesson files in the same pull request. For lessons that transition to the
+  workbench from styles in official and community-developed lessons, an extra
+  check is added that will validate the branch of the incoming PR does not
+  contain invalid commits.
+
+* Pull Request workflows have been simplified.
+
+# sandpaper 0.7.1
+
+BUG FIX
+-------
+
+* A bug where `fail_on_error` defaulted to `true` has been fixed. This will
+  default to `false` if they key is not present in `config.yaml` (#314, @zkamvar).
+
+# sandpaper 0.7.0
+
+NEW FEATURE
+-----------
+
+* Placing `fail_on_error: true` in `config.yaml` will set the global chunk
+  option `error = FALSE` for R Markdown documents, meaning that if an error
+  is produced from a chunk, the build will fail unless that chunk explicitly
+  uses the `error = TRUE` option. (requested: #306 by @davidps, implemented:
+  #310 by @zkamvar)
+
+# sandpaper 0.6.2
+
+BUG FIX
+-------
+
+* The sidebar navigation in mobile and tablet views now includes all the 
+  information that was included in the navigation bar for the desktop mode. 
+  (reported: https://github.com/carpentries/workbench/issues/16#issuecomment-1165307355 by @Athanasiamo and #306, fixed: #309 by @zkamvar)
+* the downit shims have been updated to be resiliant to upstream changes
+
+
+# sandpaper 0.6.1
+
+MISC
+----
+
+* the `config.yaml` template has been updated to default to incubator lessons
+  and has more helpful information included about formatting (@tobyhodges, #302)
+
+# sandpaper 0.6.0
+
+NEW FEATURES
+------------
+
+* `create_lesson()` gains the `rmd` parameter, which is a logical indicator that
+  the lesson should use R Markdown (`TRUE` by default). When this is `FALSE`, a
+  markdown lesson is created and no package cache is initialised.
+* `create_episode()` gains the `ext` parameter, which allows users to create
+  plain markdown episodes if they do not need R Markdown functionality
+  (see https://github.com/carpentries/sandpaper/issues/296).
+
+BUG FIX
+-------
+
+* `create_episode()` will now slugify titles so that they only contain lowercase
+  ASCII letters, numbers and UTF-8 characters with words separated by single
+  hyphens (see https://github.com/carpentries/sandpaper/issues/294).
+
+MISC
+----
+
+* The internal `check_episode()` function has been removed as it was over-
+  engineered with marginal value.
+
+
+
+# sandpaper 0.5.8
+
+CONTINUOUS INTEGRATION
+----------------------
+
+* Running the main workflow from GitHub's actions tab now uses a checkbox to
+  indicate if the markdown file cache should be cleared.
+* The README file for the workflows no longer contains a link to an image that
+  does not exist.
+
+# sandpaper 0.5.7
+
+CONTINUOUS INTEGRATION
+----------------------
+
+* Workflows that update lesson elements will now report a more obvious summary
+  of next steps to take with an invalid token (see https://github.com/carpentries/actions/pull/45)
+
+# sandpaper 0.5.6
+
+CONTINUOUS INTEGRATION
+----------------------
+
+* Pull requests will now report on elements of the lesson that do not pass
+  checks.
+
+# sandpaper 0.5.5
+
+MISC
+----
+
+* New YAML items can now be added at-will and will be available to varnish in
+  a `{{#yaml}}` context. 
+* internal function `set_dropdown()` will preserve the yaml items that are not
+  explicitly coded in the config menu. 
+
+# sandpaper 0.5.4
+
+BUG FIX
+-------
+
+* `build_episode_md()` argument `workenv` now defaults to `globalenv()` to avoid
+  S3 dispatch issues that can occur in `new.env()` (see https://github.com/carpentries/sandpaper/issues/288)
+
+# sandpaper 0.5.3
+
+BUG FIX
+-------
+
+* Episodes with ampersands in their titles no longer break the aggregate page
+  building.
+
+# sandpaper 0.5.2
+
+TEMPORARY BUG FIX
+-----------------
+
+* {downlit} shim has been updated to no longer fail when parsing BASH globs.
+  (see https://github.com/r-lib/downlit/pull/138)
+
+
 # sandpaper 0.5.1
 
 NEW FEATURES

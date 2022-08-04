@@ -2,29 +2,32 @@ tmp <- res <- restore_fixture()
 
 test_that("prefixed episodes can be created", {
 
-  # Make sure everything exists
-  expect_true(check_lesson(tmp))
-
   initial_episode <- fs::dir_ls(fs::path(tmp, "episodes"), glob = "*Rmd") %>%
     expect_length(1L) %>%
     expect_match("01-introduction.Rmd")
 
-  initial_episode_md5 <- tools::md5sum(initial_episode)
+  second_episode <- create_episode_md("First Markdown", path = tmp) %>%
+    expect_match("02-first-markdown.md", fixed = TRUE)
 
-  second_episode <- create_episode("first-script", path = tmp) %>%
-    expect_match("02-first-script.Rmd", fixed = TRUE)
+  ep1 <- readLines(initial_episode)
+  ep2 <- readLines(second_episode)
 
-  expect_equal(tools::md5sum(second_episode), initial_episode_md5, ignore_attr = TRUE)
-
-  expect_true(check_episode(initial_episode))
-  expect_true(check_episode(second_episode))
- 
+  expect_equal(ep1[[2]], "title: 'introduction'")
+  expect_true(any(grepl("^```[{]r pyramid", ep1))) # first episode will have R Markdown
+  
+  expect_equal(ep2[[2]], "title: 'First Markdown'")
+  expect_no_match(ep2, "^```[{]r pyramid") # second episode will not have R Markdown
+  expect_no_match(ep2, "^Or you") # second episode will not have R Markdown
 
 })
 
 test_that("un-prefixed episodes can be created", {
-  third_episode <- create_episode("third-script", make_prefix = FALSE, path = tmp) %>%
-    expect_match("third-script.Rmd", fixed = TRUE)
 
-  expect_true(check_episode(third_episode))
+  skip_on_os("windows") # y'all ain't ready for this
+  title <- "\uC548\uB155 :joy_cat: \U0001F62D KITTY"
+  third_episode <- create_episode_rmd(title, make_prefix = FALSE, path = tmp) %>%
+    expect_match("\uC548\uB155-\U0001F62D-kitty.Rmd", fixed = TRUE)
+
+  expect_equal(readLines(third_episode, n = 2)[[2]], 
+    paste0("title: '", title, "'"))
 })
