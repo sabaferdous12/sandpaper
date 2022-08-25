@@ -13,7 +13,7 @@ callr_build_episode_md <- function(path, hash, workenv, outpath, workdir, root, 
     file.copy(path, outpath, overwrite = TRUE)
     return(NULL)
   }
-  # Load required packages if it's an RMarkdown file and we know the root 
+  # Load required packages if it's an RMarkdown file and we know the root
   # directory.
   if (root != "") {
     renv::load(root)
@@ -58,4 +58,5 @@ callr_build_episode_md <- function(path, hash, workenv, outpath, workdir, root, 
     quiet    = quiet,
     encoding = "UTF-8"
   )
+
 }

@@ -3,17 +3,17 @@
 #' In the spirit of {hugodown}, This function will build plain markdown files
 #' as a minimal R package in the `site/` folder of your {sandpaper} lesson
 #' repository tagged with the hash of your file to ensure that only files that
-#' have changed are rebuilt. 
-#' 
+#' have changed are rebuilt.
+#'
 #' @param path the path to your repository (defaults to your current working
 #' directory)
 #' @param rebuild if `TRUE`, everything will be built from scratch as if there
 #' was no cache. Defaults to `FALSE`, which will only build markdown files that
-#' haven't been built before. 
-#' 
+#' haven't been built before.
+#'
 #' @return `TRUE` if it was successful, a character vector of issues if it was
 #'   unsuccessful.
-#' 
+#'
 #' @keywords internal
 #' @seealso [build_episode_md()]
 build_markdown <- function(path = ".", rebuild = FALSE, quiet = FALSE, slug = NULL) {
@@ -50,7 +50,7 @@ build_markdown <- function(path = ".", rebuild = FALSE, quiet = FALSE, slug = NU
   }
 
   # If the user accidentally used rmarkdown::render(), then they would end up
-  # with an html artifact in here and it will clog up the machinery. Best to 
+  # with an html artifact in here and it will clog up the machinery. Best to
   # remove it at the source.
   remove_rendered_html(sources)
 
@@ -66,7 +66,7 @@ build_markdown <- function(path = ".", rebuild = FALSE, quiet = FALSE, slug = NU
   # Copy the files to the assets directory -------------------------------------
   artifacts <- get_artifacts(path, "episodes")
   to_copy <- vapply(
-    c("data", "files", "fig"), 
+    c("data", "files", "fig"),
     FUN = function(i) enforce_dir(fs::path(episode_path, i)),
     FUN.VALUE = character(1)
   )
@@ -90,12 +90,14 @@ build_markdown <- function(path = ".", rebuild = FALSE, quiet = FALSE, slug = NU
   cli::cli_div(theme = sandpaper_cli_theme())
   # Only build if there are markdown sources to be built.
   needs_building <- fs::path_ext(db$build) %in% c("md", "Rmd")
+
+
   if (any(needs_building)) {
     # Render the episode files to the built directory --------------------------
     renv_check_consent(path, quiet, sources)
     # determine if we need to fail when errors are triggered
     fail_on_error <- this_metadata$get()[["fail_on_error"]]
-    # this is `error` in the knitr sense of `error = TRUE` means 
+    # this is `error` in the knitr sense of `error = TRUE` means
     # fail_on_error = FALSE.
     error <- is.null(fail_on_error) || !fail_on_error
     # exclude files that do not need to be rebuilt
@@ -114,16 +116,19 @@ build_markdown <- function(path = ".", rebuild = FALSE, quiet = FALSE, slug = NU
         error   = error
       )
     }
+
     handout <- getOption("sandpaper.handout", default = FALSE)
     should_build_handout <- !isFALSE(handout)
     if (should_build_handout) {
       build_handout(path, out = handout)
     }
+
   } else {
     if (!quiet) {
       cli::cli_alert_success("All files up-to-date; nothing to rebuild!")
     }
   }
+
   cli::cli_end()
 
   # Update hash of {renv} file if it exists ------------------------------------
@@ -149,10 +154,12 @@ build_markdown <- function(path = ".", rebuild = FALSE, quiet = FALSE, slug = NU
     }
   }
 
+
   # We've made it this far, so the database can be updated
   update <- TRUE
   invisible(db$build)
 }
+
 
 remove_rendered_html <- function(episodes) {
   htmls <- fs::path_ext_set(episodes, "html")

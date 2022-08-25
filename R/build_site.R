@@ -7,11 +7,12 @@
 #'   If this is `NULL`, the preview will default to the home page. If you have
 #'   an episode whose slug is 01-introduction, then setting `slug =
 #'   "01-introduction"` will allow RStudio to open the preview window to the
-#'   right page. 
-#' @param built a character vector of newly built files or NULL. 
+#'   right page.
+#' @param built a character vector of newly built files or NULL.
 #' @keywords internal
 build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, override = list(), slug = NULL, built = NULL) {
   # step 1: check pandoc
+
   check_pandoc(quiet)
   this_lesson(path)
   cl <- getOption("sandpaper.links")
@@ -20,8 +21,10 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
   # step 2: build the package site
   pkg <- pkgdown::as_pkgdown(path_site(path), override = override)
   built_path <- fs::path(pkg$src_path, "built")
+
+
   # NOTE: This is a kludge to prevent pkgdown from displaying a bunch of noise
-  #       if the user asks for quiet. 
+  #       if the user asks for quiet.
   if (quiet) {
     f <- file()
     on.exit({
@@ -32,7 +35,7 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
   }
   pkgdown::init_site(pkg)
   fs::file_create(fs::path(pkg$dst_path, ".nojekyll"))
-  # future plans to reduce build times 
+  # future plans to reduce build times
   rebuild_template <- TRUE || !template_check$valid()
 
   new_setup <- any(grepl("[/]setup[.]md", built))
@@ -118,7 +121,7 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
   if (!quiet) cli::cli_rule(cli::style_bold("Creating learner profiles"))
   build_profiles(pkg, quiet = quiet, sidebar = sidebar)
   if (!quiet) cli::cli_rule(cli::style_bold("Creating homepage"))
-  build_home(pkg, quiet = quiet, sidebar = sidebar, new_setup = new_setup, 
+  build_home(pkg, quiet = quiet, sidebar = sidebar, new_setup = new_setup,
     next_page = abs_md[er[1]]
   )
 
