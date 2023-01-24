@@ -1,15 +1,24 @@
 res <- restore_fixture()
 withr::defer(clear_globals())
+idx <- readLines(fs::path(res, "index.md"))
+writeLines(c(idx[1], "title: '**TEST** title'", idx[-1]), 
+  fs::path(res, "index.md"))
 set_globals(res)
 pkg <- pkgdown::as_pkgdown(path_site(res))
 # shim for downlit ----------------------------------------------------------
 shimstem_file <- system.file("pkgdown", "shim.R", package = "sandpaper")
-expected <- "5484c37e9b9c324361d775a10dea4946"
+expected <- "230853fec984d1a0e5766d3da79f1cea" 
 actual   <- tools::md5sum(shimstem_file)
+M1 <- sprintf("SHIM FILE: %s", shimstem_file)
+M2 <- sprintf("--------- CONTENTS ----------\n%s\n-----------------------------",
+    paste(readLines(shimstem_file), collapse = "\n"))
 if (expected == actual) {
   # evaluate the shim in our namespace
   when_done <- source(shimstem_file, local = TRUE)$value
   withr::defer(eval(when_done))
+} else {
+  stop(sprintf("shim broken\nexpected: %s\nactual:   %s\n%s\n%s", 
+      expected, actual, M1, M2))
 }
 # end downlit shim ----------------------------------------------------------
 
@@ -25,16 +34,25 @@ test_that("[build_home()] works independently", {
   fs::dir_create(built_dir)
   fs::file_copy(fs::path(res, "index.md"), built_dir)
   fs::file_copy(fs::path(res, "learners", "setup.md"), built_dir)
-  build_home(pkg, quiet = TRUE, new_setup = TRUE,
-    next_page = fs::path(res, "episodes", "01-introduction.Rmd")
+  build_home(pkg, quiet = TRUE, 
+    next_page = fs::path(res, "episodes", "introduction.Rmd")
   )
   learn_index <- fs::path(pkg$dst_path, "index.html")
   expect_true(fs::file_exists(learn_index))
   idx <- xml2::read_html(learn_index)
   expect_true(xml2::xml_find_lgl(idx, "boolean(.//main/section[@id='setup'])"))
+  newtitle <- xml2::xml_find_first(idx, ".//span[@class='current-chapter']/*")
+  expect_identical(as.character(newtitle), "<strong>TEST</strong>")
+  newtitle <- xml2::xml_find_first(idx, ".//h1/*")
+  expect_identical(as.character(newtitle), "<strong>TEST</strong>")
+
   instruct_index <- fs::path(pkg$dst_path, "instructor", "index.html")
   expect_true(fs::file_exists(instruct_index))
   idx <- xml2::read_html(instruct_index)
+  newtitle <- xml2::xml_find_first(idx, ".//span[@class='current-chapter']/*")
+  expect_identical(as.character(newtitle), "<strong>TEST</strong>")
+  newtitle <- xml2::xml_find_first(idx, ".//h1/*")
+  expect_identical(as.character(newtitle), "<strong>TEST</strong>")
   expect_true(xml2::xml_find_lgl(idx, "boolean(.//main/section[@id='setup'])"))
   expect_true(xml2::xml_find_lgl(idx, "boolean(.//main/section[@id='schedule'])"))
 })
@@ -51,7 +69,7 @@ test_that("[build_home()] learner index file is index and setup", {
   # There are four out links to the next page
   fwd <- xml2::xml_find_all(html, ".//a[starts-with(@class, 'chapter-link')]/@href")
   expect_length(fwd, 4L)
-  expect_equal(xml2::xml_text(fwd), rep("01-introduction.html", 4L))
+  expect_equal(xml2::xml_text(fwd), rep("introduction.html", 4L))
 
   # The metadata contains this page information
   meta <- xml2::xml_find_first(html, ".//script[@type='application/ld+json']")
@@ -73,7 +91,7 @@ test_that("[build_home()] instructor index file is index and schedule", {
   # There are four out links to the next page
   fwd <- xml2::xml_find_all(html, ".//a[starts-with(@class, 'chapter-link')]/@href")
   expect_length(fwd, 4L)
-  expect_equal(xml2::xml_text(fwd), rep("../instructor/01-introduction.html", 4L))
+  expect_equal(xml2::xml_text(fwd), rep("../instructor/introduction.html", 4L))
 
   # the metadata contains this page information
   meta <- xml2::xml_find_first(html, ".//script[@type='application/ld+json']")

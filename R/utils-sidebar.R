@@ -89,8 +89,9 @@ create_sidebar_headings <- function(nodes) {
   if (any(have_children)) {
     for (child in which(have_children)) {
       # Headings that have embedded HTML will need this
-      child_html <- as.character(xml2::xml_contents(h2[[child]]))
-      txt[child] <- paste(child_html, collapse = "")
+      child_html <- xml2::xml_contents(h2[[child]])
+      no_anchor  <- !xml2::xml_attr(child_html, "class") %in% "anchor"
+      txt[child] <- paste(child_html[no_anchor], collapse = "")
     }
   }
   if (length(ids) && length(txt)) {
@@ -121,7 +122,7 @@ create_sidebar <- function(chapters, name = "", html = "<a href='https://carpent
     position <- if (name == chapters[i]) "current" else i
     info <- get_navbar_info(chapters[i])
     page_link <- paste0("<a href='", info$href, "'>", 
-      i - 1, ". ", info$pagetitle, 
+      i - 1, ". ", parse_title(info$pagetitle), 
       "</a>")
     res[i] <- create_sidebar_item(html, page_link, position)
   }

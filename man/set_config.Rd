@@ -22,3 +22,81 @@ current file.}
 \description{
 Set individual keys in a configuration file
 }
+\details{
+This function deals strictly with keypairs in the yaml. For lists, see
+\code{\link[=set_dropdown]{set_dropdown()}}.
+\subsection{Default Keypairs Known by Sandpaper}{
+
+When you create a new lesson in sandpaper, there are a set of default
+keypairs that are pre-filled. To make sure contact information and links in
+the footer are accurate, please modify these values.
+\itemize{
+\item \strong{carpentry} \verb{[character]} one of cp, dc, swc, lab, incubator
+\item \strong{title} \verb{[character]} the lesson title (e.g. \code{'Introduction to R for Plant Pathologists'}
+\item \strong{created} \verb{[character]} Date in ISO 8601 format (e.g. \code{'2021-02-09'})
+\item \strong{keywords} \verb{[character]} comma-separated list (e.g \code{'static site, R, tidyverse'})
+\item \strong{life_cycle} \verb{[character]} one of pre-alpha, alpha, beta, stable
+\item \strong{license} \verb{[character]} a license for the lesson (e.g. \code{'CC-BY 4.0'})
+\item \strong{source} \verb{[character]} the source repository URL
+\item \strong{branch} \verb{[character]} the default branch (e.g. \code{'main'})
+\item \strong{contact} \verb{[character]} an email address of who to contact for more
+information about the lesson
+}
+}
+
+\subsection{Optional Keypairs Known by Sandpaper}{
+
+The following keypairs are known by sandpaper, but are optional:
+\itemize{
+\item \strong{url} \verb{[character]} custom URL if you are deploying to a URL that is not
+the default github pages io domain.
+\item \strong{fail_on_error} \verb{[boolean]} for R Markdown lessons; fail the build if any
+chunks produce an error. Use \verb{#| error: true} in chunk options to allow the
+error to be displayed
+\item \strong{workbench-beta} yes \verb{[boolean]} if truthy, this displays a banner on the
+site that indicates the site is in the workbench beta phase.
+}
+
+As the workbench becomes more developed, some of these optional keys may
+disappear.
+\subsection{Custom Engines}{
+
+To use a specific version of sandpaper or varnish locally, you would install
+them using \code{remotes::install_github("carpentries/sandpaper@VERSION")} syntax,
+but to provision these versions on GitHub, you can provision these in the
+\code{config.yaml} file:
+\itemize{
+\item \strong{sandpaper} \verb{[character]} github string or version number of sandpaper
+version to use
+\item \strong{varnish} \verb{[character]} github string or version number of varnish
+version to use
+}
+
+For example, if you had forked your own version of varnish to modify the
+colourscheme, you could use:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{varnish: MYACCOUNT/varnish
+}\if{html}{\out{</div>}}
+
+If there is a specific branch of sandpaper or varnish that is being tested,
+and you want to test it on your lesson temporarily, you could use the \code{@}
+symbol to refer to the specific branch or commit to use:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sandpaper: carpentries/sandpaper@BRANCH-NAME
+varnish: carpentries/varnish@BRANCH-name
+}\if{html}{\out{</div>}}
+}
+
+}
+}
+\examples{
+if (FALSE) {
+tmp <- tempfile()
+create_lesson(tmp, "test lesson")
+# Change the title and License
+set_config(c(title = "Absolutely Free Lesson", license = "CC0"), 
+  path = tmp,
+  write = TRUE
+)
+}
+}

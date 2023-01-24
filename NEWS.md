@@ -1,3 +1,240 @@
+# sandpaper 0.11.3
+
+CONTINUOUS INTEGRATION
+----------------------
+
+* Pull Request workflows will now automatically cancel if several commits are
+  sent in succession. Specifically, the workflows `pr-recieve.yaml` and 
+  `pr-comment.yaml` are given separate `concurrency` parameters based on the
+  branch name and the pull request number. These concurrencies will prevent
+  false alarms as found in 
+  <https://github.com/carpentries/lesson-development-training/pull/165#issuecomment-1337182275>.
+  (discovered: @anenadic; reported: @zkamvar, #374; fixed: @zkamvar, #376)
+
+# sandpaper 0.11.2
+
+MISC
+----
+
+* The `create_syllabus()` function no longer uses `pkgdown::as_pkgdown()` and
+  assumes a flat file structure when creating the syllabus. This provides a
+  further fix for #371.
+* The downlit shim has been updated to modify the function bodies while 
+  preserving the function signatures.
+- workflows for testing on Windows has been fixed by setting the git config 
+  `autocrlf` to `false` before checkout (thanks to @assignUser for the tip).
+- The test coverage workflow has been updated to avoid long build times.
+
+# sandpaper 0.11.1
+
+BUG FIX
+-------
+
+* A bug in deployment where GitHub deployments fail due to an error that says
+  "Error: Can't find DESCRIPTION" has been fixed (reported: @tobyhodges, #371; 
+  fixed, @zkamvar, #372)
+
+MISC
+----
+
+* code inside of main `build_` functions cleaned up. Unused variables removed
+  and narrative comments added to provide context. 
+
+# sandpaper 0.11.0
+
+* Documentation for internal storage objects updated.
+* Page progress indicators reflect estimated percentage progress through the
+  lesson based on the timings recorded in each episode as opposed to fraction
+  of pages (reported: anonymous, #369; fixed @zkamvar, #370).
+
+# sandpaper 0.10.8
+
+MISC
+----
+
+* schedule/syllabus timings are now displayed as XXh XXm to clarify the scope of
+  the timing (requested: @tobyhodges, #361; fixed @zkamvar, #363).
+* Documentation for automated pull requests updated to reflect bots should have
+  `public_repo` scope.
+
+BUG FIX
+-------
+
+* A bug where the index page title was the same for both instructor and learner
+  view has been fixed (reported: @tobyhodges, #361; fixed @zkamvar, #366)
+
+# sandpaper 0.10.7
+
+CONTINUOUS INTEGRATION
+----------------------
+
+* pandoc is now set to use the default version for r-lib/setup-pandoc (at the
+  time of this update, it is version 2.19.2.
+* Workflows that update workflows and packages will now push to single branches
+  called `update/workflows` and `update/packages`, respectively. This will avoid
+  the issue with #350
+- Workflows no longer use the deprecated `set-output` command (reported: 
+  @zkamvar, #349; fixed @zkamvar, #356)
+- Versions of external actions have been updated to include `actions/core@1.10.0`
+
+# sandpaper 0.10.6
+
+NEW FEATURES
+------------
+
+* Interactive functions to modify lesson structure (`move_episode()`, 
+  `set_episode()`, etc) will now display a message if the user does not specify
+  `write = TRUE`. This message will present a command that, when executed, will
+  make the desired change (requested: @tobyhodges, #345, fixed: @zkamvar, #352)
+
+# sandpaper 0.10.5
+
+MISC
+----
+
+* The the `source` config parameter will have the trailing `/` trimmed off when
+  passed to the site so that the URL does not have two consectutive slashes.
+
+# sandpaper 0.10.4
+
+BUG FIX
+-------
+
+* `renv/sandbox` no longer required in `.gitignore`. A new bug introduced in
+  0.10.2 caused all lessons built before 0.10.2 to fail when rebuilt on CI.
+  This was due to the assumption that the .gitignore item `renv/sandbox` was
+  strictly necessary with no clear method to automatically update a file like
+  this (reported: @zkamvar, #347; fixed: @zkamvar, #348).
+
+# sandpaper 0.10.3
+
+BUG FIX
+-------
+
+* An accidental commit of `sandpaper-version.txt` in version 0.8.0 inside the
+  workflow templates folder was causing workflow update script to create pull
+  requests for the workflows every week when they should have been much less
+  frequent (the irony of this commit is that it will trigger another pull
+  request) (fixed: @zkamvar, #346).
+
+# sandpaper 0.10.2
+
+BUG FIX
+-------
+
+* The default `.gitignore` now has `renv/sandbox` to avoid a sandbox directory
+  from being tracked by git. (see https://github.com/rstudio/renv/issues/1088)
+  (reported: @zkamvar; #344, fixed: @zkamvar, #343)
+
+CONTINUOUS INTEGRATION
+----------------------
+
+* The `deploy-aws.yaml` workflow has been removed as plans for its use is 
+  relegated to the beta stage of the workbench.
+
+
+# sandpaper 0.10.1
+
+NEW FEATURES
+------------
+
+* If the `index.md (or Rmd)` file has a `title` YAML element, this will take
+  precedence over the default title of "Summary and Setup". 
+  (requested: @SaraMorsy, #339; fixed: @zkamvar #342)
+
+BUG FIX
+-------
+
+* Titles in navigation bar now have Markdown parsed correctly.
+
+# sandpaper 0.10.0
+
+NEW FEATURES
+------------
+
+* The default behavior of `create_episode()` and `create_lesson()` is to use
+  episodes _without_ numbered prefixes and will now automatically add episodes
+  to the schedule (requested: @tobyhodges, #330; fixed @zkamvar, #333)
+* New function `move_episode()` allows the lesson contributor to move an episode
+  in the schedule (requested: @tobyhodges, #330, fixed: @zkamvar, #333)
+* New functions `draft_lesson_md()` and `draft_lesson_rmd()` perform the task of
+  `create_lesson(add = FALSE)`.
+* Helper function `strip_prefix()` will automatically strip the prefixes for all
+  episodes in the schedule.
+
+BUG FIX
+-------
+
+* `get_config()` now has a default `path` argument.
+* A bug where anchors for callout headings with generic names (e.g. "discussion"
+  or "keypoints") were missing was fixed.
+
+# sandpaper 0.9.6
+
+BUG FIX
+-------
+
+* A minor bug is fixed. It originated from the most recent update in {cli}
+  where newlines in a span are collapsed. This will fix (reported: @zkamvar,
+  #336; fixed @zkamvar #337)
+
+DEPENDENCIES
+------------
+
+* The minimum version of CLI has been updated to version 3.4.0
+
+CONTINUOUS INTEGRATION
+----------------------
+
+* Pull request response workflows have been updated to make sure their
+  conditionals do not always default to TRUE (see 
+  https://github.com/carpentries/actions/pull/56)
+
+# sandpaper 0.9.5
+
+* css and js can now be embedded into individual pages for custom styling
+  (see <https://bookdown.org/yihui/rmarkdown-cookbook/html-css.html> for
+  implementation details).
+* The pandoc extension `link_attributes` has been added to process custom link
+  classes (see <https://pandoc.org/MANUAL.html#extension-link_attributes> for
+  details).
+
+
+# sandpaper 0.9.4
+
+* The CLI styling of an important message about {renv} has been fixed to be more
+  readable (reported: @zkamvar, #331; fixed: @zkamvar, #332).
+* The bioschemas metadata version has been updated to 1.0 
+  (reported: @zkamvar, #329; fixed @zkamvar, #332).
+
+# sandpaper 0.9.3
+
+MISC
+----
+
+* A test that was failing on the R-universe has been skipped
+* documentation has been updated to detail the expected and optional values in
+  config.yaml in `set_dropdown()`
+* The template for the code of conduct has been updated to reflect our style guide
+
+# sandpaper 0.9.2
+
+CONTINUOUS INTEGRATION
+----------------------
+
+* The version of the s3-sync action has been corrected. This only affects lessons
+  that deploy to AWS
+
+# sandpaper 0.9.1
+
+MISC
+---
+
+* Anchor links are now included in all sections and callouts for easy navigation
+  to sections. Thanks to @fiveop and @anenadic for requesting this feature.
+  requested in #285 and https://github.com/carpentries/workbench/issues/28; 
+  fixed in #325
+
 # sandpaper 0.9.0
 
 MISC
