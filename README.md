@@ -6,14 +6,13 @@
 
 [![R
 Universe](https://carpentries.r-universe.dev/badges/sandpaper)](https://carpentries.r-universe.dev/ui#builds)
-[![R build
-status](https://github.com/carpentries/sandpaper/workflows/R-CMD-check/badge.svg)](https://github.com/carpentries/sandpaper/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/carpentries/sandpaper/branch/main/graph/badge.svg)](https://codecov.io/gh/carpentries/sandpaper?branch=main)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/sandpaper)](https://CRAN.R-project.org/package=sandpaper)
+[![R-CMD-check](https://github.com/carpentries/sandpaper/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/carpentries/sandpaper/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The {sandpaper} package was created by [The

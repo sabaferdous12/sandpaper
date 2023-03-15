@@ -1,4 +1,4 @@
-build_home <- function(pkg, quiet, sidebar = NULL, new_setup = TRUE, next_page = NULL) {
+build_home <- function(pkg, quiet, next_page = NULL) {
   page_globals <- setup_page_globals()
   path  <- root_path(pkg$src_path)
   syl   <- format_syllabus(get_syllabus(path, questions = TRUE), use_col = FALSE)
@@ -22,15 +22,20 @@ build_home <- function(pkg, quiet, sidebar = NULL, new_setup = TRUE, next_page =
   fix_nodes(setup)
 
   nav <- get_nav_data(idx_file, fs::path_file(idx_file), page_forward = next_page)
+  needs_title <- nav$pagetitle == ""
 
-  nav$pagetitle <- "Summary and Schedule"
+  if (needs_title) {
+    nav$pagetitle <- "Summary and Schedule"
+  }
   nav$page_forward <- as_html(nav$page_forward, instructor = TRUE)
   page_globals$instructor$update(nav)
   page_globals$instructor$set("syllabus", paste(syl, collapse = ""))
   page_globals$instructor$set("readme", use_instructor(html))
   page_globals$instructor$set("setup", use_instructor(setup))
 
-  nav$pagetitle <- "Summary and Setup"
+  if (needs_title) {
+    nav$pagetitle <- "Summary and Setup"
+  }
   nav$page_forward <- as_html(nav$page_forward)
   page_globals$learner$update(nav)
   page_globals$learner$set("readme", use_learner(html))
@@ -49,7 +54,7 @@ format_syllabus <- function(syl, use_col = TRUE) {
   syl$questions <- gsub("\n", "<br/>", syl$questions)
   syl$number <- sprintf("%2d\\. ", seq(nrow(syl)))
   links <- glue::glue_data(
-    syl[-nrow(syl), ], 
+    syl[-nrow(syl), c("number", "episode", "path")], 
     "{gsub('^[ ]', '&nbsp;', number)}<a href='{fs::path_file(path)}'>{episode}</a>"
   )
   if (use_col) {

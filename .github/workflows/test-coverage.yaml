@@ -1,4 +1,4 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/master/examples
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
@@ -17,28 +17,49 @@ jobs:
       OS_VERSION: 1
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: r-lib/actions/setup-r@v1
+      - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true
 
       - name: "Set up pandoc"
-        uses: r-lib/actions/setup-pandoc@v1
+        uses: r-lib/actions/setup-pandoc@v2
         with:
           pandoc-version: '2.11' 
 
-      - name: Add Carpentries Repos
+      - name: "Install sysreqs"
+        id: run-apt
+        shell: bash
         run: |
-          writeLines('options(repos = c(carpentries = "https://carpentries.r-universe.dev", carpentries_archive = "https://carpentries.github.io/drat", CRAN = "https://cran.rstudio.com"))', file("~/.Rprofile", "ab"))
-        shell: Rscript {0}
+          sudo apt update || exit 0
+          curl https://carpentries.r-universe.dev/stats/sysdeps 2> /dev/null \
+          | jq -r '.headers[0] | select(. != null)' 2> /dev/null \
+          > ${{ runner.temp }}/sysdeps.txt
+          if [[ `wc -l < ${{ runner.temp }}/sysdeps.txt` -gt 0 ]]; then
+            echo 'sysdeps acquired'
+          else
+            echo 'fetching sysdeps from descriptions'
+            curl https://carpentries.r-universe.dev/stats/descriptions \
+            | jq -r '._builder.sysdeps | .[].headers | select(. != null)' 2> /dev/null \
+            > ${{ runner.temp }}/sysdeps.txt
+          fi
+          if [[ `wc -l < ${{ runner.temp }}/sysdeps.txt` -eq 0 ]]; then
+            echo "::warn::System dependencies could not be acquired. Builds may fail"
+            exit 1
+          else
+            echo "found sysdeps: $(cat ${{ runner.temp }}/sysdeps.txt)"
+          fi
+          printf "libxslt-dev\n" >> ${{ runner.temp }}/sysdeps.txt
+          sudo xargs apt-get install --fix-missing -y < ${{ runner.temp }}/sysdeps.txt || echo "Not on Ubuntu"
 
-      - uses: r-lib/actions/setup-r-dependencies@v1
+      - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: covr
+          extra-packages: any::covr
+          needs: coverage
 
       - name: Restore {renv} cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.RENV_PATHS_ROOT }}
           key: ${{ runner.os }}-${{ env.OS_VERSION }}-renv-${{ runner.r }}-${{ hashFiles('.github/workflows/R-CMD-check.yaml') }}
@@ -55,13 +76,23 @@ jobs:
 
       - name: Test coverage
         run: |
-          dir.create("check")
-          tryCatch(covr::codecov(clean = FALSE),
-            error = function(e) {
-              pth <- list.files(tempdir(), pattern = "testthat.Rout.fail", full.names = TRUE, recursive = TRUE)
-              if (length(pth) && file.exists(pth))
-                cat(readLines(pth), sep = "\n")
-              stop(e)
-          })
+          covr::codecov(
+            quiet = FALSE,
+            clean = FALSE,
+            install_path = file.path(Sys.getenv("RUNNER_TEMP"), "package")
+          )
         shell: Rscript {0}
 
+      - name: Show testthat output
+        if: always()
+        run: |
+          ## --------------------------------------------------------------------
+          find ${{ runner.temp }}/package -name 'testthat.Rout*' -exec cat '{}' \; || true
+        shell: bash
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-test-failures
+          path: ${{ runner.temp }}/package
