@@ -76,10 +76,7 @@
     <loc>https://carpentries.github.io/sandpaper/reference/check_lesson.html</loc>
   </url>
   <url>
-    <loc>https://carpentries.github.io/sandpaper/reference/ci_build_markdown.html</loc>
-  </url>
-  <url>
-    <loc>https://carpentries.github.io/sandpaper/reference/ci_build_site.html</loc>
+    <loc>https://carpentries.github.io/sandpaper/reference/ci_build.html</loc>
   </url>
   <url>
     <loc>https://carpentries.github.io/sandpaper/reference/ci_deploy.html</loc>
@@ -107,6 +104,12 @@
   </url>
   <url>
     <loc>https://carpentries.github.io/sandpaper/reference/dependency_management.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries.github.io/sandpaper/reference/dot-lesson_store.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries.github.io/sandpaper/reference/dot-list_store.html</loc>
   </url>
   <url>
     <loc>https://carpentries.github.io/sandpaper/reference/fixtures.html</loc>
@@ -139,7 +142,7 @@
     <loc>https://carpentries.github.io/sandpaper/reference/get_syllabus.html</loc>
   </url>
   <url>
-    <loc>https://carpentries.github.io/sandpaper/reference/git_worktree_setup.html</loc>
+    <loc>https://carpentries.github.io/sandpaper/reference/git_worktree.html</loc>
   </url>
   <url>
     <loc>https://carpentries.github.io/sandpaper/reference/index.html</loc>
@@ -155,6 +158,9 @@
   </url>
   <url>
     <loc>https://carpentries.github.io/sandpaper/reference/make_instructornotes_section.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries.github.io/sandpaper/reference/move_episode.html</loc>
   </url>
   <url>
     <loc>https://carpentries.github.io/sandpaper/reference/package_cache.html</loc>
@@ -203,6 +209,9 @@
   </url>
   <url>
     <loc>https://carpentries.github.io/sandpaper/reference/set_globals.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries.github.io/sandpaper/reference/strip_prefix.html</loc>
   </url>
   <url>
     <loc>https://carpentries.github.io/sandpaper/reference/template.html</loc>
