@@ -90,6 +90,8 @@ build_markdown <- function(path = ".", rebuild = FALSE, quiet = FALSE, slug = NU
   cli::cli_div(theme = sandpaper_cli_theme())
   # Only build if there are markdown sources to be built.
   needs_building <- fs::path_ext(db$build) %in% c("md", "Rmd")
+
+
   if (any(needs_building)) {
     # Render the episode files to the built directory --------------------------
     renv_check_consent(path, quiet, sources)
@@ -114,16 +116,19 @@ build_markdown <- function(path = ".", rebuild = FALSE, quiet = FALSE, slug = NU
         error   = error
       )
     }
+
     handout <- getOption("sandpaper.handout", default = FALSE)
     should_build_handout <- !isFALSE(handout)
     if (should_build_handout) {
       build_handout(path, out = handout)
     }
+
   } else {
     if (!quiet) {
       cli::cli_alert_success("All files up-to-date; nothing to rebuild!")
     }
   }
+
   cli::cli_end()
 
   # Update hash of {renv} file if it exists ------------------------------------
@@ -149,10 +154,12 @@ build_markdown <- function(path = ".", rebuild = FALSE, quiet = FALSE, slug = NU
     }
   }
 
+
   # We've made it this far, so the database can be updated
   update <- TRUE
   invisible(db$build)
 }
+
 
 remove_rendered_html <- function(episodes) {
   htmls <- fs::path_ext_set(episodes, "html")

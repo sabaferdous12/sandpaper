@@ -3,6 +3,7 @@
 #' This function orchestrates rendering generated lesson content and applying
 #' the theme for the HTML site.
 #'
+#'
 #' @param path the path to your repository (defaults to your current working
 #' directory)
 #' @param rebuild if `TRUE`, everything will be built from scratch as if there
