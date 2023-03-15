@@ -6,8 +6,8 @@
 # usethis::use_github_action("check-standard") will install it.
 on:
   push:
-  schedule:
-    - cron: '0 0 * * 2'
+    schedule:
+      - cron: '0 0 * * 2'
     branches:
       - main
       - l2d
