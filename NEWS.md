@@ -1,103 +1,13 @@
-# sandpaper 0.11.16 (2023-05-05)
+# sandpaper 0.11.9 (in development)
 
-## BUG FIX
-
-* A failure to incrementally build the lesson with `sandpaper::serve()` has been
-  fixed (reported: @zkamvar, #450; fixed: @zkamvar, #451)
-
-## MISC
-
-* Lessons with markdown documents no longer use `callr::r()` as an intermediary
-  (reported: @zkamvar, #442, fixed: @zkamvar, #452)
-
-# sandpaper 0.11.15 (2023-04-05)
-
-## BUG FIX
-
-* The 404 page will now have proper styling applied when the site is deployed
-  via one of the `ci_` functions (reported: @zkamvar, #430; fixed: @zkamvar,
-  #431).
-* `sandpaper::serve()` will no longer error if a different directory is used.
-
-# sandpaper 0.11.14 (2023-04-04)
-
-## BUG FIX
-
-* A 404 page has been added (reported: @fmichonneau, #268; fixed: 
-  @zkamvar, #429)
-
-## DEPENDENCIES
-
-* The minimum version of {pegboard} has been set to 0.5.1
-
-## TEMPLATES
-
-* The README, LICENSE, CONTRIBUTING, and SETUP templates have been fixed to work
-  with {pegboard} version 0.5.1
-* The LICENSE and CONTRIBUTING templates now refer to The Carpentries as a
-  whole and provides correct links to community forums. 
-
-# sandpaper 0.11.13 (2023-03-25)
-
-## WORKAROUND
-
-* Fix an issue for {renv} version 0.17.2 where it was unable to provision
-  packages that were being used in the parent environment. This was a problem
-  in environments where the version of {sandpaper} was controlled by {renv}. 
-  (reported: https://github.com/rstudio/renv/issues/1177, @zkamvar; fixed
-  #423, @zkamvar). Note that this fix is ONLY applicable to {renv} 0.17.2
-  and will be fixed with newer versions of {renv}.
-
-# sandpaper 0.11.12 (2023-03-22)
-
-## CONTINUOUS INTEGRATION
-
-* workflow files now have explicit permissions to comment on pull requests or
-  create new branches when called. This fixes an issue where new lessons would
-  not have the ability to preview pull requests or update workflows.
-  (reported: #420, @zkamvar; fixed #421, @zkamvar)
-* the `create-pull-request` action is now coming from a fork in The Carpentries
-  organisation for security. 
-
-## MISC
-
-* A typo has been fixed in the package cache vignette
-- The CONTRIBUTING boilerplate has been updated to fix formatting issues
-
-# sandpaper 0.11.11 (2023-03-17)
-
-## BUG FIX
-
-* `update_cache()` will now work with {renv} version 0.17.1, which lost a
-  print method for the `renv_updates` class (reported: @zkamvar, #415; 
-  fixed: @zkamvar, #416 and 
-  https://github.com/zkamvar/vise/commit/ee4798701a958ee48429980eb970266885f8265b
-
-# MISC
-
-* @jcolomb has been added as a contributor in the DESCRIPTION.
-
-# sandpaper 0.11.10 (2023-03-16)
-
-## BUG FIX
-
-* New lessons will now provision `learners/resources.md`, which will allow the
-  glossary link to work (reported: @elichad, #404 and 
-  @ManonMarchand,
-  https://github.com/carpentries/workbench-template-md/issues/20; 
-  fixed: @zkamvar, #410)
-- default CONTRIBUTING file is better suited to The Workbench and no longer
-  references the now-defunct lesson-example repository (reported and fixed:
-  @jcolomb, #407)
-
-# sandpaper 0.11.9 (2023-03-14)
-
-## BUG FIX
+BUG FIX
+-------
 
 * Links to assets in instructor view no longer render a 404. (reported:
-  @brownsarahm, #404; fixed: @zkamvar, #409)
+  @brownsarahm, #404; fixed: @zkamvar, #408)
 
-## CONTINUOUS INTEGRATION
+CONTINUOUS INTEGRATION
+----------------------
 
 * Lessons with files that have spaces in their names (e.g as a learning tool)
   no longer fail to comment on pull request previews (reported: @zkamvar, #399;

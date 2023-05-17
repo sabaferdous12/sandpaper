@@ -78,8 +78,6 @@ jobs:
     if: ${{ needs.test-pr.outputs.is_valid == 'true' }}
     env:
       NR: ${{ needs.test-pr.outputs.number }}
-    permissions:
-      contents: write
     steps:
       - name: 'Checkout md outputs'
         uses: actions/checkout@v3
@@ -124,8 +122,6 @@ jobs:
     if: ${{ needs.test-pr.outputs.is_valid == 'true' }}
     env:
       NR: ${{ needs.test-pr.outputs.number }}
-    permissions:
-      pull-requests: write
     steps:
       - name: 'Download comment artifact'
         id: dl
@@ -155,8 +151,6 @@ jobs:
     env:
       NR: ${{ github.event.workflow_run.pull_requests[0].number }}
       body: ${{ needs.test-pr.outputs.msg }}
-    permissions:
-      pull-requests: write
     steps:
       - name: 'Check for spoofing'
         id: dl

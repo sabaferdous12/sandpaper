@@ -14,8 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       is_valid: ${{ steps.check-pr.outputs.VALID }}
-    permissions:
-      pull-requests: write
     steps:
       - name: "Get Invalid Hashes File"
         id: hash

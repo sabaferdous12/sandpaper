@@ -114,24 +114,20 @@ update_cache <- function(path = ".", profile = "lesson-requirements", prompt = i
   Sys.setenv("RENV_PROFILE" = profile)
   renv::load(project = path)
   lib <- renv::paths$library(project = path)
+  has_cli <- requireNamespace("cli", quietly = TRUE)
   if (prompt) {
     updates <- renv::update(library = lib, check = TRUE, prompt = TRUE)
     if (isTRUE(updates)) {
       return(invisible())
     }
-    if (packageVersion("renv") < "0.17.1") {
-      wanna_update <- "Do you want to update the following packages?"
-      cli::cli_alert(wanna_update)
-      ud <- utils::capture.output(print(updates))
-      message(paste(ud, collapse = "\n"))
-    } else {
-      wanna_update <- "Do you want to update these packages?"
-      cli::cli_alert(wanna_update)
-    }
+    wanna_update <- "Do you want to update the following packages?"
+    if (has_cli) cli::cli_alert(wanna_update) else message(wanna_update)
+    ud <- utils::capture.output(print(updates))
+    message(paste(ud, collapse = "\n"))
     res <- utils::menu(c("Yes", "No"))
     if (res != 1) {
       no <- "Not updating at this time"
-      cli::cli_alert_info(no)
+      if (has_cli) cli::cli_alert_info(no) else message(no)
       return(invisible())
     }
   }

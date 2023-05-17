@@ -16,11 +16,11 @@ test_that("Lessons built for the first time are noisy", {
   htmls <- read_all_html(sitepath)
   expect_setequal(names(htmls$learner),
     c("introduction", "index", "LICENSE", "CODE_OF_CONDUCT", "profiles",
-      "instructor-notes", "key-points", "aio", "images", "reference", "404")
+      "instructor-notes", "key-points", "aio", "images")
   )
   expect_setequal(names(htmls$instructor),
     c("introduction", "index", "LICENSE", "CODE_OF_CONDUCT", "profiles",
-      "instructor-notes", "key-points", "aio", "images", "reference", "404")
+      "instructor-notes", "key-points", "aio", "images")
   )
 
 })
@@ -36,8 +36,6 @@ pkg <- pkgdown::as_pkgdown(fs::path_dir(sitepath))
 test_that("build_lesson() also builds the extra pages", {
   skip_if_not(rmarkdown::pandoc_available("2.11"))
   expect_true(fs::dir_exists(sitepath))
-  expect_true(fs::file_exists(fs::path(sitepath, "404.html")))
-  expect_true(fs::file_exists(fs::path(sitepath, "instructor", "404.html")))
   expect_true(fs::file_exists(fs::path(sitepath, "instructor-notes.html")))
   expect_true(fs::file_exists(fs::path(sitepath, "instructor", "instructor-notes.html")))
   expect_true(fs::file_exists(fs::path(sitepath, "key-points.html")))
@@ -46,26 +44,6 @@ test_that("build_lesson() also builds the extra pages", {
   expect_true(fs::file_exists(fs::path(sitepath, "instructor", "aio.html")))
   expect_true(fs::file_exists(fs::path(sitepath, "images.html")))
   expect_true(fs::file_exists(fs::path(sitepath, "instructor", "images.html")))
-})
-
-
-
-test_that("local site build produces 404 page with relative links", {
-
-  skip_if_not(rmarkdown::pandoc_available("2.11"))
-  # in the site branch, it does exist
-  expect_true(file.exists(file.path(sitepath, "404.html")))
-  # parse the page to find the stylesheet node
-  html <- xml2::read_html(file.path(sitepath, "404.html"))
-  stysh <- xml2::xml_find_first(html, ".//head/link[@rel='stylesheet']")
-  url <- xml2::xml_attr(stysh, "href")
-  parsed <- xml2::url_parse(url)
-
-  # test that it does not hav the form of
-  # https://[server]/lesson-example/[stylesheet]
-  expect_equal(parsed[["scheme"]], "")
-  expect_equal(parsed[["server"]], "")
-  expect_false(startsWith(parsed[["path"]], "/lesson-example"))
 })
 
 
