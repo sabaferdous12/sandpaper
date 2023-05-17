@@ -1,5 +1,9 @@
 ---
-title: FIXME
+title: {{title}}{{^title}}FIXME{{/title}}
 ---
 
-This is a placeholder file. Please add content here. 
+{{#heading}}
+## {{heading}}
+
+{{/heading}}
+This is a placeholder file. Please add content here.

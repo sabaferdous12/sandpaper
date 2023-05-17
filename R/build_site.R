@@ -132,6 +132,8 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
 
   fs::dir_walk(built_path, function(d) copy_assets(d, pkg$dst_path), all = TRUE)
 
+  describe_progress("Creating 404 page", quiet = quiet)
+  build_404(pkg, quiet = quiet)
 
   # Combined pages -------------------------------------------------------------
   #
@@ -139,7 +141,7 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
   #
   # 1. learner profiles which concatenates the files in the profiles/ folder
   describe_progress("Creating learner profiles", quiet = quiet)
-  build_profiles(pkg, quiet = quiet)#, sidebar = sidebar)
+  build_profiles(pkg, quiet = quiet)
   #
   # 2. home page which concatenates index.md and learners/setup.md
   describe_progress("Creating homepage", quiet = quiet)
