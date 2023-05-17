@@ -18,17 +18,17 @@ page_location <- function(i, abs_md, er) {
 #'
 #' @param files a vector of markdown file names
 #' @param type one of "learners" (default) or "instructors". If it is learners,
-#'   the setup page will be excluded since it is included in the index. For
+#'   the setup page will be excluded since it is included in the index. For 
 #'   "instructors", the instructor notes are included and the learner profiles
 #'   are included.
-#' @return a list with character vectors of HTML list elements.
+#' @return a list with character vectors of HTML list elements. 
 #' @keywords internal
 create_resources_dropdown <- function(files, type = "learners") {
   if (type == "learners") {
-    files <- files[!grepl("setup[.]R?md$", fs::path_file(files))]
+    files <- files[!grepl("setup[.]R?md", fs::path_file(files))]
   }
   if (type == "instructors") {
-    files <- files[!grepl("instructor-notes[.]R?md$", fs::path_file(files))]
+    files <- files[!grepl("instructor-notes.md", fs::path_file(files))]
   }
   out <- list(extras = NULL, resources = NULL)
   # NOTE: this creates a vector of length two: the first one has links with the
@@ -53,10 +53,10 @@ create_resources_dropdown <- function(files, type = "learners") {
 }
 
 #' Create a single item that appears in the sidebar
-#'
+#' 
 #' Varnish uses a sidebar for navigation across and within an episode. This
-#' funciton will create a sidebar item for a single episode, providing a
-#' dropdown menu of the sections within the episode if it is labeled as the
+#' funciton will create a sidebar item for a single episode, providing a 
+#' dropdown menu of the sections within the episode if it is labeled as the 
 #' current episode.
 #'
 #' @param nodes html generated from [render_html()] or parsed from xml2
@@ -73,7 +73,7 @@ create_sidebar_item <- function(nodes, name, position) {
     headings = if (current) create_sidebar_headings(nodes) else NULL,
     current = current
   )
-  whisker::whisker.render(readLines(template_sidebar_item()),
+  whisker::whisker.render(readLines(template_sidebar_item()), 
     data = sidebar_data)
 }
 
@@ -105,9 +105,9 @@ create_sidebar_headings <- function(nodes) {
 
 #' Create the sidebar for varnish
 #'
-#' Varnish uses a sidebar for navigation across and within an episode. Each
+#' Varnish uses a sidebar for navigation across and within an episode. Each 
 #' episode's sidebar is different because there needs to be a clear indicator
-#' which episode is the current one within the sidebar.
+#' which episode is the current one within the sidebar. 
 #'
 #' This function creates that sidebar.
 #'
@@ -121,30 +121,10 @@ create_sidebar <- function(chapters, name = "", html = "<a href='https://carpent
   for (i in seq(chapters)) {
     position <- if (name == chapters[i]) "current" else i
     info <- get_navbar_info(chapters[i])
-    page_link <- paste0("<a href='", info$href, "'>",
-      i - 1, ". ", parse_title(info$pagetitle),
+    page_link <- paste0("<a href='", info$href, "'>", 
+      i - 1, ". ", parse_title(info$pagetitle), 
       "</a>")
     res[i] <- create_sidebar_item(html, page_link, position)
   }
   res
 }
-
-update_sidebar <- function(sidebar = NULL, nodes = NULL, path_md = NULL, title = NULL, instructor = TRUE) {
-  if (is.null(sidebar)) return(sidebar)
-  # NOTE: this is the place we need to modify to address
-  # https://github.com/carpentries/workbench/issues/42
-  if (inherits(sidebar, "list-store")) {
-    # if it's a list store, then we need to get the sidebar and update itself
-    title <- if (is.null(title)) sidebar$get()[["pagetitle"]] else title
-    sb <- update_sidebar(sidebar$get()[["sidebar"]], nodes, path_md, title,
-      instructor)
-    sidebar$set("sidebar", paste(sb, collapse = "\n"))
-  }
-  this_page <- as_html(path_md)
-  to_change <- grep(paste0("[<]a href=['\"]", this_page, "['\"]"), sidebar)
-  if (length(to_change)) {
-    sidebar[to_change] <- create_sidebar_item(nodes, title, "current")
-  }
-  sidebar
-}
-

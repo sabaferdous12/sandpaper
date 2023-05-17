@@ -109,6 +109,23 @@ build_episode_html <- function(path_md, path_src = NULL,
 
 }
 
+update_sidebar <- function(sidebar = NULL, nodes = NULL, path_md = NULL, title = NULL, instructor = TRUE) {
+  if (is.null(sidebar)) return(sidebar)
+  if (inherits(sidebar, "list-store")) {
+    # if it's a list store, then we need to get the sidebar and update itself
+    title <- if (is.null(title)) sidebar$get()[["pagetitle"]] else title
+    sb <- update_sidebar(sidebar$get()[["sidebar"]], nodes, path_md, title,
+      instructor)
+    sidebar$set("sidebar", paste(sb, collapse = "\n"))
+  }
+  this_page <- as_html(path_md)
+  to_change <- grep(paste0("[<]a href=['\"]", this_page, "['\"]"), sidebar)
+  if (length(to_change)) {
+    sidebar[to_change] <- create_sidebar_item(nodes, title, "current")
+  }
+  sidebar
+}
+
 #' Generate the navigation data for a page
 #'
 #' @inheritParams build_episode_html
@@ -204,13 +221,6 @@ build_episode_md <- function(path, hash = NULL, outdir = path_built(path),
   # define the output
   md <- fs::path_ext_set(fs::path_file(path), "md")
   outpath <- fs::path(outdir, md)
-
-  # Set up the arguments
-  # shortcut if we have a markdown file
-  if (file_ext(path) == "md") {
-    file.copy(path, outpath, overwrite = TRUE)
-    return(invisible(outpath))
-  }
 
   # Set up the arguments
   root <- root_path(path)

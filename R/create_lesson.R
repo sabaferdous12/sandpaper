@@ -44,15 +44,8 @@ create_lesson <- function(path, name = fs::path_file(path), rmd = TRUE, rstudio 
   copy_template("setup", fs::path(path, "learners"), "setup.md")
   copy_template("index", path, "index.md")
   copy_template("links", path, "links.md")
-  copy_template("placeholder", fs::path(path, "instructors"),
-    name = "instructor-notes.md",
-    values = list(title = "Instructor Notes", heading = NULL))
-  copy_template("placeholder", fs::path(path, "profiles"),
-    name = "learner-profiles.md",
-    values = list(title = NULL, heading = NULL))
-  copy_template("placeholder", fs::path(path, "learners"),
-    name = "reference.md",
-    values = c(title = "Reference", heading = "Glossary"))
+  copy_template("placeholder", fs::path(path, "instructors"), "instructor-notes.md")
+  copy_template("placeholder", fs::path(path, "profiles"), "learner-profiles.md")
 
   cli::cli_status_update("{cli::symbol$arrow_right} Generating {.file config.yaml} ...")
   account <- tryCatch(gh::gh_whoami()$login, error = function(e) "carpentries")
@@ -60,7 +53,6 @@ create_lesson <- function(path, name = fs::path_file(path), rmd = TRUE, rstudio 
     values = list(
       title      = if (is.null(match.call()$name)) "Lesson Title" else siQuote(name),
       carpentry  = "incubator",
-      created    = as.character(Sys.Date()),
       life_cycle = "pre-alpha",
       license    = "CC-BY 4.0",
       source     = glue::glue("https://github.com/{account}/{basename(path)}"),
