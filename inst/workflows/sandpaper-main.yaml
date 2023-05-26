@@ -58,12 +58,12 @@ jobs:
             curl -o ~/.pandoc/templates/eisvogel.latex https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/master/eisvogel.tex
 
       - name: "Setup Lesson Engine"
-        uses: carpentries/actions/setup-sandpaper@main
+        uses: LearnToDiscover/actions/setup-sandpaper@main
         with:
           cache-version: ${{ secrets.CACHE_VERSION }}
 
       - name: "Setup Package Cache"
-        uses: carpentries/actions/setup-lesson-deps@main
+        uses: LearnToDiscover/actions/setup-lesson-deps@main
         with:
           cache-version: ${{ secrets.CACHE_VERSION }}
 
