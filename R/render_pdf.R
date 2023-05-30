@@ -51,40 +51,41 @@ render_pdf <- function(path_in, ..., quiet = FALSE) {
 }
 
 construct_pandoc_args2 <- function(path_in, output, to = "pdf", ...) {
-  exts <- paste(
-    "smart",
-    "auto_identifiers",
-    "autolink_bare_uris",
-    "emoji",
-    "footnotes",
-    "inline_notes",
-    "tex_math_dollars",
-    "tex_math_single_backslash",
-    "markdown_in_html_blocks",
-    "yaml_metadata_block",
-    "header_attributes",
-    "native_divs",
-    sep = "+"
-  )
-  from <- paste0("markdown", "-hard_line_breaks", "+", exts)
-  lua_filter <- rmarkdown::pkg_file_lua("lesson.lua", "sandpaper")
+  # exts <- paste(
+  #   "smart",
+  #   "auto_identifiers",
+  #   "autolink_bare_uris",
+  #   "emoji",
+  #   "footnotes",
+  #   "inline_notes",
+  #   "tex_math_dollars",
+  #   "tex_math_single_backslash",
+  #   "markdown_in_html_blocks",
+  #   "yaml_metadata_block",
+  #   "header_attributes",
+  #   "native_divs",
+  #   sep = "+"
+  # )
+  # from <- paste0("markdown", "-hard_line_breaks", "+", exts)
+  from <- "markdown"
+  # lua_filter <- rmarkdown::pkg_file_lua("lesson.lua", "sandpaper")
   list(
     input   = path_in,
     output  = output,
     from    = from,
     to      = to,
-    options = c(
-      "--preserve-tabs",
-      "--indented-code-classes=sh",
-      "--section-divs",
-      "--mathjax",
-      "--template",
-      "eisvogel",
-      "--listings",
-      "--lua-filter",
-      lua_filter,
-      ...
-    ),
+    # options = c(
+    #   "--preserve-tabs",
+    #   "--indented-code-classes=sh",
+    #   "--section-divs",
+    #   "--mathjax",
+    #   "--template",
+    #   "eisvogel",
+    #   "--listings",
+    #   "--lua-filter",
+    #   lua_filter,
+    #   ...
+    # ),
     verbose = FALSE
   )
 }
