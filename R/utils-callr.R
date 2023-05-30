@@ -43,7 +43,6 @@ callr_build_episode_md <- function(path, hash, workenv, outpath, workdir, root, 
   knitr::opts_chunk$set(
     error         = error,
     comment       = "",
-    fig.align     = "center",
     class.output  = "output",
     class.error   = "error",
     class.warning = "warning",
