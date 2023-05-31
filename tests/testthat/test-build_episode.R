@@ -94,9 +94,17 @@ test_that("the chapter-links should be cromulent depending on the view", {
 })
 
 
-test_that("build_episode_pdf works", {
+test_that("build_episode_pdf() works", {
   skip_if_not(file.exists(file.path(tmp, "site", "built", "fun.md")))
   path_md <- file.path(tmp, "site", "built", "fun.md")
   build_episode_pdf(path_md, quiet = TRUE)
   expect_true(file.exists(file.path(tmp, "site", "built", "fun.md.pdf")))
+})
+
+
+test_that("build_episode_ipynb() works", {
+  skip_if_not(file.exists(file.path(tmp, "site", "built", "fun.md")))
+  path_md <- file.path(tmp, "site", "built", "fun.md")
+  build_episode_ipynb(path_md, quiet = TRUE)
+  expect_true(file.exists(file.path(tmp, "site", "built", "fun.md.ipynb")))
 })
