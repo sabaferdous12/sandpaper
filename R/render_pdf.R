@@ -44,6 +44,7 @@ construct_pandoc_args2 <- function(path_in, output, to = "pdf", ...) {
     from    = from,
     to      = to,
     options = c(
+      "--pdf-engine=lualatex",
       "--preserve-tabs",
       "--indented-code-classes=sh",
       "--section-divs",
