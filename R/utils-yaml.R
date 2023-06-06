@@ -226,7 +226,9 @@ known_yaml_items <- c(
   "episodes",
   "instructors",
   "learners",
-  "profiles"
+  "profiles",
+  "pdf",
+  "ipynb"
 )
 
 
@@ -236,4 +238,3 @@ quote_config_items <- function(yaml) {
   }
   yaml
 }
-
