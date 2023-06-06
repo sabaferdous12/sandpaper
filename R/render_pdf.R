@@ -10,37 +10,7 @@
 #'   reports the markdown build via pandoc
 #' @param ... extra options (e.g. lua filters) to be passed to pandoc
 #'
-#' @return a character containing the rendred HTML file
-#'
 #' @keywords internal
-#' @examples
-#'
-#' if (rmarkdown::pandoc_available("2.11")) {
-#' # first example---markdown to HTML
-#' tmp <- tempfile()
-#' ex <- c("# Markdown",
-#'   "",
-#'   "::: challenge",
-#'   "",
-#'   "How do you write markdown divs?",
-#'   "",
-#'   ":::"
-#' )
-#' writeLines(ex, tmp)
-#' cat(sandpaper:::render_html(tmp))
-#'
-#' # adding a lua filter
-#'
-#' lua <- tempfile()
-#' lu <- c("Str = function (elem)",
-#' "  if elem.text == 'markdown' then",
-#' "    return pandoc.Emph {pandoc.Str 'mowdrank'}",
-#' "  end",
-#' "end")
-#' writeLines(lu, lua)
-#' lf <- paste0("--lua-filter=", lua)
-#' cat(sandpaper:::render_html(tmp, lf))
-#' }
 render_pdf <- function(path_in, ..., quiet = FALSE) {
   htm <- paste0(path_in, '.pdf')
   args <- construct_pandoc_args2(path_in, output = htm, to = "pdf", ...)
