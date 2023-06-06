@@ -58,6 +58,9 @@ jobs:
           extra-packages: any::covr
           needs: coverage
 
+      - name: "Setup tinytex"
+        uses: r-lib/actions/setup-tinytex@v2
+
       - name: Restore {renv} cache
         uses: actions/cache@v3
         with:

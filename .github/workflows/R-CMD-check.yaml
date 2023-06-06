@@ -93,6 +93,9 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+      - name: "Setup tinytex"
+        uses: r-lib/actions/setup-tinytex@v2
+
       - name: "setup latex template"
         run: |
           mkdir -p ~/.pandoc/templates
