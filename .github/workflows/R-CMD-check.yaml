@@ -96,11 +96,6 @@ jobs:
       - name: "Setup tinytex"
         uses: r-lib/actions/setup-tinytex@v2
 
-      - name: "setup latex template"
-        run: |
-          mkdir -p ~/.pandoc/templates
-          curl -o ~/.pandoc/templates/eisvogel.latex https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/master/eisvogel.tex
-
       - name: "Restore {renv} cache"
         if: runner.os != 'Windows'
         uses: actions/cache@v3.0.11
