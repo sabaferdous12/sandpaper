@@ -21,6 +21,8 @@
 #' @param type the type of Python environment to use. When `"auto"`, the
 #'   default, virtual environments will be used. See [renv::use_python()] for
 #'   more details.
+#' @param pdf if `TRUE`, a PDF version of each episode will be built.
+#' @param ipynb if `TRUE`, a Jupyter Notebook version of each episode will be built.
 #'
 #' @export
 #' @return the path to the new lesson
@@ -30,7 +32,8 @@
 #' lsn <- create_lesson(tmp, name = "This Lesson", open = FALSE)
 #' lsn
 create_lesson <- function(path, name = fs::path_file(path), rmd = TRUE, rstudio = rstudioapi::isAvailable(), open = rlang::is_interactive(),
-                          add_python = FALSE, python = NULL, type = c("auto", "virtualenv", "conda", "system")) {
+                          add_python = FALSE, python = NULL, type = c("auto", "virtualenv", "conda", "system"),
+                          pdf = FALSE, ipynb = FALSE) {
 
   path <- fs::path_abs(path)
   id <- cli::cli_status("{cli::symbol$arrow_right} Creating Lesson in {.file {path}}...")
@@ -77,6 +80,8 @@ create_lesson <- function(path, name = fs::path_file(path), rmd = TRUE, rstudio 
       source     = glue::glue("https://github.com/{account}/{basename(path)}"),
       branch     = get_default_branch(),
       contact    = "team@carpentries.org",
+      pdf = if (pdf) "yes" else "no",
+      ipynb = if (ipynb) "yes" else "no",
       NULL
     )
   )
