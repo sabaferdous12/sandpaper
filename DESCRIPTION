@@ -65,7 +65,8 @@ Suggests:
     sessioninfo,
     mockr,
     varnish (>= 0.2.1),
-    reticulate
+    reticulate,
+    tinytex
 Additional_repositories: https://carpentries.r-universe.dev/
 Remotes:
   ropensci/tinkr,
