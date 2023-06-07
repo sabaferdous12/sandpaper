@@ -1,6 +1,6 @@
-#' Render pdf from a markdown file
+#' Render Jupyter notebook from a markdown file
 #'
-#' This uses [rmarkdown::pandoc_convert()] to render PDF from a markdown file.
+#' This uses [rmarkdown::pandoc_convert()] to render a Jupyter Notebook from a markdown file.
 #' We've specified pandoc extensions that align with the features desired in the
 #' Carpentries
 #.
@@ -10,37 +10,7 @@
 #'   reports the markdown build via pandoc
 #' @param ... extra options (e.g. lua filters) to be passed to pandoc
 #'
-#' @return a character containing the rendred HTML file
-#'
 #' @keywords internal
-#' @examples
-#'
-#' if (rmarkdown::pandoc_available("2.11")) {
-#' # first example---markdown to HTML
-#' tmp <- tempfile()
-#' ex <- c("# Markdown",
-#'   "",
-#'   "::: challenge",
-#'   "",
-#'   "How do you write markdown divs?",
-#'   "",
-#'   ":::"
-#' )
-#' writeLines(ex, tmp)
-#' cat(sandpaper:::render_html(tmp))
-#'
-#' # adding a lua filter
-#'
-#' lua <- tempfile()
-#' lu <- c("Str = function (elem)",
-#' "  if elem.text == 'markdown' then",
-#' "    return pandoc.Emph {pandoc.Str 'mowdrank'}",
-#' "  end",
-#' "end")
-#' writeLines(lu, lua)
-#' lf <- paste0("--lua-filter=", lua)
-#' cat(sandpaper:::render_html(tmp, lf))
-#' }
 render_ipynb <- function(path_in, ..., quiet = FALSE) {
 
   # jupytext --to notebook notebook.py
@@ -50,7 +20,7 @@ render_ipynb <- function(path_in, ..., quiet = FALSE) {
   #          show = !quiet)
 
   # Add a space or not in case we are running on a mac.
-  # sed -i for BSD uses a space to set the backup file, whereas 
+  # sed -i for BSD uses a space to set the backup file, whereas
   #        the GNU version doesn't require a space.
   #        If not used `-i` the file is not change in place.
   is_mac <- version$os

@@ -12,7 +12,9 @@ create_lesson(
   open = rlang::is_interactive(),
   add_python = FALSE,
   python = NULL,
-  type = c("auto", "virtualenv", "conda", "system")
+  type = c("auto", "virtualenv", "conda", "system"),
+  pdf = FALSE,
+  ipynb = FALSE
 )
 }
 \arguments{
@@ -41,6 +43,10 @@ for more details.}
 \item{type}{the type of Python environment to use. When \code{"auto"}, the
 default, virtual environments will be used. See \code{\link[renv:use_python]{renv::use_python()}} for
 more details.}
+
+\item{pdf}{if \code{TRUE}, a PDF version of each episode will be built.}
+
+\item{ipynb}{if \code{TRUE}, a Jupyter Notebook version of each episode will be built.}
 }
 \value{
 the path to the new lesson

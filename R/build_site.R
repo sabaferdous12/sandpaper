@@ -101,30 +101,35 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
       quiet         = quiet
     )
 
-    build_episode_pdf(
-      path_md      = abs_md[i],
-      path_src     = abs_src[i],
-      page_back    = location["back"],
-      page_forward = location["forward"],
-      page_progress = location["progress"],
-      sidebar      = sidebar,
-      date         = db$date[i],
-      pkg          = pkg,
-      quiet        = quiet
-    )
+    cfg <- get_config(path)
 
+    if (cfg$pdf) {
+      build_episode_pdf(
+        path_md = abs_md[i],
+        path_src = abs_src[i],
+        page_back = location["back"],
+        page_forward = location["forward"],
+        page_progress = location["progress"],
+        sidebar = sidebar,
+        date = db$date[i],
+        pkg = pkg,
+        quiet = quiet
+      )
+    }
 
-    build_episode_ipynb(
-      path_md      = abs_md[i],
-      path_src     = abs_src[i],
-      page_back    = location["back"],
-      page_forward = location["forward"],
-      page_progress = location["progress"],
-      sidebar      = sidebar,
-      date         = db$date[i],
-      pkg          = pkg,
-      quiet        = quiet
-    )
+    if (cfg$ipynb) {
+      build_episode_ipynb(
+        path_md = abs_md[i],
+        path_src = abs_src[i],
+        page_back = location["back"],
+        page_forward = location["forward"],
+        page_progress = location["progress"],
+        sidebar = sidebar,
+        date = db$date[i],
+        pkg = pkg,
+        quiet = quiet
+      )
+    }
 
 
   }

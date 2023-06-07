@@ -93,10 +93,19 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
-      - name: "setup latex template"
+      - name: "Setup tinytex"
+        if: runner.os == 'Linux'
+        uses: r-lib/actions/setup-tinytex@v2
+
+      - name: "Install LaTeX dependencies"
+        if: runner.os == 'Linux'
         run: |
-          mkdir -p ~/.pandoc/templates
-          curl -o ~/.pandoc/templates/eisvogel.latex https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/master/eisvogel.tex
+          sudo apt update -y
+          sudo apt install -y \
+            texlive-latex-base \
+            texlive-fonts-recommended \
+            texlive-fonts-extra \
+            texlive-latex-extra
 
       - name: "Restore {renv} cache"
         if: runner.os != 'Windows'
@@ -136,6 +145,3 @@ jobs:
           RENV_PATHS_ROOT: ~
         with:
           upload-snapshots: true
-
-
-
