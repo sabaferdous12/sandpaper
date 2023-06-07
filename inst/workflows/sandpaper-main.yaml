@@ -52,11 +52,6 @@ jobs:
             texlive-fonts-extra \
             texlive-latex-extra
 
-      - name: "latex template"
-        run: |
-            mkdir -p ~/.pandoc/templates
-            curl -o ~/.pandoc/templates/eisvogel.latex https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/master/eisvogel.tex
-
       - name: "Setup Lesson Engine"
         uses: LearnToDiscover/actions/setup-sandpaper@main
         with:
