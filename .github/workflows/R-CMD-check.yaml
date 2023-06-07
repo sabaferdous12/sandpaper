@@ -94,11 +94,11 @@ jobs:
           needs: check
 
       - name: "Setup tinytex"
-        if: runner.os == "linux"
+        if: runner.os == 'Linux'
         uses: r-lib/actions/setup-tinytex@v2
 
       - name: "Install LaTeX dependencies"
-        if: runner.os == "linux"
+        if: runner.os == 'Linux'
         run: |
           sudo apt update -y
           sudo apt install -y \
@@ -108,7 +108,7 @@ jobs:
             texlive-latex-extra
 
       - name: "Install jupytext"
-        if: runner.os == "linux"
+        if: runner.os == 'Linux'
         run: |
           pip install jupytext
 
