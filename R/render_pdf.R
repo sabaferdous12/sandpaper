@@ -13,14 +13,15 @@
 #' @keywords internal
 render_pdf <- function(path_in, ..., quiet = FALSE) {
   htm <- paste0(path_in, '.pdf')
-  args <- construct_pandoc_args2(path_in, output = htm, to = "pdf", ...)
+  cli::cli_text("Writing '{.file {basename(htm)}}'")
+  args <- construct_pandoc_args_pdf(path_in, output = htm, to = "pdf", ...)
   callr::r(function(...) rmarkdown::pandoc_convert(...), args = args,
            show = !quiet)
 
   paste("COME PDF PLEASE", collapse = "\n")
 }
 
-construct_pandoc_args2 <- function(path_in, output, to = "pdf", ...) {
+construct_pandoc_args_pdf <- function(path_in, output, to = "pdf", ...) {
   from <- paste0("markdown", "-hard_line_breaks")
   list(
     input   = path_in,
