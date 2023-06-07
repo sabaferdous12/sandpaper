@@ -94,7 +94,23 @@ jobs:
           needs: check
 
       - name: "Setup tinytex"
+        if: runner.os == "linux"
         uses: r-lib/actions/setup-tinytex@v2
+
+      - name: "Install LaTeX dependencies"
+        if: runner.os == "linux"
+        run: |
+          sudo apt update -y
+          sudo apt install -y \
+            texlive-latex-base \
+            texlive-fonts-recommended \
+            texlive-fonts-extra \
+            texlive-latex-extra
+
+      - name: "Install jupytext"
+        if: runner.os == "linux"
+        run: |
+          pip install jupytext
 
       - name: "Restore {renv} cache"
         if: runner.os != 'Windows'
@@ -134,6 +150,3 @@ jobs:
           RENV_PATHS_ROOT: ~
         with:
           upload-snapshots: true
-
-
-
