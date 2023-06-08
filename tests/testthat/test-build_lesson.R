@@ -114,10 +114,10 @@ test_that("aio page can be rebuilt", {
 })
 
 test_that("aio PDF can be built if Chrome available", {
-  chrome_available <- check_chrome_available()
-  skip_if_not(chrome_available, "Chrome not available")
-
   aio <- fs::path(sitepath, "aio.html")
+  chrome_available <- check_chrome_available()
+  skip_if_not(rmarkdown::pandoc_available("2.11"))
+  skip_if_not(chrome_available, "Chrome not available")
   skip_if_not(file.exists(aio))
 
   html_to_pdf(aio)
