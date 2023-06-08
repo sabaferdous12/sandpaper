@@ -113,6 +113,24 @@ test_that("aio page can be rebuilt", {
 
 })
 
+test_that("aio PDF can be built if Chrome available", {
+  chrome_available <- check_chrome_available()
+  skip_if_not(chrome_available, "Chrome not available")
+
+  aio <- fs::path(sitepath, "aio.html")
+  skip_if_not(file.exists(aio))
+
+  html_to_pdf(aio)
+  aio_pdf <- fs::path(sitepath, "aio.pdf")
+  expect_true(file.exists(aio_pdf))
+})
+
+test_that("html_to_pdf returns warning if Chrome not available", {
+  withr::local_envvar(c("PAGEDOWN_CHROME" = "not-a-real-browser"))
+  expect_warning(html_to_pdf(fs::path(sitepath, "aio.html")), "Chrome is not available")
+})
+
+
 test_that("keypoints page can be rebuilt", {
 
   skip_if_not(rmarkdown::pandoc_available("2.11"))
