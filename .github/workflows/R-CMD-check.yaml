@@ -69,6 +69,9 @@ jobs:
         with:
           pandoc-version: '2.11'
 
+      - name: "Set up Chrome" # for PDF rendering
+        uses: browser-actions/setup-chrome@v1.2.0
+
       - name: "Windows: setup TMPDIR"
         if: runner.os == 'Windows'
         run: |
@@ -92,20 +95,6 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: check
-
-      - name: "Setup tinytex"
-        if: runner.os == 'Linux'
-        uses: r-lib/actions/setup-tinytex@v2
-
-      - name: "Install LaTeX dependencies"
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt update -y
-          sudo apt install -y \
-            texlive-latex-base \
-            texlive-fonts-recommended \
-            texlive-fonts-extra \
-            texlive-latex-extra
 
       - name: "Restore {renv} cache"
         if: runner.os != 'Windows'

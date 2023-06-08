@@ -103,20 +103,6 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
 
     cfg <- get_config(path)
 
-    if (cfg$pdf) {
-      build_episode_pdf(
-        path_md = abs_md[i],
-        path_src = abs_src[i],
-        page_back = location["back"],
-        page_forward = location["forward"],
-        page_progress = location["progress"],
-        sidebar = sidebar,
-        date = db$date[i],
-        pkg = pkg,
-        quiet = quiet
-      )
-    }
-
     if (cfg$ipynb) {
       build_episode_ipynb(
         path_md = abs_md[i],
@@ -178,6 +164,13 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
   build_keypoints(pkg, pages = html_pages, quiet = quiet)
   describe_progress("Creating All-in-one page", quiet = quiet)
   build_aio(pkg, pages = html_pages, quiet = quiet)
+
+  if (cfg$pdf) {
+    describe_progress("Creating All-in-one PDF", quiet = quiet)
+    aio_html <- fs::path(pkg$dst_path, "aio.html")
+    html_to_pdf(input = aio_html, output = fs::path(pkg$dst_path, "aio.pdf"))
+  }
+
   describe_progress("Creating Images page", quiet = quiet)
   build_images(pkg, pages = html_pages, quiet = quiet)
   describe_progress("Creating Instructor Notes", quiet = quiet)

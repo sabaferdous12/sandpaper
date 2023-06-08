@@ -66,13 +66,13 @@ Suggests:
     mockr,
     varnish (>= 0.2.1),
     reticulate,
-    tinytex
+    pagedown
 Additional_repositories: https://carpentries.r-universe.dev/
 Remotes:
   ropensci/tinkr,
   carpentries/pegboard,
   LearnToDiscover/varnish
-SystemRequirements:  pandoc (>= 2.11.4) - https://pandoc.org, jupytext
+SystemRequirements: pandoc (>= 2.11.4) - https://pandoc.org, jupytext
 Encoding: UTF-8
 LazyData: true
 Config/testthat/edition: 3
