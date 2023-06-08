@@ -1,4 +1,4 @@
-html_to_pdf <- function(input, output = fs::path_ext_set(aio, "pdf"), ...) {
+html_to_pdf <- function(input, output = fs::path_ext_set(input, "pdf"), ...) {
   rlang::check_installed("pagedown")
 
   chrome_available <- check_chrome_available()
