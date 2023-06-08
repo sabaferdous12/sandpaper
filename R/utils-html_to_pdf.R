@@ -5,7 +5,7 @@ html_to_pdf <- function(input, output = fs::path_ext_set(aio, "pdf"), ...) {
   if (!chrome_available) {
     return(invisible(FALSE))
   } else {
-    cli::cli_text("Converting '{.file {basename(input)}}' to '{.file {basename(output)}}'")
+    cli::cli_text("Converting {.file {basename(input)}} to {.file {basename(output)}}")
     try_chrome_print(input = input, output = output, ...)
   }
   invisible(file.exists(output))
