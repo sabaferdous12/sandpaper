@@ -43,15 +43,6 @@ jobs:
       - name: "Set up Pandoc"
         uses: r-lib/actions/setup-pandoc@v2
 
-      - name: "Install LaTeX dependencies"
-        run: |
-          sudo apt update -y
-          sudo apt install -y \
-            texlive-latex-base \
-            texlive-fonts-recommended \
-            texlive-fonts-extra \
-            texlive-latex-extra
-
       - name: "Setup Lesson Engine"
         uses: LearnToDiscover/actions/setup-sandpaper@main
         with:
