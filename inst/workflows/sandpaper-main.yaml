@@ -43,6 +43,9 @@ jobs:
       - name: "Set up Pandoc"
         uses: r-lib/actions/setup-pandoc@v2
 
+      - name: "Set up Chrome" # for PDF rendering
+        uses: browser-actions/setup-chrome@v1.2.0
+
       - name: "Setup Lesson Engine"
         uses: LearnToDiscover/actions/setup-sandpaper@main
         with:

@@ -69,6 +69,9 @@ jobs:
         with:
           pandoc-version: '2.11'
 
+      - name: "Set up Chrome" # for PDF rendering
+        uses: browser-actions/setup-chrome@v1.2.0
+
       - name: "Windows: setup TMPDIR"
         if: runner.os == 'Windows'
         run: |
