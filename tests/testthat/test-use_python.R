@@ -4,14 +4,26 @@ skip_on_os("windows")
 lsn <- restore_fixture()
 lsn <- use_python(lsn)
 
+suppressWarnings({
+  reticulate_installable <- check_reticulate_installable()
+})
+
 test_that("use_python() adds Python environment", {
   py_path <- fs::path(lsn, "renv/profiles/lesson-requirements/renv/python")
   expect_true(fs::dir_exists(py_path))
 })
 
 test_that("reticulate is installed", {
+  skip_if_not(reticulate_installable, "reticulate is not installable")
   has_reticulate <- check_reticulate(lsn)
   expect_true(has_reticulate)
+})
+
+test_that("A warning is generated when reticulate is not installable", {
+  skip_if(reticulate_installable, "reticulate is installable")
+  expect_warning(install_reticulate(lsn))
+  has_reticulate <- check_reticulate(lsn)
+  expect_false(has_reticulate)
 })
 
 test_that("use_python() sets reticulate configuration", {
@@ -30,6 +42,9 @@ test_that("use_python() does not remove renv/profile", {
 })
 
 test_that("py_install() installs Python packages", {
+  skip_if_not(reticulate_installable, "reticulate is not installable")
+  skip_on_os("windows")
+
   py_install("numpy", path = lsn)
   numpy <- local_load_py_pkg(lsn, "numpy")
 
