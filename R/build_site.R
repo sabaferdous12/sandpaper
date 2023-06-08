@@ -87,6 +87,9 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
     # restore the original functions on exit
     on.exit(eval(when_done), add = TRUE)
   }
+
+  cfg <- get_config(path)
+
   # ------------------------ end downlit shim ----------------------------
   for (i in files_to_render) {
     location <- page_location(i, abs_md, er)
@@ -100,8 +103,6 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
       pkg           = pkg,
       quiet         = quiet
     )
-
-    cfg <- get_config(path)
 
     if (cfg$ipynb) {
       build_episode_ipynb(
@@ -168,7 +169,7 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
   if (cfg$pdf) {
     describe_progress("Creating All-in-one PDF", quiet = quiet)
     aio_html <- fs::path(pkg$dst_path, "aio.html")
-    html_to_pdf(input = aio_html, output = fs::path(pkg$dst_path, "aio.pdf"))
+    html_to_pdf(input = aio_html, output = fs::path(pkg$dst_path, "aio.pdf"), quiet = quiet)
   }
 
   describe_progress("Creating Images page", quiet = quiet)

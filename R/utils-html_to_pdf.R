@@ -1,11 +1,11 @@
-html_to_pdf <- function(input, output = fs::path_ext_set(input, "pdf"), ...) {
+html_to_pdf <- function(input, output = fs::path_ext_set(input, "pdf"), quiet = FALSE, ...) {
   rlang::check_installed("pagedown")
 
   chrome_available <- check_chrome_available()
   if (!chrome_available) {
     return(invisible(FALSE))
   } else {
-    cli::cli_text("Converting {.file {basename(input)}} to {.file {basename(output)}}")
+    if (!quiet) cli::cli_text("Converting {.file {basename(input)}} to {.file {basename(output)}}")
     try_chrome_print(input = input, output = output, ...)
   }
   invisible(file.exists(output))
