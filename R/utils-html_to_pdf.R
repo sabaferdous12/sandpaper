@@ -1,4 +1,6 @@
 html_to_pdf <- function(input, output) {
+  rlang::check_installed("pagedown")
+
   tryCatch({
     cli::cli_text("Writing '{.file {basename(output)}}'")
     pagedown::chrome_print(input = input, output = output, format = "pdf")
