@@ -7,7 +7,7 @@
 [![R
 Universe](https://carpentries.r-universe.dev/badges/sandpaper)](https://carpentries.r-universe.dev/ui#builds)
 [![Codecov test
-coverage](https://codecov.io/gh/carpentries/sandpaper/branch/main/graph/badge.svg)](https://codecov.io/gh/carpentries/sandpaper?branch=main)
+coverage](https://codecov.io/gh/LearnToDiscover/sandpaper/branch/l2d/graph/badge.svg)](https://codecov.io/gh/LearnToDiscover/sandpaper?branch=l2d)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![CRAN
