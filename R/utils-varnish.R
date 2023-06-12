@@ -87,9 +87,11 @@ set_globals <- function(path) {
     "instructors")
   pkg_versions <- varnish_vars()
 
+  cfg <- get_config(path)
   learner_globals$set(key = NULL,
     c(list(
       aio = TRUE,
+      aio_pdf = cfg$pdf,
       instructor = FALSE,
       sidebar = learner_sidebar,
       more = paste(learner$extras, collapse = ""),
@@ -99,6 +101,7 @@ set_globals <- function(path) {
   instructor_globals$set(key = NULL,
     c(list(
       aio = TRUE,
+      aio_pdf = cfg$pdf,
       instructor = TRUE,
       sidebar = instructor_sidebar,
       more = paste(instructor$extras, collapse = ""),
@@ -124,4 +127,3 @@ clear_globals <- function() {
   instructor_globals$clear()
   this_metadata$clear()
 }
-
