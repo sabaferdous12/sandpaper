@@ -52,7 +52,8 @@ Imports:
     callr,
     servr,
     utils,
-    tools
+    tools,
+    pagedown
 Suggests:
     testthat (>= 3.0.0),
     covr,
@@ -65,8 +66,7 @@ Suggests:
     sessioninfo,
     mockr,
     varnish (>= 0.2.1),
-    reticulate,
-    pagedown
+    reticulate
 Additional_repositories: https://carpentries.r-universe.dev/
 Remotes:
   ropensci/tinkr,
