@@ -53,7 +53,8 @@ Imports:
     servr,
     utils,
     tools,
-    pagedown
+    pagedown,
+    jupytextR (>= 0.1.0)
 Suggests:
     testthat (>= 3.0.0),
     covr,
@@ -69,10 +70,11 @@ Suggests:
     reticulate
 Additional_repositories: https://carpentries.r-universe.dev/
 Remotes:
-  ropensci/tinkr,
-  carpentries/pegboard,
-  LearnToDiscover/varnish
-SystemRequirements: pandoc (>= 2.11.4) - https://pandoc.org, jupytext
+    ropensci/tinkr,
+    carpentries/pegboard,
+    LearnToDiscover/varnish,
+    milanmlft/jupytextR
+SystemRequirements: pandoc (>= 2.11.4) - https://pandoc.org
 Encoding: UTF-8
 LazyData: true
 Config/testthat/edition: 3
