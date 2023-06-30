@@ -250,7 +250,15 @@ build_episode_md <- function(path, hash = NULL, outdir = path_built(path),
 }
 
 
-## Silence by default so we can use better formatting
+#' Convert a single episode to a Jupyter notebook
+#'
+#' @param path path to the RMarkdown file.
+#' @param outdir the directory to write to/
+#' @param quiet if `TRUE`, output is suppressed, default is `TRUE` so we can use better
+#'   formatting elsewhere.
+#'
+#' @return the path to the output, invisibly
+#' @keywords internal
 build_episode_ipynb <- function(path, outdir = path_built(path), quiet = TRUE) {
   outfile <- fs::path_ext_set(fs::path_file(path), "ipynb")
   outpath <- fs::path(outdir, outfile)
