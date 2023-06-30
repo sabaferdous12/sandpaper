@@ -95,11 +95,20 @@ test_that("the chapter-links should be cromulent depending on the view", {
 
 
 test_that("build_episode_ipynb() works", {
-  skip_on_os(c("mac", "windows"))
-  skip_if_not(file.exists(file.path(tmp, "site", "built", "fun.md")))
-  skip_if_not(system("which jupytext") != 1, message = "jupytext is not available")
+  # skip_on_os(c("mac", "windows"))
+  # create a new file in extras
+  fun_file <- file.path(tmp, "episodes", "files", "fun.Rmd")
+  file.copy(test_path("examples/s3.Rmd"), fun_file, overwrite = TRUE)
+  expect_true(fs::file_exists(fun_file))
 
-  path_md <- file.path(tmp, "site", "built", "fun.md")
-  build_episode_ipynb(path_md, quiet = TRUE)
-  expect_true(file.exists(file.path(tmp, "site", "built", "fun.md.ipynb")))
+  outfile <- fs::path_ext_set(fs::path_file(fun_file), "ipynb")
+  outpath <- fs::path(path_built(fun_file), outfile)
+  msg <- paste("Converting", fun_file, "to", outpath)
+
+  expect_message({
+    res <- build_episode_ipynb(fun_file, quiet = FALSE)
+  }, msg)
+
+  expect_equal(basename(res), "fun.ipynb")
+  expect_true(file.exists(file.path(outpath)))
 })
