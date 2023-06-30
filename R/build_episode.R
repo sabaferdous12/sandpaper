@@ -250,11 +250,9 @@ build_episode_md <- function(path, hash = NULL, outdir = path_built(path),
 }
 
 
-build_episode_ipynb <- function(path_md, path_src = NULL,
-                              page_back = "index.md", page_forward = "index.md",
-                              pkg, quiet = FALSE, page_progress = NULL,
-                              sidebar = NULL, date = NULL) {
-  home <- root_path(path_md)
-  body <- render_ipynb(path_md, quiet = quiet)
+build_episode_ipynb <- function(path, outdir = path_built(path), quiet = FALSE) {
+  outfile <- fs::path_ext_set(fs::path_file(path), "ipynb")
+  outpath <- fs::path(outdir, outfile)
 
+  jupytextR::jupytext(path, output = outpath, quiet = quiet)
 }
