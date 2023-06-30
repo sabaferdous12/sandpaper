@@ -152,23 +152,11 @@ test_that("lessons cannot be created in directories that are occupied", {
 })
 
 test_that("`pdf = TRUE` option works for create_lesson()", {
-  tmpdir <- fs::file_temp()
-  withr::defer(fs::dir_delete(tmpdir))
-  suppressMessages({
-    utils::capture.output({
-      lsn <- create_lesson(tmpdir, open = FALSE, pdf = TRUE)
-    })
-  })
+  lsn <- local_lesson(pdf = TRUE)
   expect_true(get_config(lsn)$pdf)
 })
 
 test_that("`ipynb = TRUE` option works for create_lesson()", {
-  tmpdir <- fs::file_temp()
-  withr::defer(fs::dir_delete(tmpdir))
-  suppressMessages({
-    utils::capture.output({
-      lsn <- create_lesson(tmpdir, open = FALSE, ipynb = TRUE)
-    })
-  })
+  lsn <- local_lesson(ipynb = TRUE)
   expect_true(get_config(lsn)$ipynb)
 })
