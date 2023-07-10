@@ -37,7 +37,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">sandpaper</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -364,7 +364,7 @@ respectively:</p>
 from upstream.</p>
 </div>
 <div class="section level2">
-<h2 id="adding-new-pacakges-to-the-cache">Adding New Pacakges to the Cache<a class="anchor" aria-label="anchor" href="#adding-new-pacakges-to-the-cache"></a>
+<h2 id="adding-new-packages-to-the-cache">Adding New Packages to the Cache<a class="anchor" aria-label="anchor" href="#adding-new-packages-to-the-cache"></a>
 </h2>
 <p>The {sandpaper} cache records ONLY the packages needed for the
 repository itself. This means that if you want to use a package, you
@@ -402,7 +402,7 @@ pin the {cowsay} package to version 0.7.0:</p>
 <h2 id="updating-the-cache">Updating the Cache<a class="anchor" aria-label="anchor" href="#updating-the-cache"></a>
 </h2>
 <p>If you want to update the packages in the package cache, you can use
-the function <code>fetch_updates()</code>. This requires an internet
+the function <code><a href="../reference/dependency_management.html">update_cache()</a></code>. This requires an internet
 connection and will scan the packages in your lesson for any potential
 updates and ask if you want to update them. This will update those
 packages in your package cache and your lockfile.</p>

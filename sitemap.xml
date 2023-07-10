@@ -76,6 +76,9 @@
     <loc>https://carpentries.github.io/sandpaper/reference/check_lesson.html</loc>
   </url>
   <url>
+    <loc>https://carpentries.github.io/sandpaper/reference/check_pandoc.html</loc>
+  </url>
+  <url>
     <loc>https://carpentries.github.io/sandpaper/reference/ci_build.html</loc>
   </url>
   <url>
@@ -175,6 +178,9 @@
     <loc>https://carpentries.github.io/sandpaper/reference/render_html.html</loc>
   </url>
   <url>
+    <loc>https://carpentries.github.io/sandpaper/reference/render_ipynb.html</loc>
+  </url>
+  <url>
     <loc>https://carpentries.github.io/sandpaper/reference/renv_diagnostics.html</loc>
   </url>
   <url>
@@ -224,6 +230,9 @@
   </url>
   <url>
     <loc>https://carpentries.github.io/sandpaper/reference/update_varnish.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries.github.io/sandpaper/reference/use_python.html</loc>
   </url>
   <url>
     <loc>https://carpentries.github.io/sandpaper/reference/validate_lesson.html</loc>
