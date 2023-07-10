@@ -4,14 +4,10 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
 
-[![R
-Universe](https://carpentries.r-universe.dev/badges/sandpaper)](https://carpentries.r-universe.dev/ui#builds)
 [![Codecov test
-coverage](https://codecov.io/gh/LearnToDiscover/sandpaper/branch/l2d/graph/badge.svg)](https://codecov.io/gh/LearnToDiscover/sandpaper?branch=l2d)
+coverage](https://codecov.io/gh/carpentries/sandpaper/branch/main/graph/badge.svg)](https://codecov.io/gh/carpentries/sandpaper?branch=main)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-[![CRAN
-status](https://www.r-pkg.org/badges/version/sandpaper)](https://CRAN.R-project.org/package=sandpaper)
 [![R-CMD-check](https://github.com/LearnToDiscover/sandpaper/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/LearnToDiscover/sandpaper/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -26,6 +22,17 @@ functionality in this package is inspired by [Jenny
 Bryan’s](https://jennybryan.org/) work with the
 [{usethis}](https://usethis.r-lib.org/) package.
 
+This fork contains a modified version of {sandpaper} specifically
+created for the [Learn to Discover](https://github.com/LearnToDiscover)
+project. The main changes are:
+
+- Use L2D styling and logo for the lesson websites
+- Add Jupyter notebooks for each episode
+- Add PDF output for the entire lesson
+  ([\#27](https://github.com/LearnToDiscover/sandpaper/pull/27))
+- Add support for setting up Python in the package cache
+  ([\#15](https://github.com/LearnToDiscover/sandpaper/pull/15))
+
 ## Documentation
 
 **Want to know how this works in a lesson format? Head over to
@@ -38,16 +45,12 @@ this package documentation site at
 
 ## Installation
 
-{sandpaper} is not currently on CRAN, but it can be installed from our
-[Carpentries Universe](https://carpentries.r-universe.dev/ui#builds)
-(updated every hour) with the following commands:
+To download the **L2D** version of *{sandpaper}*, use the following
+command:
 
 ``` r
-options(repos = c(
-  carpentries = "https://carpentries.r-universe.dev/", 
-  CRAN = "https://cran.rstudio.com/"
-))
-install.packages("sandpaper", dep = TRUE)
+# install.packages("devtools")
+devtools::install_github("LearnToDiscover/sandpaper", dependencies = TRUE)
 ```
 
 Note that this will also install development versions of the following
@@ -64,31 +67,33 @@ packages:
 This package is designed to make the life of the lesson contributors and
 maintainers easier by separating the tools needed to build the site from
 the user-defined content of the site itself. It will no longer rely on
-Jekyll or any of the other [&gt;450 static site
+Jekyll or any of the other [\>450 static site
 generators](https://staticsitegenerators.net), but instead rely on R,
 RStudio, and [{pkgdown}](https://github.com/r-lib/pkgdown#readme) to
 generate a site with the following features:
 
--   [x] optional offline use
--   [x] filename-agnostic episode arrangements
--   [x] clear definitions of package versions needed to build the lesson
--   [ ] lesson versioning (e.g. I can navigate to
-    <https://swcarpentry.github.io/python-novice-gapminder> for the
-    current version and
-    <https://swcarpentry.github.io/python-novice-gapminder/2020-11> for
-    the release in 2020-11)
--   [x] seamless updates to the Carpentries’ style
--   [x] caching of rendered content for rapid deployment
--   [ ] packaging of
-    [{learnr}](https://rstudio.github.io/learnr/index.html) materials
--   [x] validation of lesson structure
--   [x] git aware, but does not require contributors to have git
-    installed
+- [x] optional offline use
+- [x] filename-agnostic episode arrangements
+- [x] clear definitions of package versions needed to build the lesson
+- [ ] lesson versioning (e.g. I can navigate to
+  <https://swcarpentry.github.io/python-novice-gapminder> for the
+  current version and
+  <https://swcarpentry.github.io/python-novice-gapminder/2020-11> for
+  the release in 2020-11)
+- [x] seamless updates to the Carpentries’ style
+- [x] caching of rendered content for rapid deployment
+- [ ] packaging of
+  [{learnr}](https://rstudio.github.io/learnr/index.html) materials
+- [x] validation of lesson structure
+- [x] git aware, but does not require contributors to have git installed
 
 ### Rendering locally
 
 <figure>
-<img src="vignettes/articles/img/local-flow.dot.svg" alt="diagram of three folders. The first folder, &quot;episodes/&quot;, labelled as RMarkdown, has an arrow (labelled as hash episodes) pointing to &quot;site/built/&quot;, labelled as Markdown. The Markdown folder has an arrow (labelled as &quot;apply template&quot;) pointing to &quot;site/docs/&quot;, labelled as &quot;HTML&quot;. The first folder is labelled in pale yellow, indicating that it is the only one tracked by git." alt="The local two-step model of deployment into local folders" /><figcaption aria-hidden="true">The local two-step model of deployment into local folders</figcaption>
+<img src="vignettes/articles/img/local-flow.dot.svg"
+alt="diagram of three folders. The first folder, &quot;episodes/&quot;, labelled as RMarkdown, has an arrow (labelled as hash episodes) pointing to &quot;site/built/&quot;, labelled as Markdown. The Markdown folder has an arrow (labelled as &quot;apply template&quot;) pointing to &quot;site/docs/&quot;, labelled as &quot;HTML&quot;. The first folder is labelled in pale yellow, indicating that it is the only one tracked by git." />
+<figcaption>The local two-step model of deployment into local
+folders</figcaption>
 </figure>
 
 In a repository generated via {sandpaper}, only the source is committed
@@ -114,111 +119,111 @@ quickly.
 ### Rendering on continuous integration
 
 <figure>
-<img src="vignettes/articles/img/branch-flow.svg" alt="Diagrammatic representation of the GitHub deployment cycle showing four branches, gh-pages, md-outputs, main, and my-edit. The my-edit branch is a direct descendent of the main branch, while the gh-pages and md-outputs branches are orphans. Each commit of the main branch has a process represented by a dashed arrow that builds a commit of the subsequent orphan branches" alt="Two-step deployment model on continuous integration" /><figcaption aria-hidden="true">Two-step deployment model on continuous integration</figcaption>
+<img src="vignettes/articles/img/branch-flow.svg"
+alt="Diagrammatic representation of the GitHub deployment cycle showing four branches, gh-pages, md-outputs, main, and my-edit. The my-edit branch is a direct descendent of the main branch, while the gh-pages and md-outputs branches are orphans. Each commit of the main branch has a process represented by a dashed arrow that builds a commit of the subsequent orphan branches" />
+<figcaption>Two-step deployment model on continuous
+integration</figcaption>
 </figure>
 
 Continuous integration will act as the single source-of-truth for how
 the outputs of the lessons are rendered. For this, we want the resulting
 website to be:
 
--   CI agnostic (but currently set up with GitHub)
--   easy to set up
--   auditable (e.g. I can see changes between the content of two
-    commits)
--   versionable (e.g. I can instruct learners to go to `<WEBSITE>/1.1`.
-    This is inspired from the python documentation style)
+- CI agnostic (but currently set up with GitHub)
+- easy to set up
+- auditable (e.g. I can see changes between the content of two commits)
+- versionable (e.g. I can instruct learners to go to `<WEBSITE>/1.1`.
+  This is inspired from the python documentation style)
 
 To acheive this, there will be two branches created: `md-outputs` and
-`gh-pages` that will inerit like so main -&gt; `md-outputs` -&gt;
+`gh-pages` that will inerit like so main -\> `md-outputs` -\>
 `gh-pages`. Because the build time from main to `md-outputs` can be time
 intensive, this will default to updating only files that were changed.
 
--   `md-outputs`: this branch will contain the files and artifacts
-    generated from rmarkdown in the vignettes directory of a thin
-    package skeleton.
--   `gh-pages`: this branch is generated via `md-outputs` and bundles
-    the html, css, and js for the website. This will contain a single
-    `index.html` file with several subfolders with different versions of
-    the site. The `index.html` file will redirect to the `current/`
-    directory, which contains the up-to-date site.
+- `md-outputs`: this branch will contain the files and artifacts
+  generated from rmarkdown in the vignettes directory of a thin package
+  skeleton.
+- `gh-pages`: this branch is generated via `md-outputs` and bundles the
+  html, css, and js for the website. This will contain a single
+  `index.html` file with several subfolders with different versions of
+  the site. The `index.html` file will redirect to the `current/`
+  directory, which contains the up-to-date site.
 
 #### Scheduled builds
 
--   `gh-pages` website: Because we are designing the lessons to have
-    content separated from the styling, we will set up the CI to
-    generate the webpage from the pre-built sources on a weekly basis,
-    which will check if there has been an update to the styles (which I
-    have in the
-    [{varnish}](https://github.com/carpentries/varnish#readme) package)
-    and then rebuild the site without rebuilding the content.
--   `md-outputs` branch: This will be rerun every month from scratch
-    with the most recent version of R and R packages. If there is a
-    change, a pull request can be generated to update the `renv.lock`
-    file with a link to the changed markdown files in this branch.
+- `gh-pages` website: Because we are designing the lessons to have
+  content separated from the styling, we will set up the CI to generate
+  the webpage from the pre-built sources on a weekly basis, which will
+  check if there has been an update to the styles (which I have in the
+  [{varnish}](https://github.com/carpentries/varnish#readme) package)
+  and then rebuild the site without rebuilding the content.
+- `md-outputs` branch: This will be rerun every month from scratch with
+  the most recent version of R and R packages. If there is a change, a
+  pull request can be generated to update the `renv.lock` file with a
+  link to the changed markdown files in this branch.
 
 ### Function syntax
 
 The functions in {sandpaper} have the following prefixes:
 
--   `create_` will create/amend files or folders in your workspace
--   `update_` will update build resources in the lesson
--   `build_` will build files from your source
--   `check_` validates either the elements of the lesson and/or episodes
--   `fetch_` will download files or resources from the internet
--   `reset_` removes files or information
--   `get_` will retrieve information from your source files as an R
-    object
--   `set_` will update information in files.
--   `ci_` interacts with continous integration to build the website
+- `create_` will create/amend files or folders in your workspace
+- `update_` will update build resources in the lesson
+- `build_` will build files from your source
+- `validate_` will check the validity of either the elements of the
+  lesson and/or episodes
+- `fetch_` will download files or resources from the internet
+- `reset_` removes files or information
+- `get_` will retrieve information from your source files as an R object
+- `set_` will update information in files.
+- `ci_` interacts with continous integration to build the website
 
 Here is a working list of user-facing functions:
 
 **Lesson and Episode Creation**
 
--   `create_lesson()` creates a lesson from scratch
--   `create_episode()` creates a new episode with the correct number
-    prefix
--   `create_dataset()` creates a csv or text data set from an R object
--   `set_episodes()` arranges the episodes in a user-specified order
+- `create_lesson()` creates a lesson from scratch
+- `create_episode()` creates a new episode with the correct number
+  prefix
+- `create_dataset()` creates a csv or text data set from an R object
+- `set_episodes()` arranges the episodes in a user-specified order
 
 Accessors
 
--   `get_config()` reads the contents of `config.yaml` as a list
--   `get_drafts()` reports files that are not listed in `config.yaml`
--   `get_episodes()` returns the episode filenames as a vector
--   `get_syllabus()` returns the syllabus with timings, titles, and
-    questions
+- `get_config()` reads the contents of `config.yaml` as a list
+- `get_drafts()` reports files that are not listed in `config.yaml`
+- `get_episodes()` returns the episode filenames as a vector
+- `get_syllabus()` returns the syllabus with timings, titles, and
+  questions
 
 **Website Creation and Validation**
 
--   `check_lesson()` checks and validates the source files and lesson
-    structure
--   `build_episode_md()` renders an individual file to markdown
-    (internal use)
--   `build_episode_html()` renders a built markdown file to html
-    (internal use)
--   `build_lesson()` builds the lesson into a static website
--   `build_portable_lesson()` builds the lesson into a portable static
-    website
--   `fetch_lesson()` fetches the static website from the lesson
-    repository
+- `validate_lesson()` checks and validates the source files and lesson
+  structure
+- `build_episode_md()` renders an individual file to markdown (internal
+  use)
+- `build_episode_html()` renders a built markdown file to html (internal
+  use)
+- `build_lesson()` builds the lesson into a static website
+- `build_portable_lesson()` builds the lesson into a portable static
+  website
+- `fetch_lesson()` fetches the static website from the lesson repository
 
 **Continuous Integration Utilities**
 
--   `ci_deploy()` builds and deploys the lesson on CI from the source
-    files
--   `ci_build_markdown()` builds the markdown files on CI from the
-    source and deploys them to the markdown branch.
--   `ci_build_site()` deploys the lesson on CI from pre-rendered
-    markdown files
--   `ci_release()` builds and deploys the lesson on CI from the source
-    files and adds a release tag
--   `update_github_workflows()` updates GitHub workflows
+- `ci_deploy()` builds and deploys the lesson on CI from the source
+  files
+- `ci_build_markdown()` builds the markdown files on CI from the source
+  and deploys them to the markdown branch.
+- `ci_build_site()` deploys the lesson on CI from pre-rendered markdown
+  files
+- `ci_release()` builds and deploys the lesson on CI from the source
+  files and adds a release tag
+- `update_github_workflows()` updates GitHub workflows
 
 Cleanup
 
--   `reset_episodes()` removes the schedule from the config.yaml file
--   `reset_site()` clears the website and cache
+- `reset_episodes()` removes the schedule from the config.yaml file
+- `reset_site()` clears the website and cache
 
 ## Usage
 
@@ -250,7 +255,7 @@ with the following structure:
     |-- episodes/                # - PUT YOUR MARKDOWN FILES IN THIS FOLDER
     |   |-- data/                # -   Data for your lesson goes here
     |   |-- figures/             # -   All static figures and diagrams are here
-    |   |-- files/               # -   Additional files (e.g. handouts) 
+    |   |-- files/               # -   Additional files (e.g. handouts)
     |   `-- 00-introducition.Rmd # -   Lessons start with a two-digit number
     |-- instructors/             # - Information for Instructors
     |-- learners/                # - Information for Learners
@@ -304,7 +309,7 @@ computer’s Desktop.
 
 ``` r
 usethis::create_from_github(
-  repo = "swcarpentry/r-novice-gapminder", 
+  repo = "swcarpentry/r-novice-gapminder",
   destdir = "~/Desktop/r-novice-gampinder",
   fork = TRUE
 )
@@ -341,7 +346,7 @@ The typical workflow will look like this:
 2.  in the R console run the following
 
 ``` r
-sandpaper::check_lesson() # validates the structure of the input files
+sandpaper::validate_lesson() # validates the structure of the input files
 sandpaper::build_lesson() # builds and validates lesson
 ```
 
