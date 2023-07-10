@@ -122,6 +122,7 @@ articles:
  - title: "How to..."
    navbar: ~
    contents:
+    - instructor-guide
     - building-with-renv
     - automated-pull-requests
  - title: "Developer Guides"
