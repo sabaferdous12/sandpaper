@@ -38,6 +38,9 @@ project. The main changes are:
 **Want to know how this works in a lesson format? Head over to
 <https://carpentries.github.io/sandpaper-docs/>.**
 
+For a quick overview, see
+<https:://LearnToDiscover.github.io/sandpaper/articles/instructor-guide.html>
+
 If, instead, you already know how a lesson is built and are interested
 in understanding how the functions in {sandpaper} work, you can visit
 this package documentation site at
