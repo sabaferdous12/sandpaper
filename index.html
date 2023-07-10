@@ -52,6 +52,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="articles/instructor-guide.html">Instructor guide to using {sandpaper}</a>
     <a class="dropdown-item" href="articles/building-with-renv.html">Building Lessons With A Package Cache</a>
     <a class="dropdown-item" href="articles/automated-pull-requests.html">Working with Automated Pull Requests</a>
     <div class="dropdown-divider"></div>
@@ -89,22 +90,27 @@
 <!-- badges: start -->
 
 <p>The {sandpaper} package was created by <a href="https://carpentries.org" class="external-link">The Carpentries</a> to re-imagine our method of creating lesson websites for our workshops. This package will take a series of <a href="https://www.markdownguide.org/getting-started/" class="external-link">Markdown</a> or <a href="https://rmarkdown.rstudio.com/" class="external-link">RMarkdown</a> files and generate a static website with the features and styling of The Carpentries lessons including customized layouts and callout blocks. Much of the functionality in this package is inspired by <a href="https://jennybryan.org/" class="external-link">Jenny Bryan’s</a> work with the <a href="https://usethis.r-lib.org/" class="external-link">{usethis}</a> package.</p>
+<p>This fork contains a modified version of {sandpaper} specifically created for the <a href="https://github.com/LearnToDiscover" class="external-link">Learn to Discover</a> project. The main changes are:</p>
+<ul>
+<li>Use L2D styling and logo for the lesson websites</li>
+<li>Add Jupyter notebooks for each episode</li>
+<li>Add PDF output for the entire lesson (<a href="https://github.com/LearnToDiscover/sandpaper/pull/27" class="external-link">#27</a>)</li>
+<li>Add support for setting up Python in the package cache (<a href="https://github.com/LearnToDiscover/sandpaper/pull/15" class="external-link">#15</a>)</li>
+</ul>
 <div class="section level2">
 <h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
 </h2>
 <p><strong>Want to know how this works in a lesson format? Head over to <a href="https://carpentries.github.io/sandpaper-docs/" class="uri">https://carpentries.github.io/sandpaper-docs/</a>.</strong></p>
+<p>For a quick overview, see <a href="https:://LearnToDiscover.github.io/sandpaper/articles/instructor-guide.html" class="uri">https:://LearnToDiscover.github.io/sandpaper/articles/instructor-guide.html</a></p>
 <p>If, instead, you already know how a lesson is built and are interested in understanding how the functions in {sandpaper} work, you can visit this package documentation site at <a href="https://carpentries.github.io/sandpaper/" class="uri">https://carpentries.github.io/sandpaper/</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>{sandpaper} is not currently on CRAN, but it can be installed from our <a href="https://carpentries.r-universe.dev/ui#builds" class="external-link">Carpentries Universe</a> (updated every hour) with the following commands:</p>
+<p>To download the <strong>L2D</strong> version of <em>{sandpaper}</em>, use the following command:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  carpentries <span class="op">=</span> <span class="st">"https://carpentries.r-universe.dev/"</span>, </span>
-<span>  CRAN <span class="op">=</span> <span class="st">"https://cran.rstudio.com/"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"sandpaper"</span>, dep <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"LearnToDiscover/sandpaper"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Note that this will also install development versions of the following packages:</p>
 <table class="table">
 <colgroup>
@@ -158,7 +164,7 @@
 <div class="section level3">
 <h3 id="rendering-locally">Rendering locally<a class="anchor" aria-label="anchor" href="#rendering-locally"></a>
 </h3>
-<figure><img src="articles/articles/img/local-flow.dot.svg" alt='diagram of three folders. The first folder, "episodes/", labelled as RMarkdown, has an arrow (labelled as hash episodes) pointing to "site/built/", labelled as Markdown. The Markdown folder has an arrow (labelled as "apply template") pointing to "site/docs/", labelled as "HTML". The first folder is labelled in pale yellow, indicating that it is the only one tracked by git.'><figcaption aria-hidden="true">
+<figure><img src="articles/articles/img/local-flow.dot.svg" alt='diagram of three folders. The first folder, "episodes/", labelled as RMarkdown, has an arrow (labelled as hash episodes) pointing to "site/built/", labelled as Markdown. The Markdown folder has an arrow (labelled as "apply template") pointing to "site/docs/", labelled as "HTML". The first folder is labelled in pale yellow, indicating that it is the only one tracked by git.'><figcaption>
 The local two-step model of deployment into local folders
 </figcaption></figure><p>In a repository generated via {sandpaper}, only the source is committed to avoid issues surrounding out-of-date artefacts and directory structure confusion.</p>
 <p>The website is generated in two steps:</p>
@@ -171,7 +177,7 @@ The local two-step model of deployment into local folders
 <div class="section level3">
 <h3 id="rendering-on-continuous-integration">Rendering on continuous integration<a class="anchor" aria-label="anchor" href="#rendering-on-continuous-integration"></a>
 </h3>
-<figure><img src="articles/articles/img/branch-flow.svg" alt="Diagrammatic representation of the GitHub deployment cycle showing four branches, gh-pages, md-outputs, main, and my-edit. The my-edit branch is a direct descendent of the main branch, while the gh-pages and md-outputs branches are orphans. Each commit of the main branch has a process represented by a dashed arrow that builds a commit of the subsequent orphan branches"><figcaption aria-hidden="true">
+<figure><img src="articles/articles/img/branch-flow.svg" alt="Diagrammatic representation of the GitHub deployment cycle showing four branches, gh-pages, md-outputs, main, and my-edit. The my-edit branch is a direct descendent of the main branch, while the gh-pages and md-outputs branches are orphans. Each commit of the main branch has a process represented by a dashed arrow that builds a commit of the subsequent orphan branches"><figcaption>
 Two-step deployment model on continuous integration
 </figcaption></figure><p>Continuous integration will act as the single source-of-truth for how the outputs of the lessons are rendered. For this, we want the resulting website to be:</p>
 <ul>
@@ -210,7 +216,7 @@ Two-step deployment model on continuous integration
 <li>
 <code>build_</code> will build files from your source</li>
 <li>
-<code>check_</code> validates either the elements of the lesson and/or episodes</li>
+<code>validate_</code> will check the validity of either the elements of the lesson and/or episodes</li>
 <li>
 <code>fetch_</code> will download files or resources from the internet</li>
 <li>
@@ -249,7 +255,7 @@ Two-step deployment model on continuous integration
 <p><strong>Website Creation and Validation</strong></p>
 <ul>
 <li>
-<code><a href="reference/check_lesson.html">check_lesson()</a></code> checks and validates the source files and lesson structure</li>
+<code><a href="reference/validate_lesson.html">validate_lesson()</a></code> checks and validates the source files and lesson structure</li>
 <li>
 <code><a href="reference/build_episode_md.html">build_episode_md()</a></code> renders an individual file to markdown (internal use)</li>
 <li>
@@ -310,7 +316,7 @@ Two-step deployment model on continuous integration
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="sc">|--</span> episodes<span class="sc">/</span>                <span class="co"># - PUT YOUR MARKDOWN FILES IN THIS FOLDER</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="er">|</span>   <span class="er">|</span><span class="sc">--</span> data<span class="sc">/</span>                <span class="co"># -   Data for your lesson goes here</span></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="er">|</span>   <span class="er">|</span><span class="sc">--</span> figures<span class="sc">/</span>             <span class="co"># -   All static figures and diagrams are here</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="er">|</span>   <span class="er">|</span><span class="sc">--</span> files<span class="sc">/</span>               <span class="co"># -   Additional files (e.g. handouts) </span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="er">|</span>   <span class="er">|</span><span class="sc">--</span> files<span class="sc">/</span>               <span class="co"># -   Additional files (e.g. handouts)</span></span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="er">|</span>   <span class="st">`</span><span class="at">-- 00-introducition.Rmd # -   Lessons start with a two-digit number</span></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="at">|-- instructors/             # - Information for Instructors</span></span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="at">|-- learners/                # - Information for Learners</span></span>
@@ -342,7 +348,7 @@ Two-step deployment model on continuous integration
 <p>To contribute to a lesson, you can either fork the lesson to your own repository and clone it to your computer manually from GitHub, or you can use the {usethis} package to automate it. For example, This is how you can create a copy of <a href="http://swcarpentry.github.io/r-novice-inflammation/" class="external-link"><strong>Programming With R</strong></a> to your computer’s Desktop.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_from_github.html" class="external-link">create_from_github</a></span><span class="op">(</span></span>
-<span>  repo <span class="op">=</span> <span class="st">"swcarpentry/r-novice-gapminder"</span>, </span>
+<span>  repo <span class="op">=</span> <span class="st">"swcarpentry/r-novice-gapminder"</span>,</span>
 <span>  destdir <span class="op">=</span> <span class="st">"~/Desktop/r-novice-gampinder"</span>,</span>
 <span>  fork <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -363,7 +369,7 @@ Two-step deployment model on continuous integration
 <li>in the R console run the following</li>
 </ol>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">sandpaper</span><span class="fu">::</span><span class="fu"><a href="reference/check_lesson.html">check_lesson</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># validates the structure of the input files</span></span>
+<code class="sourceCode R"><span><span class="fu">sandpaper</span><span class="fu">::</span><span class="fu"><a href="reference/validate_lesson.html">validate_lesson</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># validates the structure of the input files</span></span>
 <span><span class="fu">sandpaper</span><span class="fu">::</span><span class="fu"><a href="reference/build_lesson.html">build_lesson</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># builds and validates lesson</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -433,10 +439,8 @@ Two-step deployment model on continuous integration
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://carpentries.r-universe.dev/ui#builds" class="external-link"><img src="https://carpentries.r-universe.dev/badges/sandpaper" alt="R Universe"></a></li>
-<li><a href="https://codecov.io/gh/LearnToDiscover/sandpaper?branch=l2d" class="external-link"><img src="https://codecov.io/gh/LearnToDiscover/sandpaper/branch/l2d/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://codecov.io/gh/carpentries/sandpaper?branch=main" class="external-link"><img src="https://codecov.io/gh/carpentries/sandpaper/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://www.tidyverse.org/lifecycle/#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
-<li><a href="https://CRAN.R-project.org/package=sandpaper" class="external-link"><img src="https://www.r-pkg.org/badges/version/sandpaper" alt="CRAN status"></a></li>
 <li><a href="https://github.com/LearnToDiscover/sandpaper/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/LearnToDiscover/sandpaper/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
