@@ -1,0 +1,173 @@
+---
+title: "Instructor guide to using {sandpaper}"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Instructor guide to using {sandpaper}}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(sandpaper)
+```
+
+## Introduction
+
+This guide provides an overview of how to use the {sandpaper} package to create and maintain
+lessons, mainly targeted at instructors.
+**For a complete guide to using {sandpaper}, head over to
+<https://carpentries.github.io/sandpaper-docs/>.**
+
+## Creating a new lesson
+
+### Setting up the directory sturcture
+
+To create a lesson with {sandpaper}, use the `create_lesson()` function:
+
+```r
+sandpaper::create_lesson("~/Desktop/r-intermediate-penguins")
+```
+
+This will create folder on your desktop called `r-intermediate-penguins` with
+the following structure:
+
+```
+|-- .gitignore               # - Ignore everything in the site/ folder
+|-- .github/                 # - Scripts used for continuous integration
+|   `-- workflows/           #
+|       |-- deploy-site.yaml # -   Build the source files on github pages
+|       |-- build-md.yaml    # -   Build the markdown files on github pages
+|       `-- cron.yaml        # -   reset package cache and test
+|-- episodes/                # - PUT YOUR MARKDOWN FILES IN THIS FOLDER
+|   |-- data/                # -   Data for your lesson goes here
+|   |-- figures/             # -   All static figures and diagrams are here
+|   |-- files/               # -   Additional files (e.g. handouts)
+|   `-- introduction.Rmd     # -   Lessons start with a two-digit number
+|-- instructors/             # - Information for Instructors
+|-- learners/                # - Information for Learners
+|   `-- setup.md             # -   setup instructions (REQUIRED)
+|-- profiles/                # - Learner and/or Instructor Profiles
+|-- site/                    # - This folder is where the rendered markdown files and static site will live
+|   `-- README.md            # -   placeholder
+|-- config.yaml              # - Use this to configure commonly used variables
+|-- CONTRIBUTING.md          # - Carpentries Rules for Contributions (REQUIRED)
+|-- CODE_OF_CONDUCT.md       # - Carpentries Code of Conduct (REQUIRED)
+|-- LICENSE.md               # - Carpentries Licenses (REQUIRED)
+`-- README.md                # - Introduces folks how to use this lesson and where they can find more information.
+```
+
+Once you have your site set up, you can add your RMarkdown files in the episodes
+folder. By default, they will be built in alphabetical order, but you can use
+the `set_episodes()` command to build the schedule in your `config.yaml` file:
+
+```r
+s <- sandpaper::get_episodes()
+sandpaper::set_episodes(order = s, write = TRUE)
+```
+
+### Adding new episodes
+
+You can add new episodes, using
+
+```r
+sandpaper::create_episode("plotting")
+```
+
+This will add a new `episodes/plotting.Rmd` file to your lesson with some example content. You can
+then edit this file to add your own content.
+
+### Episode structure
+
+See [Introduction to The Carpentries Workbench: Episode Structure](https://carpentries.github.io/sandpaper-docs/episodes.html).
+
+### Previewing your new lesson
+
+After you created your lesson, you will want to preview it locally. First, make sure that you are in
+your newly-created repository and then use the following command:
+
+```r
+sandpaper::serve()
+```
+
+This function will open a preview window in RStudio or your browser and will **update
+automatically** as you work on the lesson.
+
+If you are using RStudio, you can use the following keyboard shortcuts:
+
+- Render and preview the whole lesson: `ctrl/cmd + shift + B`
+- Render and preview an episode: `ctrl/cmd + shift + K`
+
+### Pushing to GitHub
+
+Once you are happy with your lesson, you can push it to GitHub to run the automated lesson building
+workflows and to publish your lesson on GitHub pages. You can set up a GitHub repository and activate GitHub pages using the [{usethis}](https://usethis.r-lib.org/) package:
+
+```r
+usethis::use_github(organisation = "<ORG-NAME>", private = FALSE)
+usethis::use_github_pages()
+```
+
+Replace `"<ORG-NAME>"` with the name of your GitHub organisation or set it to `NULL` to use your
+personal account. You can also make the repository private by setting `private = TRUE`. This will
+create a new GitHub repository at `https:://github.com/<ORG-NAME>/r-intermediate-penguins` and will
+set up GitHub pages at `https://<ORG-NAME>.github.io/r-intermediate-penguins`. It will take a couple
+of minutes for the GitHub Action workflows to validate, build and deploy the lesson. You can track
+the progress at `https:://github.com/<ORG-NAME>/r-intermediate-penguins/actions`.
+
+## Modifying an existing lesson
+
+To work on an existing lesson already hosted on GitHub,
+[fork and clone the repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo) to
+your computer using your method of choice. When working in R, you can do this easily with the [{usethis}](https://usethis.r-lib.org/) package:
+
+```r
+## Using an example repo from the Carpentries
+usethis::create_from_github("carpentries/sandpaper-docs", "~/Documents/Lessons/")
+```
+
+After editing the content and previewing with `sandpaper::serve()`, you should first **save and
+commit your changes** with `git`. When working in RStudio, you can do this in the Git tab in the top
+right corner of the screen:
+
+1. Click the "Git" tab in the top right corner of the screen
+2. Check the "Staged" box for the file(s) you want to commit
+3. Type a concise but descriptive commit message in the "Commit message" box
+4. Click "commit"
+
+After committing your changes, you can push them to GitHub using the "Push" button in the Git tab.
+Note that it's often
+[a good idea to to make several, small commits](https://happygitwithr.com/repeated-amend.html#rock-climbing-analogy)
+rather than one large commit. You also don't need to push after each commit.
+
+For a comprehensive guide on using Git and GitHub with R, see [Happy Git and GitHub for the useR](https://happygitwithr.com/).
+
+## Managing and updating the package cache
+
+>*Note: this is only relevant for lessons with __generated content__. I.e. lessons based on RMarkdown episodes*
+
+Full guide: [Building Lessons With A Package Cache • sandpaper](https://carpentries.github.io/sandpaper/articles/building-with-renv.html).
+
+{sandpaper} can set up a package cache for your lesson to create a reliable setup that ensures the
+same package versions are used to build your lesson, both locally and on the GitHub Actions runners.
+
+To make use of the package cache, you need to *explicitly* give {sandpaper} permission to create and use a cache with:
+
+```r
+sandpaper::use_package_cache()
+```
+
+From this point on, {sandpaper} will detect any **R packages** used throughout the lesson with
+`library(package)` or `package::some_function()` and add them to the cache.
+
+>*Note: this currently does not work for __Python packages__, which still need to be manually installed for the lesson with `sandpaper::py_install()`.*
+
+Now every time you build the lesson (either locally or on GitHub Actions), {sandpaper} will check
+that all the packages used in the lesson are available in the cache. If a package is missing,
+{sandpaper} will install it and add it to the cache.
