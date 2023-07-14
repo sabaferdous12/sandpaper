@@ -27,7 +27,7 @@ lessons, mainly targeted at instructors.
 
 ## Creating a new lesson
 
-### Setting up the directory sturcture
+### Setting up the directory structure
 
 To create a lesson with {sandpaper}, use the `create_lesson()` function:
 

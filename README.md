@@ -39,7 +39,7 @@ project. The main changes are:
 <https://carpentries.github.io/sandpaper-docs/>.**
 
 For a quick overview, see
-<https:://LearnToDiscover.github.io/sandpaper/articles/instructor-guide.html>
+<https://LearnToDiscover.github.io/sandpaper/articles/instructor-guide.html>
 
 If, instead, you already know how a lesson is built and are interested
 in understanding how the functions in {sandpaper} work, you can visit

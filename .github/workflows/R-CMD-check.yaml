@@ -6,15 +6,14 @@
 # usethis::use_github_action("check-standard") will install it.
 on:
   push:
-    schedule:
-      - cron: '0 0 * * 2'
     branches:
       - main
       - l2d
   pull_request:
-    branches:
-      - main
-      - l2d
+    branches: [main, master, l2d]
+  schedule:
+    - cron: '0 0 * * 2'
+  workflow_dispatch:
 
 name: R-CMD-check
 
@@ -108,6 +107,7 @@ jobs:
       - name: "Prime {renv} Cache"
         if: runner.os != 'Windows'
         run: |
+          renv::settings$snapshot.type("explicit")
           renv::init()
           system('sudo rm -rf renv.lock renv .Rprofile')
           system('git clean -fd -e .github')
