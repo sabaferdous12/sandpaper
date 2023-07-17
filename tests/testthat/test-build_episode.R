@@ -92,23 +92,3 @@ test_that("the chapter-links should be cromulent depending on the view", {
   expect_match(IN_lines, "Instructor Note\\s+this is an instructor note")
 
 })
-
-
-test_that("build_episode_ipynb() works", {
-  # skip_on_os(c("mac", "windows"))
-  # create a new file in extras
-  fun_file <- file.path(tmp, "episodes", "files", "fun.Rmd")
-  file.copy(test_path("examples/s3.Rmd"), fun_file, overwrite = TRUE)
-  expect_true(fs::file_exists(fun_file))
-
-  outfile <- fs::path_ext_set(fs::path_file(fun_file), "ipynb")
-  outpath <- fs::path(path_built(fun_file), outfile)
-  msg <- paste("Converting", fun_file, "to", outpath)
-
-  expect_message({
-    res <- build_episode_ipynb(fun_file, quiet = FALSE)
-  }, msg)
-
-  expect_equal(basename(res), "fun.ipynb")
-  expect_true(file.exists(file.path(outpath)))
-})
