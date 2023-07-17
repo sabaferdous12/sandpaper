@@ -29,6 +29,7 @@ Description: We provide tools to build a Carpentries-themed lesson repository
   those designed to be used in a continuous integration context so that all the
   lesson author needs to focus on is writing the content of the actual lesson.
 License: MIT + file LICENSE
+Depends: R (>= 4.0)
 Imports:
     pkgdown (>= 1.6.0),
     pegboard (>= 0.5.1),
