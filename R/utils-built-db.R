@@ -103,6 +103,8 @@ write_build_db <- function(md5, db) write.table(md5, db, row.names = FALSE)
 #'   FALSE)
 #' @param write if TRUE, the database will be updated, Defaults to FALSE,
 #' meaning that the database will remain the same.
+#' @param format the format of the built files. Either `"md"` (the default) for Markdown, or
+#'   `"ipynb"` for Jupyter notebooks.
 #' @return a list of the following elements
 #'   - *build* absolute paths of files to build
 #'   - *new* a new data frame with three columns:
@@ -115,7 +117,10 @@ write_build_db <- function(md5, db) write.table(md5, db, row.names = FALSE)
 #'     old database or if a single file was rebuilt.
 #' @keywords internal
 #' @seealso [get_resource_list()], [get_built_db()], [get_hash()]
-build_status <- function(sources, db = "site/built/md5sum.txt", rebuild = FALSE, write = FALSE) {
+build_status <- function(sources, db = "site/built/md5sum.txt", rebuild = FALSE, write = FALSE,
+                         format = c("md", "ipynb")) {
+  format <- match.arg(format)
+
   # Modified on 2021-03-10 from blogdown::filter_md5sum version 1.2
   # Original author: Yihui Xie
   # My additional commands use arrows.
@@ -139,7 +144,7 @@ build_status <- function(sources, db = "site/built/md5sum.txt", rebuild = FALSE,
   built <- fs::path(built_path, fs::path_file(sources))
   built <- ifelse(
     fs::path_ext(built) %in% c("Rmd", "rmd"),
-    fs::path_ext_set(built, "md"), built
+    fs::path_ext_set(built, format), built
   )
   date <- format(Sys.Date(), "%F")
   md5 = data.frame(

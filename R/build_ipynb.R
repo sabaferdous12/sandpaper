@@ -26,8 +26,8 @@ build_ipynb <- function(path = ".", rebuild = FALSE, quiet = FALSE) {
   episode_paths <- fs::path(path_episodes(path), episodes)
 
   ## Determine episodes to rebuild
-  db_path <- fs::path(outdir, "md5sum.txt")
-  db <- build_status(episode_paths, db_path, rebuild, write = FALSE)
+  db_path <- fs::path(outdir, "md5sum-ipynb.txt")
+  db <- build_status(episode_paths, db_path, rebuild, write = FALSE, format = "ipynb")
 
   update <- FALSE
   on.exit({if (update) write_build_db(db$new, db_path)}, add = TRUE)
