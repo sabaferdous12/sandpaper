@@ -4,7 +4,12 @@
 \alias{build_episode_ipynb}
 \title{Convert a single episode to a Jupyter notebook}
 \usage{
-build_episode_ipynb(path, outdir = path_built(path), quiet = TRUE)
+build_episode_ipynb(
+  path,
+  outdir = path_built(path),
+  profile = "lesson-requirements",
+  quiet = TRUE
+)
 }
 \arguments{
 \item{path}{path to the RMarkdown file.}
