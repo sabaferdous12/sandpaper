@@ -1,7 +1,9 @@
-test_that("build_episode_ipynb() works", {
-  # Set up test lesson
-  tmp <- local_lesson(ipynb = TRUE)
+skip_if_not(getRversion() >= "4.2")
 
+# setup test fixture
+tmp <- res <- restore_fixture()
+
+test_that("build_episode_ipynb() works", {
   fun_file <- fs::path(tmp, "episodes", "introduction.Rmd")
   skip_if_not(file.exists(fun_file), "episodes/introduction.Rmd not found")
 
