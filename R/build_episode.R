@@ -259,9 +259,24 @@ build_episode_md <- function(path, hash = NULL, outdir = path_built(path),
 #'
 #' @return the path to the output, invisibly
 #' @keywords internal
-build_episode_ipynb <- function(path, outdir = path_built(path), quiet = TRUE) {
+build_episode_ipynb <- function(path, outdir = path_built(path),
+                                profile = "lesson-requirements", quiet = TRUE) {
   outfile <- fs::path_ext_set(fs::path_file(path), "ipynb")
   outpath <- fs::path(outdir, outfile)
 
-  jupytextR::jupytext(path, output = outpath, quiet = quiet)
+  args <- list(input = path, output = outpath, quiet = quiet)
+  sho <- !(quiet || identical(Sys.getenv("TESTTHAT"), "true"))
+
+  callr::r(
+    func = function(input, output, quiet) {
+      jupytextR::jupytext(input = input, to = "ipynb", output = output, quiet = quiet)
+    },
+    args = args,
+    show = !quiet,
+    spinner = sho,
+    env = c(callr::rcmd_safe_env(),
+            "RENV_PROFILE" = profile,
+            "RENV_CONFIG_CACHE_SYMLINKS" = renv_cache_available())
+  )
+  invisible(outpath)
 }
