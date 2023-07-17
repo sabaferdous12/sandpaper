@@ -1,7 +1,10 @@
 skip_if_not(getRversion() >= "4.2")
 
 # setup test fixture
-tmp <- res <- restore_fixture()
+{
+  tmp <- res <- restore_fixture()
+  create_episode("second-episode", path = tmp)
+}
 
 test_that("build_episode_ipynb() works", {
   fun_file <- fs::path(tmp, "episodes", "introduction.Rmd")
@@ -15,4 +18,14 @@ test_that("build_episode_ipynb() works", {
 
   expect_equal(basename(res), "introduction.ipynb")
   expect_true(file.exists(file.path(outpath)))
+})
+
+test_that("ipynb rendering does not happen if content is not changed", {
+  skip_on_os("windows")
+
+  ## Build ipynb files a first time
+  build_ipynb(res, quiet = TRUE)
+
+  expect_message(out <- capture.output(build_ipynb(res)), "nothing to rebuild")
+  expect_length(out, 0)
 })
