@@ -5,7 +5,7 @@
 <!-- badges: start -->
 
 [![Codecov test
-coverage](https://codecov.io/gh/carpentries/sandpaper/branch/main/graph/badge.svg)](https://codecov.io/gh/carpentries/sandpaper?branch=main)
+coverage](https://codecov.io/gh/LearnToDiscover/sandpaper/branch/l2d/graph/badge.svg)](https://codecov.io/gh/LearnToDiscover/sandpaper?branch=l2d)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![R-CMD-check](https://github.com/LearnToDiscover/sandpaper/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/LearnToDiscover/sandpaper/actions/workflows/R-CMD-check.yaml)
