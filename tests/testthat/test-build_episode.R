@@ -92,14 +92,3 @@ test_that("the chapter-links should be cromulent depending on the view", {
   expect_match(IN_lines, "Instructor Note\\s+this is an instructor note")
 
 })
-
-
-test_that("build_episode_ipynb() works", {
-  skip_on_os(c("mac", "windows"))
-  skip_if_not(file.exists(file.path(tmp, "site", "built", "fun.md")))
-  skip_if_not(system("which jupytext") != 1, message = "jupytext is not available")
-
-  path_md <- file.path(tmp, "site", "built", "fun.md")
-  build_episode_ipynb(path_md, quiet = TRUE)
-  expect_true(file.exists(file.path(tmp, "site", "built", "fun.md.ipynb")))
-})

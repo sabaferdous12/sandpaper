@@ -73,7 +73,7 @@ jobs:
       - name: Prime {renv} Cache
         run: |
           renv::settings$snapshot.type("explicit")
-          renv::init()
+          renv::init(bioconductor = TRUE)
           system('rm -rf renv .Rprofile')
           system('git clean -fd -e .github')
           system('git restore .')

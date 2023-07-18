@@ -8,7 +8,8 @@ build_status(
   sources,
   db = "site/built/md5sum.txt",
   rebuild = FALSE,
-  write = FALSE
+  write = FALSE,
+  format = c("md", "ipynb")
 )
 }
 \arguments{
@@ -22,6 +23,9 @@ FALSE)}
 
 \item{write}{if TRUE, the database will be updated, Defaults to FALSE,
 meaning that the database will remain the same.}
+
+\item{format}{the format of the built files. Either \code{"md"} (the default) for Markdown, or
+\code{"ipynb"} for Jupyter notebooks.}
 }
 \value{
 a list of the following elements

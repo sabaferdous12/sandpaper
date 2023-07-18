@@ -255,7 +255,7 @@ callr_manage_deps <- function(path, repos, snapshot, lockfile_exists) {
   #nocov end
   if (needs_hydration) {
     #nocov start
-    if (packageVersion("renv") == "0.17.2") {
+    if (utils::packageVersion("renv") == "0.17.2") {
       # 2023-03-24 ---- renv cannot find the right packages
       # <https://github.com/rstudio/renv/issues/1177#issuecomment-1483295938>
       #

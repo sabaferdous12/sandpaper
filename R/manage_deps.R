@@ -119,7 +119,7 @@ update_cache <- function(path = ".", profile = "lesson-requirements", prompt = i
     if (isTRUE(updates)) {
       return(invisible())
     }
-    if (packageVersion("renv") < "0.17.1") {
+    if (utils::packageVersion("renv") < "0.17.1") {
       wanna_update <- "Do you want to update the following packages?"
       cli::cli_alert(wanna_update)
       ud <- utils::capture.output(print(updates))
