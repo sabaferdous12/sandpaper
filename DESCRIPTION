@@ -55,7 +55,6 @@ Imports:
     utils,
     tools,
     pagedown,
-    jupytextR (>= 0.1.0)
 Suggests:
     testthat (>= 3.0.0),
     covr,
@@ -68,7 +67,8 @@ Suggests:
     sessioninfo,
     mockr,
     varnish (>= 0.2.1),
-    reticulate
+    reticulate,
+    jupytextR (>= 0.1.0)
 Additional_repositories: https://carpentries.r-universe.dev/
 Remotes:
     ropensci/tinkr,
