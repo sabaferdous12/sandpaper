@@ -31,10 +31,21 @@ test_that("ipynb rendering does not happen if content is not changed", {
   expect_length(out, 0)
 })
 
+test_that("Resetting jupyter notebooks works", {
+  ## Build ipynb files
+  build_ipynb(res, quiet = TRUE)
+  ipynb <- get_ipynb_files(res)
+
+  expect_equal(out <- reset_ipynb(res), ipynb, ignore_attr = TRUE)
+  new_ipynb <- get_ipynb_files(res)
+  expect_equal(length(new_ipynb), 0)
+})
+
 test_that("ipynb rendering fails gracefully on R < 4.2", {
-  skip_if(getRversion() >= "4.2")
+  skip_if(getRversion() >= "4.2", message = "Test only valid for R < 4.2")
 
   fun_file <- fs::path(tmp, "episodes", "introduction.Rmd")
   skip_if_not(file.exists(fun_file), "episodes/introduction.Rmd not found")
   expect_error(build_episode_ipynb(fun_file))
 })
+
