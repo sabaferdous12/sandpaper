@@ -443,6 +443,8 @@ test_that("episodes with HTML in the title are rendered correctly", {
 })
 
 test_that("build_lesson also creates jupyter notebooks when required", {
+  skip_if_not(getRversion() >= "4.2")
+
   ## Re-create lesson with notebooks enabled
   tmp <- local_lesson(ipynb = TRUE)
   build_lesson(tmp, quiet = TRUE, preview = FALSE)
