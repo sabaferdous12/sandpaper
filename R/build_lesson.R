@@ -94,11 +94,6 @@ build_lesson <- function(path = ".", rebuild = FALSE, quiet = !interactive(), pr
   # changed in content will be rebuilt with {knitr}.
   built <- build_markdown(path = path, rebuild = rebuild, quiet = quiet, slug = slug)
 
-  cfg <- get_config(path)
-  if (cfg$ipynb) {
-    built_ipynb <- build_ipynb(path = path, rebuild = rebuild, quiet = quiet)
-  }
-
   # Building the HTML ----------------------------------------------------------
   #
   # This step uses the contents of `site/built` to build the website in
