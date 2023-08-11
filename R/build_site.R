@@ -48,6 +48,14 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
   # NOTE: future plans to reduce build times
   rebuild_template <- TRUE || !template_check$valid()
 
+  # Building jupyter notebooks, if required ------------------------------------
+
+  cfg <- get_config(path)
+  if (cfg$ipynb) {
+    describe_progress("Building jupyter notebooks", quiet = quiet)
+    built_ipynb <- build_ipynb(path = path, quiet = quiet)
+  }
+
   # Determining what to rebuild ------------------------------------------------
   describe_progress("Scanning episodes to rebuild", quiet = quiet)
   #
@@ -87,8 +95,6 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
     # restore the original functions on exit
     on.exit(eval(when_done), add = TRUE)
   }
-
-  cfg <- get_config(path)
 
   # ------------------------ end downlit shim ----------------------------
   for (i in files_to_render) {
