@@ -442,12 +442,13 @@ test_that("episodes with HTML in the title are rendered correctly", {
   )))
 })
 
+test_that("build_lesson also creates jupyter notebooks when required", {
+  skip_if_not(getRversion() >= "4.2")
 
-# test_that("build_lesson also creates jupyter notebooks when required", {
-#   ## Re-create lesson with notebooks enabled
-#   tmp <- local_lesson(ipynb = TRUE)
-#   build_lesson(tmp, quiet = TRUE, preview = FALSE)
+  ## Re-create lesson with notebooks enabled
+  tmp <- local_lesson(ipynb = TRUE)
+  build_lesson(tmp, quiet = TRUE, preview = FALSE)
 
-#   built_path <- path_built(tmp)
-#   expect_true(fs::file_exists(fs::path(built_path, "introduction.ipynb")))
-# })
+  built_path <- path_built(tmp)
+  expect_true(fs::file_exists(fs::path(built_path, "introduction.ipynb")))
+})

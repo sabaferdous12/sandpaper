@@ -261,6 +261,12 @@ build_episode_md <- function(path, hash = NULL, outdir = path_built(path),
 #' @keywords internal
 build_episode_ipynb <- function(path, outdir = path_built(path),
                                 profile = "lesson-requirements", quiet = TRUE) {
+
+  rlang::check_installed("jupytextR",
+    reason = "to convert episodes to Jupyter notebooks",
+    action = function(pkg, ...) BiocManager::install(glue::glue("milanmlft/{pkg}"))
+  )
+
   outfile <- fs::path_ext_set(fs::path_file(path), "ipynb")
   outpath <- fs::path(outdir, outfile)
 
