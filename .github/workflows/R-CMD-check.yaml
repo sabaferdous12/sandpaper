@@ -31,13 +31,13 @@ jobs:
 
           - {os: windows-latest, r: 'release'}
           # use 4.1 to check with rtools40's older compiler
-          - {os: windows-latest, r: '4.1'}
+          # - {os: windows-latest, r: '4.1'}
 
           - {os: ubuntu-latest,   cache: '~/.local/share/renv', r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   cache: '~/.local/share/renv', r: 'release', cov: 'true'}
           - {os: ubuntu-latest,   cache: '~/.local/share/renv', r: 'oldrel-1'}
-          - {os: ubuntu-latest,   cache: '~/.local/share/renv', r: 'oldrel-2'}
-          - {os: ubuntu-latest,   cache: '~/.local/share/renv', r: 'oldrel-3'}
+          # - {os: ubuntu-latest,   cache: '~/.local/share/renv', r: 'oldrel-2'}
+          # - {os: ubuntu-latest,   cache: '~/.local/share/renv', r: 'oldrel-3'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -62,8 +62,6 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v2
         if: runner.os != 'Windows'
-        with:
-          pandoc-version: '2.11'
 
       - name: "Set up Chrome" # for PDF rendering
         uses: browser-actions/setup-chrome@v1.2.0

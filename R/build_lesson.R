@@ -55,7 +55,7 @@
 #' @examplesIf sandpaper:::example_can_run()
 #'
 #' tmp <- tempfile()
-#' create_lesson(tmp, open = FALSE)
+#' create_lesson(tmp, open = FALSE, rmd = FALSE)
 #' create_episode("first-script", path = tmp)
 #' check_lesson(tmp)
 #' build_lesson(tmp)
@@ -93,11 +93,6 @@ build_lesson <- function(path = ".", rebuild = FALSE, quiet = !interactive(), pr
   # sources and store them in `site/built`. Only the markdown sources that have
   # changed in content will be rebuilt with {knitr}.
   built <- build_markdown(path = path, rebuild = rebuild, quiet = quiet, slug = slug)
-
-  cfg <- get_config(path)
-  if (cfg$ipynb) {
-    built_ipynb <- build_ipynb(path = path, rebuild = rebuild, quiet = quiet)
-  }
 
   # Building the HTML ----------------------------------------------------------
   #
