@@ -262,10 +262,10 @@ build_episode_md <- function(path, hash = NULL, outdir = path_built(path),
 build_episode_ipynb <- function(path, outdir = path_built(path),
                                 profile = "lesson-requirements", quiet = TRUE) {
 
-  rlang::check_installed("jupytextR",
-    reason = "to convert episodes to Jupyter notebooks",
-    action = function(pkg, ...) BiocManager::install(glue::glue("milanmlft/{pkg}"))
-  )
+  if (!rlang::is_installed("jupytextR", version = "0.1.0")) {
+    rlang::inform("jupytextR is not installed, attempting to install it.")
+    BiocManager::install("milanmlft/jupytextR")
+  }
 
   outfile <- fs::path_ext_set(fs::path_file(path), "ipynb")
   outpath <- fs::path(outdir, outfile)
