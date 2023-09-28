@@ -92,7 +92,7 @@ sp$build_status(resources, db, write = TRUE)
 sp$build_status(resources, db, write = TRUE)
 # this is because the db exists on disk and you can query it
 sp$get_built_db(db, filter = "*")
-sp$get_built_db(db, filter = "*Rmd")
+sp$get_built_db(db, filter = "*R?md")
 # if you get the hash of the file, it's equal to the expected:
 print(actual <- tools::md5sum(resources[[1]]))
 print(expected <- sp$get_hash(resources[[1]], db))
@@ -114,9 +114,9 @@ cat("We are using `r R.version.string`\n",
 sp$build_status(resources, db, write = TRUE)
 
 # child files require rebuilding ----------------------------------------
-writeLines("Hello from another file!\n", 
+writeLines("Hello from another file!\n",
   fs::path(tmp, "episodes", "files", "hi.md"))
-cat("\n\n```{r child='files/hi.md'}\n```\n", 
+cat("\n\n```{r child='files/hi.md'}\n```\n",
   file = resources[[1]], append = TRUE)
 sp$build_status(resources, db, write = TRUE)
 # NOTE: for child files, the checksums are the checksum of the checksums
@@ -128,6 +128,6 @@ cat("Goodbye!\n", append = TRUE,
 sp$build_status(resources, db, write = TRUE)
 }
 \seealso{
-\code{\link[=get_resource_list]{get_resource_list()}}, \code{\link[=reserved_db]{reserved_db()}}, \code{\link[=hash_with_children]{hash_with_children()}}
+\code{\link[=get_resource_list]{get_resource_list()}}, \code{\link[=reserved_db]{reserved_db()}}, \code{\link[=hash_children]{hash_children()}}
 }
 \keyword{internal}
