@@ -1,0 +1,9 @@
+## Automatically sync fork with upstream
+version: "1"
+rules:
+  - base: l2d
+    upstream: carpentries:main
+    mergeMethod: merge
+    mergeUnstable: false
+label: ":arrow_heading_down: pull"
+conflictLabel: "merge-conflict"
