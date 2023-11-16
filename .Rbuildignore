@@ -17,3 +17,6 @@
 
 ^doc$
 ^Meta$
+
+^\.vscode$
+^dev$
