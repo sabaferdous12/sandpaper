@@ -242,6 +242,7 @@ test_that("manage_deps() restores Python dependencies", {
   skip_on_os("windows")
 
   req_file <- fs::path(lsn, "requirements.txt")
+  if (file.exists(req_file)) fs::file_delete(req_file)
   writeLines("numpy", req_file)
   res <- manage_deps(lsn, quiet = TRUE)
 
