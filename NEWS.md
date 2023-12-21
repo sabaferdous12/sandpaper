@@ -1,4 +1,36 @@
-# sandpaper 0.15.0.9000 (unreleased)
+# sandpaper 0.16.2 (2023-12-19)
+
+## MISC
+
+* JSON metadata now contains the `inLanguage` key.
+
+## DOCUMENTATION
+
+* A list of translatable strings has now been added to 
+  `vignette("translations", package = "sandpaper")`
+
+## INTERNAL
+
+* Translation strings now are unduplicated and live in a single file
+  (`R/utils-translate.R`). This will make finding and updating these strings
+  easier for maintainer and translators.
+* Translations now live in the global environment called `these$translations`
+* A new documentation page called `?translate` contains details of how
+  translations of template elements are rendered.
+- `tr_src()` helper function provides access to the source strings of the
+  translations.
+- `tr_get()`, `tr_varnish()`, and `tr_computed()` helper functions provide
+  access top the lists of translated strings. These have replaced the `tr_()`
+  strings at the point of generation.
+
+# sandpaper 0.16.1 (2023-12-14)
+
+## BUG FIX
+
+* Callout headings with markup in the titles will no longer have text duplicated
+  (reported: @zkamvar, #556; fixed: @zkamvar, #557)
+
+# sandpaper 0.16.0 (2023-12-13)
 
 ## NEW FEATURES
 
@@ -12,7 +44,10 @@
 
 * A new vignette `vignette("translation", package = "sandpaper")` describes how
   translation of template components works and how to submit new/update
-  translations.
+  translations (added: @zkamvar, #546).
+- A new vignette about data flow `vignette("data-flow", package = "sandpaper")`
+  describes how templating, translations, and lesson metadata flows from
+  {sandpaper} to {varnish} (added: @zkamvar, #553)
 
 ## BUG FIX
 

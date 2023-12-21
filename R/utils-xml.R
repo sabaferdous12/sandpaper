@@ -130,8 +130,9 @@ add_class <- function(nodes, new) {
 }
 
 add_anchors <- function(nodes, ids) {
+  tranchor <- tr_computed("Anchor")
   anchor <- paste0(
-    "<a class='anchor' aria-label='", tr_("anchor"), "' href='#", ids, "'></a>"
+    "<a class='anchor' aria-label='", tranchor, "' href='#", ids, "'></a>"
   )
   for (i in seq_along(nodes)) {
     heading <- nodes[[i]]
@@ -157,10 +158,11 @@ translate_overview <- function(nodes = NULL) {
   opath <- ".//div[starts-with(@class, 'inner')]/h3[@class='card-title'][text()='Objectives']"
   questions <- xml2::xml_find_first(card, qpath)
   objectives <- xml2::xml_find_first(card, opath)
+  translated <- tr_computed()
 
-  xml2::xml_set_text(questions, tr_("Questions"))
-  xml2::xml_set_text(objectives, tr_("Objectives"))
-  xml2::xml_set_text(overview, tr_("Overview"))
+  xml2::xml_set_text(questions, translated[["Questions"]])
+  xml2::xml_set_text(objectives, translated[["Objectives"]])
+  xml2::xml_set_text(overview, translated[["Overview"]])
   invisible(nodes)
 }
 
@@ -198,7 +200,9 @@ fix_callouts <- function(nodes = NULL) {
   callouts <- xml2::xml_find_all(nodes, ".//div[starts-with(@class, 'callout ')]")
   h3 <- xml2::xml_find_all(callouts, "./div/h3")
   translations <- get_callout_translations()
-  xml_text_translate(h3, translations)
+  # https://github.com/carpentries/sandpaper/issues/556
+  h3_text <- xml2::xml_find_all(h3, ".//text()")
+  xml_text_translate(h3_text, translations)
   xml2::xml_set_attr(h3, "class", "callout-title")
   inner_div <- xml2::xml_parent(h3)
   # remove the "section level3 callout-title" attrs
