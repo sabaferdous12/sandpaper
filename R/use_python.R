@@ -46,7 +46,6 @@
 use_python <- function(path = ".", python = NULL,
                        type = c("auto", "virtualenv", "conda", "system"),
                        open = rlang::is_interactive(), ...) {
-
   ## Make sure reticulate is installed
   install_reticulate(path = path)
 
@@ -66,7 +65,7 @@ use_python <- function(path = ".", python = NULL,
 
   ## Run in separate R process
   callr::r(
-    func = function(f, path, python, type,  ...) f(path = path, python = python , type = type, ...),
+    func = function(f, path, python, type, ...) f(path = path, python = python, type = type, ...),
     args = list(f = callr_use_python, path = path, python = python, type = type, ...),
     show = TRUE
   )
@@ -93,8 +92,7 @@ use_python <- function(path = ".", python = NULL,
 #'
 #' @export
 #' @rdname use_python
-py_install <- function(packages, path = ".",  ...) {
-
+py_install <- function(packages, path = ".", ...) {
   ## Ensure reticulate is installed
   install_reticulate(path = path)
 
@@ -120,7 +118,6 @@ py_install <- function(packages, path = ".",  ...) {
 
 ## Helper to install reticulate in the lesson's renv environment and record it as a dependency
 install_reticulate <- function(path, quiet = FALSE) {
-
   if (!check_reticulate_installable()) {
     cli::cli_alert("`reticulate` can not be installed on this system. Skipping installation.")
     return(invisible(FALSE))
