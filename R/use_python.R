@@ -46,7 +46,6 @@
 use_python <- function(path = ".", python = NULL,
                        type = c("auto", "virtualenv", "conda", "system"),
                        open = rlang::is_interactive(), ...) {
-
   ## Make sure reticulate is installed
   install_reticulate(path = path)
 
@@ -66,7 +65,7 @@ use_python <- function(path = ".", python = NULL,
 
   ## Run in separate R process
   callr::r(
-    func = function(f, path, python, type,  ...) f(path = path, python = python , type = type, ...),
+    func = function(f, path, python, type, ...) f(path = path, python = python, type = type, ...),
     args = list(f = callr_use_python, path = path, python = python, type = type, ...),
     show = TRUE
   )
@@ -93,8 +92,7 @@ use_python <- function(path = ".", python = NULL,
 #'
 #' @export
 #' @rdname use_python
-py_install <- function(packages, path = ".",  ...) {
-
+py_install <- function(packages, path = ".", ...) {
   ## Ensure reticulate is installed
   install_reticulate(path = path)
 
@@ -120,7 +118,6 @@ py_install <- function(packages, path = ".",  ...) {
 
 ## Helper to install reticulate in the lesson's renv environment and record it as a dependency
 install_reticulate <- function(path, quiet = FALSE) {
-
   if (!check_reticulate_installable()) {
     cli::cli_alert("`reticulate` can not be installed on this system. Skipping installation.")
     return(invisible(FALSE))
@@ -128,7 +125,10 @@ install_reticulate <- function(path, quiet = FALSE) {
 
   ## Record reticulate as a dependency for renv
   dep_file <- fs::path(path, "dependencies.R")
-  write("library(reticulate)", file = dep_file, append = TRUE)
+  line <- "library(reticulate)"
+  if (!grepl(line, readLines(dep_file), fixed = TRUE)) {
+    write(line, file = dep_file, append = TRUE)
+  }
 
   ## Install reticulate through manage_deps()
   manage_deps(path = path, quiet = quiet)
@@ -136,15 +136,11 @@ install_reticulate <- function(path, quiet = FALSE) {
   invisible(TRUE)
 }
 
-check_reticulate_installable <- function() {
+check_reticulate_installable <- function(minimal_major = 4) {
   minimal_major <- 4
-  r_compatible <- is_r_version_greater_than(minimal_major = minimal_major)
+  r_compatible <- R.version$major >= minimal_major
   if (!r_compatible) {
     cli::cli_warn("R version {minimal_major}.0 or higher is required for reticulate")
   }
   r_compatible
-}
-
-is_r_version_greater_than <- function(minimal_major = 4) {
-  R.version$major >= minimal_major
 }
