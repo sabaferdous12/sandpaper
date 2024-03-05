@@ -128,7 +128,10 @@ install_reticulate <- function(path, quiet = FALSE) {
 
   ## Record reticulate as a dependency for renv
   dep_file <- fs::path(path, "dependencies.R")
-  write("library(reticulate)", file = dep_file, append = TRUE)
+  line <- "library(reticulate)"
+  if (!grepl(line, readLines(dep_file))) {
+    write(line, file = dep_file, append = TRUE)
+  }
 
   ## Install reticulate through manage_deps()
   manage_deps(path = path, quiet = quiet)
