@@ -136,15 +136,11 @@ install_reticulate <- function(path, quiet = FALSE) {
   invisible(TRUE)
 }
 
-check_reticulate_installable <- function() {
+check_reticulate_installable <- function(minimal_major = 4) {
   minimal_major <- 4
-  r_compatible <- is_r_version_greater_than(minimal_major = minimal_major)
+  r_compatible <- R.version$major >= minimal_major
   if (!r_compatible) {
     cli::cli_warn("R version {minimal_major}.0 or higher is required for reticulate")
   }
   r_compatible
-}
-
-is_r_version_greater_than <- function(minimal_major = 4) {
-  R.version$major >= minimal_major
 }
