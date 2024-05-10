@@ -27,18 +27,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-latest, cache: '~/Library/Application Support/renv', r: 'release'}
-
-          - {os: windows-latest, r: 'release'}
-          # Use 3.6 to trigger usage of RTools35
-          ## MM: L2D fork of sandpaper requires R >= 4.0
-          # - {os: windows-latest, cache: '~\AppData\Local\renv', r: '3.6'}
-          # use 4.1 to check with rtools40's older compiler
-          # - {os: windows-latest, r: '4.1'}
-
-          - {os: ubuntu-latest, cache: '~/.local/share/renv', r: 'devel', http-user-agent: 'release'}
+          ## Run CI only on ubuntu-latest as this is the os used to build lessons
           - {os: ubuntu-latest, cache: '~/.local/share/renv', r: 'release', cov: 'true'}
-          - {os: ubuntu-latest, cache: '~/.local/share/renv', r: 'oldrel-1'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -64,7 +54,7 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v2
 
       - name: "Set up Chrome" # for PDF rendering
-        uses: browser-actions/setup-chrome@v1.2.0
+        uses: browser-actions/setup-chrome@v1.6.0
 
       - name: "Windows: setup TMPDIR"
         if: runner.os == 'Windows'
