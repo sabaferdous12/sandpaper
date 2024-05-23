@@ -111,25 +111,46 @@ create_sidebar_headings <- function(nodes) {
     nodes <- xml2::read_html(nodes)
   }
   # find all the div items that are purely section level 2
-  h2 <- xml2::xml_find_all(nodes, ".//section/h2[@class='section-heading']")
-  have_children <- xml2::xml_length(h2) > 0
-  txt <- xml2::xml_text(h2)
-  ids <- xml2::xml_attr(xml2::xml_parent(h2), "id")
-  if (any(have_children)) {
-    for (child in which(have_children)) {
-      # Headings that have embedded HTML will need this
-      child_html <- xml2::xml_contents(h2[[child]])
-      no_anchor <- !xml2::xml_attr(child_html, "class") %in% "anchor"
-      txt[child] <- paste(child_html[no_anchor], collapse = "")
+  # h2 <- xml2::xml_find_all(nodes, ".//section/h2[@class='section-heading']")
+  sections <- xml2::xml_find_all(nodes, ".//section")
+  txt <- character(length(sections))
+
+  for (i in seq_along(sections)) {
+    h2 <- xml2::xml_find_all(sections[[i]], ".//h2[@class='section-heading']")
+    h3 <- xml2::xml_find_all(sections[[i]], ".//div[@class='section level3']/h3")
+
+    # TODO: refactor so that embedded HTML also handled for h3
+    have_children <- xml2::xml_length(h2) > 0
+    h2_txt <- xml2::xml_text(h2)
+    h2_id <- xml2::xml_attr(xml2::xml_parent(h2), "id")
+    if (any(have_children)) {
+      for (child in which(have_children)) {
+        # Headings that have embedded HTML will need this
+        child_html <- xml2::xml_contents(h2[[child]])
+        no_anchor <- !xml2::xml_attr(child_html, "class") %in% "anchor"
+        h2_txt[child] <- paste(child_html[no_anchor], collapse = "")
+      }
+    }
+
+    txt[[i]] <- .add_href(h2_txt, h2_id)
+    if (length(h3)) {
+      h3_txt <- xml2::xml_text(h3)
+      h3_ids <- xml2::xml_attr(h3, "id")
+      h3_txt <- paste0("<li>", .add_href(h3_txt, h3_ids), "</li>", collapse = "\n")
+      txt[[i]] <- paste0(txt[[i]], "\n", "<ul>", h3_txt, "</ul>")
     }
   }
-  if (length(ids) && length(txt)) {
-    paste0("<li><a href='#", ids, "'>", txt, "</a></li>",
-      collapse = "\n"
-    )
+
+  if (length(txt)) {
+    paste0("<li>", txt, "</li>", collapse = "\n")
   } else {
     NULL
   }
+}
+
+.add_href <- function(txt, id) {
+  stopifnot("The number of txt and id elements should be the same." = length(txt) == length(id))
+  paste0("<a href='#", id, "'>", txt, "</a>")
 }
 
 #' Create the sidebar for varnish
@@ -253,7 +274,7 @@ update_sidebar <- function(
 #'
 #' # Add an anchor to the links
 #' snd$fix_sidebar_href(my_links, scheme = "https", fragment = "anchor")
-#' 
+#'
 #' # NOTE: this will _always_ return a character vector, even if the input is
 #' # incorrect
 #' snd$fix_sidebar_href(list(), server = "example.com")
@@ -316,4 +337,3 @@ prepend <- function(first, sep = "#", last, trim = TRUE) {
   }
   return(ifelse(first == "", last, paste0(first, sep, last)))
 }
-
