@@ -110,31 +110,23 @@ create_sidebar_headings <- function(nodes) {
   if (inherits(nodes, "character")) {
     nodes <- xml2::read_html(nodes)
   }
-  # find all the div items that are purely section level 2
-  # h2 <- xml2::xml_find_all(nodes, ".//section/h2[@class='section-heading']")
+  # find all sections, each section corresponds to a single h2 heading
   sections <- xml2::xml_find_all(nodes, ".//section")
   txt <- character(length(sections))
 
   for (i in seq_along(sections)) {
+    # find all the div items that are purely section level 2
     h2 <- xml2::xml_find_all(sections[[i]], ".//h2[@class='section-heading']")
+    # find all the div items that are purely section level 3
     h3 <- xml2::xml_find_all(sections[[i]], ".//div[@class='section level3']/h3")
 
-    # TODO: refactor so that embedded HTML also handled for h3
-    have_children <- xml2::xml_length(h2) > 0
-    h2_txt <- xml2::xml_text(h2)
+    h2_txt <- .handle_embedded_html(h2)
     h2_id <- xml2::xml_attr(xml2::xml_parent(h2), "id")
-    if (any(have_children)) {
-      for (child in which(have_children)) {
-        # Headings that have embedded HTML will need this
-        child_html <- xml2::xml_contents(h2[[child]])
-        no_anchor <- !xml2::xml_attr(child_html, "class") %in% "anchor"
-        h2_txt[child] <- paste(child_html[no_anchor], collapse = "")
-      }
-    }
 
     txt[[i]] <- .add_href(h2_txt, h2_id)
+
     if (length(h3)) {
-      h3_txt <- xml2::xml_text(h3)
+      h3_txt <- .handle_embedded_html(h3)
       h3_ids <- xml2::xml_attr(h3, "id")
       h3_txt <- paste0("<li>", .add_href(h3_txt, h3_ids), "</li>", collapse = "\n")
       txt[[i]] <- paste0(txt[[i]], "\n", "<ul>", h3_txt, "</ul>")
@@ -146,6 +138,20 @@ create_sidebar_headings <- function(nodes) {
   } else {
     NULL
   }
+}
+
+.handle_embedded_html <- function(heading_node) {
+  have_children <- xml2::xml_length(heading_node) > 0
+  txt <- xml2::xml_text(heading_node)
+  if (any(have_children)) {
+    for (child in which(have_children)) {
+      # Headings that have embedded HTML will need this
+      child_html <- xml2::xml_contents(heading_node[[child]])
+      no_anchor <- !xml2::xml_attr(child_html, "class") %in% "anchor"
+      txt[child] <- paste(child_html[no_anchor], collapse = "")
+    }
+  }
+  txt
 }
 
 .add_href <- function(txt, id) {
