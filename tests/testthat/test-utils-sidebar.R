@@ -100,3 +100,37 @@ test_that("fix_sidebar_href will return empty string if given empty string", {
 
 })
 
+
+test_that("sidebar includes level 3 headings", {
+  html <- "<section id='plotting'>
+  <h2 class='section-heading'>Plotting with ggplot2</h2>
+  <div class='section level3'>
+  <h3 id='subheading'><strong>Subheading</strong></h3>
+  <p>This is how you plot with <code>ggplot2</code></p>
+  </div>
+  <div class='section level3'>
+  <h3 id='subheading2'><strong>Subheading 2</strong></h3>
+  <p>Another subsection></p>
+  </div>
+  </section>
+  <section id='building'>
+  <h2 class='section-heading'>Building your plots iteratively</h2>
+  <p>This is how you build your plots iteratively</p>
+  </section>"
+  nodes <- xml2::read_html(html)
+  headings <- create_sidebar_headings(nodes)
+  headings_html <- xml2::read_html(headings)
+
+  li <- xml2::xml_find_all(headings_html, "./body/*")
+  # The result is a list element with two items
+  expect_length(li, 2)
+  # The first element has 2 children: the level 2 heading body and the level 3 heading bodies
+  expect_length(xml2::xml_children(li[[1]]), 2)
+  # the anchors are the URIs
+  expect_equal(xml2::xml_text(xml2::xml_find_all(li, ".//@href")),
+               c("#plotting", "#subheading", "#subheading2", "#building"))
+
+  # There should be a ul element for the level 3 headings
+  ul <- xml2::xml_find_all(li, ".//ul/*")
+  expect_length(ul, 2)
+})
