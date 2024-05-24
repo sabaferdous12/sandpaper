@@ -118,6 +118,7 @@ create_sidebar_headings <- function(nodes) {
     # find all the div items that are purely section level 2
     h2 <- xml2::xml_find_all(sections[[i]], ".//h2[@class='section-heading']")
     # find all the div items that are purely section level 3
+    # FIXME: the h3 IDs are being lost here
     h3 <- xml2::xml_find_all(sections[[i]], ".//div[@class='section level3']/h3")
 
     h2_txt <- .handle_embedded_html(h2)
@@ -127,7 +128,7 @@ create_sidebar_headings <- function(nodes) {
 
     if (length(h3)) {
       h3_txt <- .handle_embedded_html(h3)
-      h3_ids <- xml2::xml_attr(h3, "id")
+      h3_ids <- xml2::xml_attr(xml2::xml_parent(h3), "id")
       h3_txt <- paste0("<li>", .add_href(h3_txt, h3_ids), "</li>", collapse = "\n")
       txt[[i]] <- paste0(txt[[i]], "\n", "<ul>", h3_txt, "</ul>")
     }
