@@ -104,12 +104,12 @@ test_that("fix_sidebar_href will return empty string if given empty string", {
 test_that("sidebar includes level 3 headings", {
   html <- "<section id='plotting'>
   <h2 class='section-heading'>Plotting with ggplot2</h2>
-  <div class='section level3'>
-  <h3 id='subheading'><strong>Subheading</strong></h3>
+  <div id='subheading' class='section level3'>
+  <h3><strong>Subheading</strong></h3>
   <p>This is how you plot with <code>ggplot2</code></p>
   </div>
-  <div class='section level3'>
-  <h3 id='subheading2'><strong>Subheading 2</strong></h3>
+  <div id='subheading2' class='section level3'>
+  <h3><strong>Subheading 2</strong></h3>
   <p>Another subsection></p>
   </div>
   </section>
