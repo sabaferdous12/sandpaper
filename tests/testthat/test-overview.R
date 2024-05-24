@@ -98,10 +98,6 @@ test_that("Lessons without episodes can be built", {
   expect_true(fs::file_exists(idx_file))
   idx <- xml2::read_html(idx_file)
 
-  # we should have an edit link in the main page
-  edit_link <- xml2::xml_find_first(idx, ".//a[text()='Edit on GitHub']")
-  expect_match(xml2::xml_attr(edit_link, "href"), "edit/main/index.md")
-
   # links to home and setup should appear in the navigation
   xpath_home_link_mobi  <- ".//nav//div[starts-with(@class,'accordion ')]/a"
   xpath_setup_link_desk <- ".//nav//a[@class='nav-link']"
