@@ -9,9 +9,6 @@
                                                   <a href="key-points.html">Key Points</a>
                                               </li>
       <li>
-                                                  <a href="reference.html#glossary">Glossary</a>
-                                              </li>
-      <li>
                                                   <a href="profiles.html">Learner Profiles</a>
                                               </li>
       <li><a href="reference.html">Reference</a></li>
@@ -55,7 +52,6 @@
       <a href="index.html"><strong>TEST</strong> title</a>
       <a href="introduction.html">1. introduction</a>
       <a href="key-points.html">Key Points</a>
-      <a href="reference.html#glossary">Glossary</a>
       <a href="profiles.html">Learner Profiles</a>
       <a href="reference.html">Reference</a>
       <a href="aio.html">See all in one page</a>
