@@ -128,7 +128,7 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
   # Episode PDFs ---------------------------------------------------------------
   if (cfg$pdf) {
     describe_progress("Creating PDFs", quiet = quiet)
-    html_paths <- fs::path(pkg$dst_path, fs::path_ext_set(fs::path_file(abs_md), "html"))
+    html_paths <- fs::path(pkg$dst_path, as_html(abs_md))
     for (i in files_to_render) {
       html_to_pdf(html_paths[i], quiet = quiet)
     }
