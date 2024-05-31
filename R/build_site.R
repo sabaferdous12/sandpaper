@@ -67,7 +67,7 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
   db <- reserved_db(db)
 
   # Filter out files not scheduled for release
-  db$file <- filter_out_unreleased(db$file, cfg)
+  db <- db[db$file %in% filter_out_unreleased(db$file, cfg), ]
 
   # Get absolute paths for pandoc to understand
   abs_md <- fs::path(path, db$built)
