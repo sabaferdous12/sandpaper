@@ -9,7 +9,7 @@
 \alias{remove_local_remote}
 \title{Test fixture functions for sandpaper}
 \usage{
-create_test_lesson()
+create_test_lesson(pdf = FALSE, ipynb = FALSE)
 
 generate_restore_fixture(repo)
 
@@ -27,6 +27,10 @@ clean_branch(repo, branch = NULL, name = "sandpaper-local", verbose = FALSE)
 remove_local_remote(repo, name = "sandpaper-local")
 }
 \arguments{
+\item{pdf}{logical; whether to create PDFs for the lesson's episodes}
+
+\item{ipynb}{logical; whether to create Jupyter notebooks for the lesson's episodes}
+
 \item{repo}{path to a git repository}
 
 \item{remote}{path to an empty or uninitialized directory. Defaults to a
@@ -87,6 +91,6 @@ Destorys the local remote repository and removes it from the fixture lesson
 }
 }
 \note{
-These are implemented in tests/testthat/setup.md
+These are implemented in tests/testthat/setup.R
 }
 \keyword{internal}
