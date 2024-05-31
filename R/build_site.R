@@ -66,9 +66,6 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
   # filter out files that we will combine to generate
   db <- reserved_db(db)
 
-  # Filter out files not scheduled for release
-  db <- db[db$file %in% filter_out_unreleased(db$file, cfg), ]
-
   # Get absolute paths for pandoc to understand
   abs_md <- fs::path(path, db$built)
   abs_src <- fs::path(path, db$file)
