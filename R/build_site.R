@@ -65,6 +65,7 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
   db <- get_built_db(fs::path(built_path, "md5sum.txt"))
   # filter out files that we will combine to generate
   db <- reserved_db(db)
+
   # Get absolute paths for pandoc to understand
   abs_md <- fs::path(path, db$built)
   abs_src <- fs::path(path, db$file)

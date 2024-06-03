@@ -189,6 +189,10 @@ get_build_sources <- function(path, outdir, slug = NULL, quiet) {
   # filter out the assets (e.g. child files) from the source list
   no_asset <- names(source_list) %nin% c("files", "data", "fig")
   sources <- unlist(source_list[no_asset], use.names = FALSE)
+
+  # filter out unreleased episodes
+  sources <- filter_out_unreleased(sources, get_config(path))
+
   names(sources) <- get_slug(sources)
   if (is.null(slug)) {
     copy_maybe(sources[["config"]], fs::path(outdir, "config.yaml"))

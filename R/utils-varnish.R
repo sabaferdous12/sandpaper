@@ -73,6 +73,10 @@ set_globals <- function(path) {
   on.exit(.resources$set(key = NULL, old))
   set_resource_list(path)
   these_resources <- .resources$get()
+  these_resources[["episodes"]] <- filter_out_unreleased(
+    these_resources[["episodes"]],
+    get_config(path)
+  )
 
   # Sidebar information is largely duplicated across the views. The only thing
   # that is different is the name of the index node.
