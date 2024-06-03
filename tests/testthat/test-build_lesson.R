@@ -58,6 +58,20 @@ test_that("build_lesson() also builds the extra pages", {
 })
 
 
+test_that("build_lesson() generates PDF if requested", {
+
+  restore_fixture <- create_test_lesson(pdf = TRUE)
+  tmp <- res <- restore_fixture()
+  sitepath <- fs::path(tmp, "site", "docs")
+
+  chrome_available <- check_chrome_available()
+  skip_if_not(rmarkdown::pandoc_available("2.11"))
+  skip_if_not(chrome_available, "Chrome not available")
+
+  build_lesson(tmp, preview = FALSE, quiet = FALSE)
+  expect_true(fs::file_exists(fs::path(sitepath, "introduction.pdf")))
+})
+
 
 test_that("local site build produces 404 page with relative links", {
 
