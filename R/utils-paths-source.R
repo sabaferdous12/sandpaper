@@ -148,9 +148,6 @@ get_resource_list <- function(path, trim = FALSE, subfolder = NULL, warn = FALSE
       warn = warn, subfolder = i)
   }
 
-  # Exclude episodes scheduled for later release
-  res[["episodes"]] <- filter_out_unreleased(res[["episodes"]], cfg)
-
   if (use_subfolder) res[[subfolder]] else res[names(res) != "site"]
 }
 
