@@ -69,8 +69,8 @@ function overview_card()
   local objectives_div = pandoc.Div({}, {class='inner bordered'});
   local qbody = pandoc.Div({}, {class="card-body"})
   local obody = pandoc.Div({}, {class="card-body"})
-  local qcol = pandoc.Div({}, {class="col-md-4"})
-  local ocol = pandoc.Div({}, {class="col-md-8"})
+  local qcol = pandoc.Div({}, {class="col-md-5"})
+  local ocol = pandoc.Div({}, {class="col-md-7"})
   local row = pandoc.Div({}, {class="row g-0"})
   local overview = pandoc.Div({}, {class="overview card"})
   -- create headers. Note because of --section-divs, we have to insert raw
