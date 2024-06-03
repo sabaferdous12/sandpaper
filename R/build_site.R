@@ -125,6 +125,16 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
   describe_progress("Creating 404 page", quiet = quiet)
   build_404(pkg, quiet = quiet)
 
+
+  # Episode PDFs ---------------------------------------------------------------
+  if (cfg$pdf) {
+    describe_progress("Creating PDFs", quiet = quiet)
+    html_paths <- fs::path(pkg$dst_path, as_html(abs_md))
+    for (i in files_to_render) {
+      html_to_pdf(html_paths[i], quiet = quiet)
+    }
+  }
+
   # Combined pages -------------------------------------------------------------
   #
   # There are two pages that are the result of source file combinations:
