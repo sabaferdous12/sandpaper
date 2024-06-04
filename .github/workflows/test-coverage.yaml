@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      RENV_PATHS_ROOT: ~/.local/share/renv
       OS_VERSION: 1
 
     steps:
@@ -59,23 +58,6 @@ jobs:
         with:
           extra-packages: any::covr
           needs: coverage
-
-      - name: Restore {renv} cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.RENV_PATHS_ROOT }}
-          key: ${{ runner.os }}-${{ env.OS_VERSION }}-renv-${{ runner.r }}-${{ hashFiles('.github/workflows/R-CMD-check.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ env.OS_VERSION }}-renv-${{ runner.r }}-
-
-      - name: Prime {renv} Cache
-        run: |
-          renv::settings$snapshot.type("explicit")
-          renv::init(bioconductor = TRUE)
-          system('rm -rf renv .Rprofile')
-          system('git clean -fd -e .github')
-          system('git restore .')
-        shell: Rscript {0}
 
       - name: Test coverage
         run: |

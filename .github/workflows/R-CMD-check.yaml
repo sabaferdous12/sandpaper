@@ -28,13 +28,12 @@ jobs:
       matrix:
         config:
           ## Run CI only on ubuntu-latest as this is the os used to build lessons
-          - {os: ubuntu-latest, cache: '~/.local/share/renv', r: 'release', cov: 'true'}
+          - {os: ubuntu-latest, r: 'release', cov: 'true'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      RENV_PATHS_ROOT: ${{ matrix.config.cache }}
 
     steps:
       - name: Record Linux Version
@@ -76,25 +75,6 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
-      - name: "Restore {renv} cache"
-        if: runner.os != 'Windows'
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.RENV_PATHS_ROOT }}
-          key: ${{ runner.os }}-${{ env.OS_VERSION }}-renv-${{ runner.r }}-${{ hashFiles('.github/workflows/R-CMD-check.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ env.OS_VERSION }}-renv-${{ runner.r }}-
-
-      - name: "Prime {renv} Cache"
-        if: runner.os != 'Windows'
-        run: |
-          renv::settings$snapshot.type("explicit")
-          renv::init(bioconductor = TRUE)
-          system('sudo rm -rf renv.lock renv .Rprofile')
-          system('git clean -fd -e .github')
-          system('git restore .')
-        shell: Rscript {0}
-
       - name: "Session info"
         run: |
           options(width = 100)
@@ -104,14 +84,5 @@ jobs:
 
       - name: "Check"
         uses: r-lib/actions/check-r-package@v2
-        if: runner.os != 'Windows'
-        with:
-          upload-snapshots: true
-
-      - name: "Check"
-        uses: r-lib/actions/check-r-package@v2
-        if: runner.os == 'Windows'
-        env:
-          RENV_PATHS_ROOT: ~
         with:
           upload-snapshots: true
