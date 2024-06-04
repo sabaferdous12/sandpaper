@@ -36,31 +36,12 @@ jobs:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
 
     steps:
-      - name: Record Linux Version
-        if: runner.os == 'Linux'
-        run: |
-          echo "OS_VERSION=`lsb_release -sr`" >> $GITHUB_ENV
-          mkdir -p "${{ runner.temp }}/sandbox/"
-          echo "RENV_PATHS_SANDBOX=${{ runner.temp }}/sandbox/" >> $GITHUB_ENV
-
-      - name: "Windows: prevent autocrlf"
-        if: runner.os == 'Windows'
-        run: git config --global core.autocrlf false
-        shell: bash
-
       - uses: actions/checkout@v3
 
       - uses: r-lib/actions/setup-pandoc@v2
 
       - name: "Set up Chrome" # for PDF rendering
         uses: browser-actions/setup-chrome@v1.6.0
-
-      - name: "Windows: setup TMPDIR"
-        if: runner.os == 'Windows'
-        run: |
-          git config --global core.autocrlf true # reset setting to prevent errors downstream
-          echo "TMPDIR=${{ runner.temp }}" >> $GITHUB_ENV
-        shell: bash
 
       - name: "Setup R"
         uses: r-lib/actions/setup-r@v2
