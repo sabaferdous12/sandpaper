@@ -11,7 +11,7 @@
           , Div
               ( "" , [ "row" , "g-0" ] , [] )
               [ Div
-                  ( "" , [ "col-md-4" ] , [] )
+                  ( "" , [ "col-md-5" ] , [] )
                   [ Div
                       ( "" , [ "card-body" ] , [] )
                       [ Div
@@ -33,7 +33,7 @@
                       ]
                   ]
               , Div
-                  ( "" , [ "col-md-8" ] , [] )
+                  ( "" , [ "col-md-7" ] , [] )
                   [ Div
                       ( "" , [ "card-body" ] , [] )
                       [ Div
@@ -288,7 +288,7 @@
           , Div
               ( "" , [ "row" , "g-0" ] , [] )
               [ Div
-                  ( "" , [ "col-md-4" ] , [] )
+                  ( "" , [ "col-md-5" ] , [] )
                   [ Div
                       ( "" , [ "card-body" ] , [] )
                       [ Div
@@ -310,7 +310,7 @@
                       ]
                   ]
               , Div
-                  ( "" , [ "col-md-8" ] , [] )
+                  ( "" , [ "col-md-7" ] , [] )
                   [ Div
                       ( "" , [ "card-body" ] , [] )
                       [ Div
@@ -357,7 +357,7 @@
       <div class="overview card">
       <h2 class='card-header'>Overview</h2>
       <div class="row g-0">
-      <div class="col-md-4">
+      <div class="col-md-5">
       <div class="card-body">
       <div class="inner">
       <h3 class='card-title'>Questions</h3>
@@ -367,7 +367,7 @@
       </div>
       </div>
       </div>
-      <div class="col-md-8">
+      <div class="col-md-7">
       <div class="card-body">
       <div class="inner bordered">
       <h3 class='card-title'>Objectives</h3>
