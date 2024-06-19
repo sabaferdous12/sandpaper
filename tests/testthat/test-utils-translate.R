@@ -244,6 +244,7 @@ test_that("Lessons can be translated with lang setting", {
   aria_text <- c(
     tr_src("varnish", "MainNavigation"),
     tr_src("varnish", "ToggleNavigation"),
+    tr_src("varnish", "ToggleDarkMode"),
     tr_src("varnish", "Search"),
     tr_src("varnish", "SearchButton"),
     tr_src("varnish", "LessonProgress"),
@@ -330,6 +331,7 @@ test_that("Lessons can be translated with lang setting", {
   aria_text <- c(
     tr_src("varnish", "MainNavigation"),
     tr_src("varnish", "ToggleNavigation"),
+    tr_src("varnish", "ToggleDarkMode"),
     tr_src("varnish", "Search"),
     tr_src("varnish", "SearchButton"),
     tr_src("varnish", "LessonProgress"),
