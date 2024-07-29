@@ -1,13 +1,458 @@
-# sandpaper 0.11.9 (in development)
+# sandpaper 0.16.5 (2024-06-18)
 
-BUG FIX
--------
+## BUG FIXES
+
+* Fix for empty divs when checking for headers
+  (reported: @dmgatti, #581; fixed @froggleston)
+* Fix for spacing in callout titles when they have
+  inner tags, e.g. `<code>`
+  (reported: @abostroem, #562; fixed @froggleston)
+
+## NEW FEATURES
+
+* Add support for including the Carpentries matomo
+  tracker, a custom user-supplied tracker script, or
+  no tracking 
+  (reported: @tbyhdgs, @fiveop https://github.com/carpentries/varnish/issues/37,
+   @zkamvar https://github.com/carpentries/sandpaper/issues/438,
+   implemented: @froggleston
+  )
+
+
+# sandpaper 0.16.4 (2024-04-10)
+
+## NEW FEATURES
+
+* The lesson page footer now supports either a CITATION or CITATION.cff file
+  (reported: @tobyhodges, implemented: @froggleston, #572; @tobyhodges, 
+  https://github.com/carpentries/varnish/pull/122)
+* Add support for tabbed content in lessons
+  (reported: @astroDimitrios,
+   implemented: @astroDimitrios, @froggleston,
+   https://github.com/carpentries/sandpaper/pull/571,
+   https://github.com/carpentries/varnish/pull/121,
+   https://github.com/carpentries/pegboard/pull/148
+  ). 
+
+
+# sandpaper 0.16.3 (2024-03-12)
+
+## BUG FIX
+
+* Hotfix for pandoc2-to-pandoc3 bump that resulted in CSS deduplication
+  of section classes for callout blocks
+  (reported: @bencomp, #470; @ndporter https://github.com/carpentries/workbench/issues/81; 
+  fixed: @froggleston, #574)
+
+# sandpaper 0.16.2 (2023-12-19)
+
+## MISC
+
+* JSON metadata now contains the `inLanguage` key.
+
+## DOCUMENTATION
+
+* A list of translatable strings has now been added to 
+  `vignette("translations", package = "sandpaper")`
+
+## INTERNAL
+
+* Translation strings now are unduplicated and live in a single file
+  (`R/utils-translate.R`). This will make finding and updating these strings
+  easier for maintainer and translators.
+* Translations now live in the global environment called `these$translations`
+* A new documentation page called `?translate` contains details of how
+  translations of template elements are rendered.
+- `tr_src()` helper function provides access to the source strings of the
+  translations.
+- `tr_get()`, `tr_varnish()`, and `tr_computed()` helper functions provide
+  access top the lists of translated strings. These have replaced the `tr_()`
+  strings at the point of generation.
+
+# sandpaper 0.16.1 (2023-12-14)
+
+## BUG FIX
+
+* Callout headings with markup in the titles will no longer have text duplicated
+  (reported: @zkamvar, #556; fixed: @zkamvar, #557)
+
+# sandpaper 0.16.0 (2023-12-13)
+
+## NEW FEATURES
+
+* It is now possible to build lessons in languages other than English so that
+  the website elements are also localised to that language (reported: @zkamvar,
+  #205, @joelnitta, #544; fixed: @joelnitta and @zkamvar, #546). 
+* `known_languages()` is a function that will return the language codes that are
+  known by {sandpaper}. 
+
+## DOCUMENTATION
+
+* A new vignette `vignette("translation", package = "sandpaper")` describes how
+  translation of template components works and how to submit new/update
+  translations (added: @zkamvar, #546).
+- A new vignette about data flow `vignette("data-flow", package = "sandpaper")`
+  describes how templating, translations, and lesson metadata flows from
+  {sandpaper} to {varnish} (added: @zkamvar, #553)
+
+## BUG FIX
+
+* The spelling of keypoints is now consistent between the menu item and the
+  callout blocks (reported: @clarallebot, 
+  https://github.com/carpentries/workbench/issues/44; fixed: @zkamvar, #546)
+
+## DEPENDENCIES
+
+* The {withr} package has been upgraded to an import from a suggested package.
+
+## LANGUAGES
+
+* Japanese (ja) (added: @joelnitta, #546)
+* Spanish (es) (added: @yabellini, #552)
+
+## MISC
+
+* Added @yabellini as a contributor and translator
+* Added @joelnitta as an author and translator
+
+
+# sandpaper 0.15.0 (2023-11-29)
+
+## NEW FEATURES
+
+* Using `handout: true` in `config.yaml` will cause a handout to be generated
+  for the lesson website under `/files/code-handout.R`. At the moment, this is
+  only relevant for R-based lessons (implemented: @froggleston, #527,
+  reviewed: @zkamvar) and supersedes the need for specifying
+  `options(sandpaper.handout = TRUE)`
+* Content for learners now accessible through instructor view. The instructor
+  view "More" dropdown menu item will now have links to learner view items
+  appended. Note that when clicking these links, the user will remain in
+  instructor view. This behaviour may change in future iterations (reported:
+  @karenword, #394; fixed: @ErinBecker, #530, reviewed: @zkamvar)
+* `create_episode()` will now open new episodes for editing in interactive
+  sessions (implemented: @milanmlft, #534, reviewed: @zkamvar)
+* The `site/` folder is now customisable to any writable directory on your
+  system by setting the experimental `SANDPAPER_SITE` environment variable to
+  any valid and empty folder. This is most useful in the context of Docker
+  containers, where file permissions to mounted volumes are not always
+  guaranteed (reported: @fherreazcue #536; implemented: @zkamvar, #537)
+* DOI badges can now be displayed when paired with {varnish} version 0.4.0 by
+  adding the `doi:` key to the `config.yaml` file with either the raw DOI or
+  the URL to the DOI (reported: @tobyhodges, carpentries/workbench#67;
+  fixed: @tobyhodges, #535).
+
+## BUG FIX
+
+* Internal `build_status()` function: make sure `root_path()` always points 
+  to lesson root (reported: @milanmlft, #531; fixed: @milanmlft, #532)
+
+## MISC
+
+* Added @milanmlft as contributor
+
+# sandpaper 0.14.1 (2023-11-09)
+
+## BUG FIX
+
+* `mailto:` links are no longer prepended with the URL (reported: @apirogov,
+  #538; fixed: @zkamvar, #539)
+
+# sandpaper 0.14.0 (2023-10-02)
+
+## NEW FEATURES
+
+* all internal folders can contain the standard `files`, `fig`, and `data`
+  folders with the cautionary note that duplicate file names to other folders
+  will cause an error.
+- `validate_lesson()` now reports invalid elements of child documents
+- A new vignette `vignette("include-child-documents", package = "sandpaper")`
+  demonstrates and describes the caveats about using child documents.
+
+## BUG FIX
+
+* overview child files are no longer built as if they are top-level files.
+
+## MISC
+
+* R Markdown episodes with further nested child documents (grand children and
+  beyond) will now trigger an episode to rebuild (fixed: @zkamvar, #513)
+* Child file detection functionality has been moved to the {pegboard} package
+
+## DEPENDENCIES
+
+* {pegboard} minimum version is now 0.7.0
+
+# sandpaper 0.13.3 (2023-09-22)
+
+## BUG FIX
+
+* References to heading in `setup.md` will now be reflected in the website. 
+  (reported: @tobyhodges, @fnattino, and @zkamvar, #521; fixed: @ErinBecker and
+  @zkamvar, #522). 
+- A regression from #514 where empty menus would cause a failure in deployment
+  with the 404 page has been fixed (reported: @tobyhodges and @zkamvar, #519;
+  fixed: @zkamvar, #520).
+
+# sandpaper 0.13.2 (2023-09-20)
+
+## BUG FIX
+
+* Users with duplicated `init.defaultBranch` declarations in their git config
+  will no longer fail the default branch check (reported: @tesaunders, #516;
+  fixed: @zkamvar, #517)
+
+# sandpaper 0.13.1 (2023-09-19)
+
+## BUG FIX
+
+* Aggregate pages will no longer fail if an episode has a prefix that is the
+  same as that aggregate page (e.g. `images.html` will no longer fail if there
+  is an episode that starts with `images-`) (reported: @mwhamgenomics, #511;
+  fixed: @zkamvar, #512)
+* 404 page index link will point to the default index page of the site instead
+  of the relative index page, which would result in a 404 for nested links that
+  did not exist (reported: @kaijagahm and @zkamvar, #498; fixed @zkamvar, #514)
+
+# sandpaper 0.13.0 (2023-09-06)
+
+## NEW FEATURES
+
+* Overview style lessons that do not have episodic content can now be processed,
+  analysed, and built by {sandpaper}. To make your lesson an overview lesson,
+  you can add `overview: true` to your `config.yaml` (reported: @zkamvar,
+  https://github.com/carpentries/workbench/issues/65; 
+  implemented: @zkamvar, #496)
+* The new `spoiler` class of fenced div will allow authors to specify an
+  expandable section of content that is collapsed by default. This replaces the
+  former paradigm of using "floating solution" blocks to present options for
+  installation on different platforms. (implemented: @tobyhodges, #502)
+
+## BUG FIX
+
+* Internal function `root_path()` will no longer fail if the `episodes/` folder
+  does not exist as long as one of the other four folders (`site/`, `learners/`,
+  `instructors/`, `profiles/`) exists (fixed: @zkamvar, #496)
+* `set_config()` can now properly process logical values into `true` and `false`
+* R Markdown documents with modificiations to child documents will now take into
+  account changes to the child documents (reported @jcolomb, #497; fixed
+  @zkamvar, #498). 
+* A broken test from the development version of {renv} fixed. This was a change
+  in output and not functionality, so there will be no user-visible changes
+  (reported: @zkamvar, #484; fixed: @zkamvar, #487).
+* Broken snapshot tests from upstream R-devel have been fixed by ensuring that
+  version comparisons always use characters and not numbers (which is
+  ergonomically weird, but whatever) (reported: @zkamvar #487; fixed: @zkamvar
+  #487)
+* Blank instructor notes pages no longer fail to build 
+  (reported: @apirogov, #505; fixed: @klbarnes20, #509)
+* Tests for {renv} post 1.0.0 fixed so that they no longer run forever
+  interactively (reported: @zkamvar #500; fixed: @zkamvar, #501)
+
+## MISC
+
+* We are now testing against pandoc 2.19.2 in continuous integration.
+* The discussion list link for the new lesson contributing template has been
+  fixed.
+* examples have been modified to not use R Markdown lessons unless necessary,
+  reducing output and time needed to build the examples.
+
+## CONTINUOUS INTEGRATION
+
+* The README file has been updated to fix a typo.
+
+
+## DEPENDENCIES
+
+* {pegboard} minimum version is now 0.6.0
+* {varnish} minimum version is now 0.3.0
+
+# sandpaper 0.12.4 (2023-06-16)
+
+## BUG FIX
+
+* A bug in walled systems where templated pages (e.g. 404) could not be written
+  due to permissions issues has been fixed (reported: @ocaisa, #479; fixed:
+  @zkamvar, #482).
+
+# sandpaper 0.12.3 (2023-06-01)
+
+## BUG FIX
+
+* A bug where the git credentials are accidentally changed when a lesson is
+  built is fixed by no longer querying git author when the lesson is built.
+  (reported: @joelnitta, @velait, and @zkamvar, #449; fixed: @zkamvar, #476).
+
+# sandpaper 0.12.2 (2023-05-29)
+
+## BUG FIX
+
+* A bug where the sidebar for non-episode pages had extra commas was fixed
+  (reported: @zkamvar, #473; fixed: @zkamvar, #474)
+
+# sandpaper 0.12.1 (2023-05-26)
+
+## BUG FIX
+
+* The current page of the sidebar no longer hides the episode number. 
+  (reported: @cynthiaftw, https://github.com/carpentries/workbench/issues/42 and
+  #432; fixed: @zkamvar, #472)
+- metadata for episodes with titles containing markup no longer include that
+  markup in the metadata (@zkamvar, #472)
+
+## MISC
+
+* The internal function `sandpaper:::check_pandoc()` now points to the correct
+  URL to download RStudio, which moved after the migration to posit (@zkamvar,
+  #471) 
+
+# sandpaper 0.12.0 (2023-05-19)
+
+## NEW FEATURES
+
+* Aggregate instructor notes now have headings that link back to the source
+  instructor note (reported: @tobyhodges, #463; fixed: @zkamvar, #468)
+* The internal function `sandpaper:::render_html()` now explicitly sets the
+  pandoc version before running the subprocess. This allows lesson developers to
+  use the {pandoc} package to set their pandoc versions. (reported: @zkamvar,
+  #465; fixed: @zkamvar, #465)
+
+## BUG FIX
+
+* Callout block anchor links now point to the correct ID of the block derived
+  from the title of the block (as opposed to the generic ID). 
+  (reported: @debpaul, 
+  https://github.com/datacarpentry/OpenRefine-ecology-lesson/issues/292 and
+  @bencomp, #454; fixed: @zkamvar, #467).
+* Inline images no longer automatically transform to figure blocks
+  (reported: @ostephens, #445; fixed: @zkamvar, #446). This bug was preventing
+  image links (e.g. MyBinder badges) from being rendered as links with images
+  in them. This fixes that issue. It also helps distinguish inline images
+  between figures in the DOM.
+
+# sandpaper 0.11.17 (2023-05-16)
+
+## NEW FEATURES
+
+* `sandpaper::serve()` gains the `quiet` argument, defaulting to `TRUE` for
+  interactive sessions and `FALSE` for command line sessions 
+* `sandpaper::serve()` gains the `...` argument to pass options to 
+  `servr::server_config()` for setting ports and hosts (reported:
+  @twrightsman, https://github.com/carpentries/workbench/issues/50 and #459;
+  fixed: @zkamvar, #461).
+
+## BUG FIX
+
+* Break timing is now included in the overall schedule. (reported: @karenword,
+  #437; fixed: @bencomp, #455).
+
+
+## TEST SUITE
+
+* An upstream feature in {renv}, forcing it to be silent when testing caused
+  some expectations to fail. This has been fixed in specific tests by turning
+  verbosity on in those tests (reported: @zkamvar, #457; fixed: @zkamvar, #458)
+
+# sandpaper 0.11.16 (2023-05-05)
+
+## BUG FIX
+
+* A failure to incrementally build the lesson with `sandpaper::serve()` has been
+  fixed (reported: @zkamvar, #450; fixed: @zkamvar, #451)
+
+## MISC
+
+* Lessons with markdown documents no longer use `callr::r()` as an intermediary
+  (reported: @zkamvar, #442, fixed: @zkamvar, #452)
+
+# sandpaper 0.11.15 (2023-04-05)
+
+## BUG FIX
+
+* The 404 page will now have proper styling applied when the site is deployed
+  via one of the `ci_` functions (reported: @zkamvar, #430; fixed: @zkamvar,
+  #431).
+* `sandpaper::serve()` will no longer error if a different directory is used.
+
+# sandpaper 0.11.14 (2023-04-04)
+
+## BUG FIX
+
+* A 404 page has been added (reported: @fmichonneau, #268; fixed: 
+  @zkamvar, #429)
+
+## DEPENDENCIES
+
+* The minimum version of {pegboard} has been set to 0.5.1
+
+## TEMPLATES
+
+* The README, LICENSE, CONTRIBUTING, and SETUP templates have been fixed to work
+  with {pegboard} version 0.5.1
+* The LICENSE and CONTRIBUTING templates now refer to The Carpentries as a
+  whole and provides correct links to community forums. 
+
+# sandpaper 0.11.13 (2023-03-25)
+
+## WORKAROUND
+
+* Fix an issue for {renv} version 0.17.2 where it was unable to provision
+  packages that were being used in the parent environment. This was a problem
+  in environments where the version of {sandpaper} was controlled by {renv}. 
+  (reported: https://github.com/rstudio/renv/issues/1177, @zkamvar; fixed
+  #423, @zkamvar). Note that this fix is ONLY applicable to {renv} 0.17.2
+  and will be fixed with newer versions of {renv}.
+
+# sandpaper 0.11.12 (2023-03-22)
+
+## CONTINUOUS INTEGRATION
+
+* workflow files now have explicit permissions to comment on pull requests or
+  create new branches when called. This fixes an issue where new lessons would
+  not have the ability to preview pull requests or update workflows.
+  (reported: #420, @zkamvar; fixed #421, @zkamvar)
+* the `create-pull-request` action is now coming from a fork in The Carpentries
+  organisation for security. 
+
+## MISC
+
+* A typo has been fixed in the package cache vignette
+- The CONTRIBUTING boilerplate has been updated to fix formatting issues
+
+# sandpaper 0.11.11 (2023-03-17)
+
+## BUG FIX
+
+* `update_cache()` will now work with {renv} version 0.17.1, which lost a
+  print method for the `renv_updates` class (reported: @zkamvar, #415; 
+  fixed: @zkamvar, #416 and 
+  https://github.com/zkamvar/vise/commit/ee4798701a958ee48429980eb970266885f8265b
+
+## MISC
+
+* @jcolomb has been added as a contributor in the DESCRIPTION.
+
+# sandpaper 0.11.10 (2023-03-16)
+
+## BUG FIX
+
+* New lessons will now provision `learners/resources.md`, which will allow the
+  glossary link to work (reported: @elichad, #404 and 
+  @ManonMarchand,
+  https://github.com/carpentries/workbench-template-md/issues/20; 
+  fixed: @zkamvar, #410)
+- default CONTRIBUTING file is better suited to The Workbench and no longer
+  references the now-defunct lesson-example repository (reported and fixed:
+  @jcolomb, #407)
+
+# sandpaper 0.11.9 (2023-03-14)
+
+## BUG FIX
 
 * Links to assets in instructor view no longer render a 404. (reported:
-  @brownsarahm, #404; fixed: @zkamvar, #408)
+  @brownsarahm, #404; fixed: @zkamvar, #409)
 
-CONTINUOUS INTEGRATION
-----------------------
+## CONTINUOUS INTEGRATION
 
 * Lessons with files that have spaces in their names (e.g as a learning tool)
   no longer fail to comment on pull request previews (reported: @zkamvar, #399;

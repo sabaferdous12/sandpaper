@@ -12,6 +12,12 @@ mask_output <- function(output, repo, remote) {
   output[!no]
 }
 
+# create two learner episodes to ensure that we do not mess up the dropdown
+learn_paths <- fs::path(res, "learners", c("test-1.md", "test-2.md"))
+writeLines(c("---", "title: test", "---", "\ntest file\n"), learn_paths[1])
+writeLines(c("---", "title: test", "---", "\ntest file\n"), learn_paths[2])
+sandpaper::set_learners(path = res, fs::path_file(learn_paths), write = TRUE)
+
 test_that("ci_deploy() will deploy once", {
 
   skip_on_cran()
@@ -92,11 +98,74 @@ test_that("ci_deploy() will fetch sources from upstream", {
 
 })
 
+
+test_that("404 page root will be lesson URL", {
+  skip_on_cran()
+  skip_if_not(has_git())
+  skip_if_not(rmarkdown::pandoc_available("2.11"))
+
+  # in the main branch, this file does not exist
+  expect_false(file.exists(file.path(res, "404.html")))
+
+  # setup for test inside of site branch
+  withr::defer(gert::git_branch_checkout("main", repo = res))
+  gert::git_branch_checkout("SITE", repo = res)
+
+  # in the site branch, it does exist
+  expect_true(file.exists(file.path(res, "404.html")))
+
+  html <- xml2::read_html(file.path(res, "404.html"))
+
+  # find the stylesheet node: expect that it has https link
+  stysh <- xml2::xml_find_first(html, "//head/link[@rel='stylesheet']")
+  url <- xml2::xml_attr(stysh, "href")
+  parsed <- xml2::url_parse(url)
+
+  # test that it has the form of https://[server]/lesson-example/[stylesheet]
+  expect_equal(parsed[["scheme"]], "https")
+  expect_false(parsed[["server"]] == "")
+  expect_true(startsWith(parsed[["path"]], "/lesson-example"))
+
+  # test to ensure that we didn't accidentally duplicate the "more" dropdown
+  more <- xml2::xml_find_all(html, "//nav//button[@id='navbarDropdown']")
+  expect_length(more, 1L)
+
+  # test to ensure the sidebar content is not accidentally duplicated
+  moresb <- xml2::xml_find_all(html, "//div[contains(@class, 'resources')]")
+  expect_length(more, 1L)
+
+  # test that the menu items all have same form
+  navbar <- xml2::xml_find_all(html, "//nav//li/a")
+  hrefs <- xml2::xml_attr(navbar, "href")
+  parsed <- xml2::url_parse(hrefs)
+  expect_equal(unique(parsed[["scheme"]]), "https")
+  expect_false(unique(parsed[["server"]]) == "")
+  expect_true(all(startsWith(parsed[["path"]], "/lesson-example")))
+
+  # test that the sidebar items are all appopriate
+  # (with exception of the instructor view toggle)
+  sidebar_links <- "//div[@class='accordion-body']//a[not(text()='Instructor View')]"
+  sidebar <- xml2::xml_find_all(html, sidebar_links)
+  hrefs <- xml2::xml_attr(sidebar, "href")
+  parsed <- xml2::url_parse(hrefs)
+
+  expect_equal(unique(parsed[["scheme"]]), "https")
+  expect_false(unique(parsed[["server"]]) == "")
+  expect_true(all(startsWith(parsed[["path"]], "/lesson-example")))
+  # The index page should be one of the pages that we are inspecting here
+  # This directly addresses https://github.com/carpentries/sandpaper/issues/498
+  expect_true(any(parsed[["path"]] == "/lesson-example/index.html"))
+
+
+})
+
+
 test_that("ci_deploy() will do a full rebuild", {
 
   skip_on_cran()
   skip_if_not(has_git())
   skip_if_not(rmarkdown::pandoc_available("2.11"))
+
 
   expect_true(gert::git_branch_exists("MD", local = TRUE, repo = res))
   expect_true(gert::git_branch_exists("SITE", local = TRUE, repo = res))

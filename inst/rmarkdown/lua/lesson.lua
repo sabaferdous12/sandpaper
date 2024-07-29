@@ -9,7 +9,6 @@ function Set (list)
   return set
 end
 
-
 local blocks = {
   ["callout"] = "bell",
   ["objectives"] = "none",
@@ -18,10 +17,13 @@ local blocks = {
   ["checklist"] = "check-square",
   ["solution"] = "none",
   ["hint"] = "none",
+  ["spoiler"] = "eye",
   ["discussion"] = "message-circle",
   ["testimonial"] = "heart",
   ["keypoints"] = "key",
-  ["instructor"] = "edit-2"
+  ["instructor"] = "edit-2",
+  ["tab"] = "none",
+  ["group-tab"] = "none"
 }
 
 local block_counts = {
@@ -32,10 +34,13 @@ local block_counts = {
   ["checklist"] = 0,
   ["solution"] = 0,
   ["hint"] = 0,
+  ["spoiler"] = 0,
   ["discussion"] = 0,
   ["testimonial"] = 0,
   ["keypoints"] = 0,
-  ["instructor"] = 0
+  ["instructor"] = 0,
+  ["tab"] = 0,
+  ["group-tab"] = 0
 }
 
 -- get the timing elements from the metadata and store them in a global var
@@ -147,6 +152,11 @@ function level_head(el, level)
   local id = 1
   local header = el.content[id]
 
+  -- fix for https://github.com/carpentries/sandpaper/issues/581
+  if header == nil then
+    return el
+  end
+
   if level ~= 0 and header.level == nil then
     -- capitalize the first letter and insert it at the top of the block
     local C = text.upper(text.sub(class, 1, 1))
@@ -186,12 +196,22 @@ local button_headings = {
   <h4 class="accordion-header" id="heading{{id}}">
   {{title}}
   </h4>]],
+  ["spoiler"] = [[
+  <h3 class="accordion-header" id="heading{{id}}">
+  <div class="note-square"><i aria-hidden="true" class="callout-icon" data-feather="eye"></i></div>
+  {{title}}
+  </h3>]],
+  ["tab"] = [[
+  <h3 class="tab-header" id="nav-tab-heading-{{id}}">
+  {{title}}
+  </h3>]],
 }
 
 local accordion_titles = {
   ["instructor"] = "Instructor Note",
   ["hint"] = "Give me a hint",
-  ["solution"] = "Show me the solution"
+  ["solution"] = "Show me the solution",
+  ["spoiler"] = "Show details"
 }
 
 local accordion_button = [[
@@ -251,12 +271,222 @@ accordion = function(el, class)
   -- the whole package
   local main_div = pandoc.Div({accordion_item})
   local main_class = {"accordion", "instructor-note", "accordion-flush"}
-  if class ~= "instructor" then
+  if class == "spoiler" then
+    main_class[2] = "spoiler-accordion"
+  elseif class ~= "instructor" then
     main_class[2] = "challenge-accordion"
   end
   main_div.identifier = div_id
   main_div.classes = main_class
   return(main_div)
+end
+
+-- For a single tab block:
+-- Store the current tab button number
+local tab_button_num = 0
+-- Store the tab button number a tabpanel
+-- element thinks it is on
+local tabpanel_tab_button_num = 1
+
+-- Stores the tab nav buttons
+local tab_buttons = {}
+-- Stores the elements to form the tabpanel
+-- content for the tab currently being processed
+local this_tab_tabpanel = {}
+-- Stores a tab blocks, tabpanel content
+local tabpanels = {}
+
+-- Are we processing a group-tab?
+local group_tab = false
+local group_tab_titles = {}
+
+local tab_button = [[
+<button class="nav-link" id="nav-tab-{{id}}" {{name}} data-bs-toggle="tab" data-bs-target="#nav-tabpanel-{{id}}" type="button" role="tab" aria-controls="nav-tabpanel-{{id}}" aria-selected="false">
+{{heading}}
+</button>]]
+
+-- The first tab button is active
+local tab_button_active = [[
+<button class="nav-link active" id="nav-tab-{{id}}" {{name}} data-bs-toggle="tab" data-bs-target="#nav-tabpanel-{{id}}" type="button" role="tab" aria-controls="nav-tabpanel-{{id}}" aria-selected="true">
+{{heading}}
+</button>]]
+
+add_to_tabpanel = function(el)
+  -- If the tabpanel_button_number is the same
+  -- as the nav tab_button_number this element
+  -- belongs with the current nav button so store
+  -- it for later
+  if tabpanel_tab_button_num == tab_button_num then
+    table.insert(this_tab_tabpanel, el)
+  -- Else we have hit the next tab button and should
+  -- wrap the tabpanel content we stored in the
+  -- this_tab_tabpanel table for the previous button
+  else
+    local id
+    if group_tab then
+      local tab_id = block_counts["group-tab"]
+      id = tab_id.."-"..group_tab_titles[tabpanel_tab_button_num]
+    else
+      local tab_id = block_counts["tab"]
+      id = tab_id.."-"..tabpanel_tab_button_num
+    end
+
+    -- Wrap the tabpanel contents in a div
+    local tabpanel_div = pandoc.Div(this_tab_tabpanel)
+    -- n.b. in pandoc 2.17, the attributes must be set after the classes
+    if tabpanel_tab_button_num == 1 then
+      tabpanel_div.classes = {"tab-pane show active"}
+    else
+      tabpanel_div.classes = {"tab-pane"}
+    end
+    tabpanel_div.identifier = "nav-tabpanel-"..id
+    tabpanel_div.attributes = {
+      ['role'] = 'tabpanel',
+      ['aria-labelledby'] = "nav-tab-"..id,
+    }
+
+    -- Store the div for the tab_block function
+    table.insert(tabpanels, tabpanel_div)
+
+    -- We move onto the next button having processed
+    -- the previous buttons tabpanel content
+    tabpanel_tab_button_num = tabpanel_tab_button_num + 1
+
+    -- The current element belongs to the new button
+    -- so empty out the this_tab_tabpanel table and store the el
+    this_tab_tabpanel = {}
+    table.insert(this_tab_tabpanel, el)
+  end
+end
+
+tab_filter = {
+  Header = function(el)
+    -- Level 3 headers mark the tab titles
+    -- all other headers in a tab block are ignored
+    if el.level == 3 then
+
+      -- Insert the title for the add_to_tabpanel to access
+      local title = pandoc.utils.stringify(el)
+
+      local id
+      local name
+      if group_tab then
+        local tab_id = block_counts["group-tab"]
+        local title_no_spaces = title:gsub("%s+", "")
+        id = tab_id.."-"..title_no_spaces
+        -- The JS for the group tabs selects buttons
+        -- to show based on the name attribute.
+        -- Here we set it to the button title.
+        name = 'name="'..title_no_spaces..'"'
+        -- Store the title so it can be used in the tabpanel id
+        table.insert(group_tab_titles, title_no_spaces)
+      else
+        local tab_id = block_counts["tab"]
+        id = tab_id.."-"..tab_button_num+1
+        -- Non group tabs don't need a name attribute.
+        name = ""
+      end
+
+      -- Found another button so increment the
+      -- current tab_button_num
+      tab_button_num = tab_button_num + 1
+
+      -- Create the button, if this is the first
+      -- button it needs to be active
+      local this_button
+      if tab_button_num == 1 then
+        this_button = tab_button_active
+      else
+        this_button = tab_button
+      end
+
+      -- Substitute in the button information
+      this_button = this_button:gsub("{{heading}}", button_headings["tab"])
+      this_button = this_button:gsub("{{title}}", title)
+      this_button = this_button:gsub("{{id}}", id)
+      this_button = this_button:gsub("{{name}}", name)
+
+      -- Convert the tab button to a raw block and store
+      local button = pandoc.RawBlock("html", this_button)
+      table.insert(tab_buttons, button)
+    end
+  end,
+  -- for all other elements process them using
+  -- the add_to_tabpanel function
+  Para = function(el)
+    _ = add_to_tabpanel(el)
+  end,
+  Div = function(el)
+    _ = add_to_tabpanel(el)
+  end,
+  Figure = function(el)
+    _ = add_to_tabpanel(el)
+  end,
+  CodeBlock = function(el)
+    _ = add_to_tabpanel(el)
+  end,
+  OrderedList = function(el)
+    _ = add_to_tabpanel(el)
+  end,
+  BulletList = function(el)
+    _ = add_to_tabpanel(el)
+  end
+}
+
+tab_block = function(el)
+
+  -- Increment the tab count
+  local count
+  if group_tab then
+    block_counts["group-tab"] = block_counts["group-tab"] + 1
+    count = block_counts["group-tab"]
+  else
+    block_counts["tab"] = block_counts["tab"] + 1
+    count = block_counts["tab"]
+  end
+
+  -- Walk the tab elements and process them
+  _ = pandoc.walk_block(el,tab_filter)
+
+  -- Wraps the tab buttons to create the tablist div
+  local button_div_id = "nav-tab-"..count
+  local button_div = pandoc.Div(tab_buttons)
+  button_div.identifier = button_div_id
+  button_div.classes = {"nav", "nav-tabs"}
+  button_div.attributes = {
+    ['role'] = 'tablist',
+  }
+
+  -- The tab_filter uses the current tab number
+  -- to determine whether we have reached the next tab
+  -- This tricks the add_to_tabpanel function into thinking
+  -- it has hit the number of tabs + 1 so it wraps
+  -- the last tabpanel in a div
+  tab_button_num = tab_button_num + 1
+  _ = add_to_tabpanel(tabpanels)
+
+  -- Wraps the tabpanels
+  local tab_content_div = pandoc.Div(tabpanels)
+  local tab_content_div_id = "nav-tabContent-"..count
+  tab_content_div.identifier = tab_content_div_id
+  tab_content_div.classes = {"tab-content"}
+
+  -- Create the nav html tags
+  local nav_start = pandoc.RawBlock("html", "<nav>")
+  local nav_end = pandoc.RawBlock("html", "</nav>")
+
+  -- Put everything in a tabs div
+  local tabs = pandoc.Div({nav_start, button_div, nav_end, tab_content_div})
+  tabs.classes = {"tabs"}
+
+  -- Reset counters for the next tab block
+  tab_button_num = 0
+  tabpanel_tab_button_num = 1
+  tab_buttons = {}
+  this_tab_tabpanel = {}
+  tabpanels = {}
+
+  return tabs
 end
 
 callout_block = function(el)
@@ -265,10 +495,12 @@ callout_block = function(el)
   if this_icon == nil then
     return el
   end
+  -- Get the header and create the ID
+  local header = get_header(el, 3)
+
   block_counts[classes[1]] = block_counts[classes[1]] + 1
   callout_id = classes[1]..block_counts[classes[1]]
   classes:insert(1, "callout")
-  local header = get_header(el, 3)
 
   local icon = pandoc.RawBlock("html",
   "<i class='callout-icon' data-feather='"..this_icon.."'></i>")
@@ -287,12 +519,12 @@ end
 
 challenge_block = function(el)
   -- The challenge blocks no longer contain solutions nested inside. Instead,
-  -- the soltuions (and hints) are piled at the end of the block, so series of
+  -- the solutions (and hints) are piled at the end of the block, so series of
   -- challenge/solutions need to be separated.
 
   -- The challenge train is a list to contain all the divs
   local challenge_train = pandoc.List:new()
-  -- If the challenge contains multipl solutions or hints, we need to indicate
+  -- If the challenge contains multiple solutions or hints, we need to indicate
   -- that the following challenges/solutions are continuations.
   local this_head = get_header(el, 3)
   local next_head = this_head:clone()
@@ -356,14 +588,20 @@ handle_our_divs = function(el)
 
   -- Accordion blocks:
   --
-  -- Instructor Notes, Solutions, and Hints are all blocks that are contained in
-  -- accordion blocks. For historical reasons, solutions are normally embedded
-  -- in challenge blocks, but because of the way pandoc traverses the AST, we
-  -- need to process these FIRST and then handle their positioning in the
+  -- Instructor Notes, Solutions, Hints, and Spoilers are all blocks
+  -- that are contained in accordion blocks.
+  -- For historical reasons, solutions are normally embedded
+  -- in challenge blocks, but because of the way pandoc traverses the AST,
+  -- we need to process these FIRST and then handle their positioning in the
   -- challenge block phase.
   v,i = el.classes:find("instructor")
   if i ~= nil then
     return(accordion(el, "instructor"))
+  end
+
+  v,i = el.classes:find("spoiler")
+  if i ~= nil then
+    return(accordion(el, "spoiler"))
   end
 
   v,i = el.classes:find("solution")
@@ -383,6 +621,24 @@ handle_our_divs = function(el)
   v,i = el.classes:find("challenge")
   if i ~= nil then
     return(challenge_block(el))
+  end
+
+  -- Tab blocks:
+  --
+  -- Toggleable Tab blocks.
+  v,i = el.classes:find("tab")
+  if i ~= nil then
+    group_tab = false
+    return(tab_block(el))
+  end
+
+  -- Group Tab blocks:
+  --
+  -- Toggleable Group Tab blocks.
+  v,i = el.classes:find("group-tab")
+  if i ~= nil then
+    group_tab = true
+    return(tab_block(el))
   end
 
   -- All other Div tags should have at most level 3 headers

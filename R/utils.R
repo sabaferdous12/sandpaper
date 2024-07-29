@@ -20,6 +20,53 @@ example_can_run <- function(need_git = FALSE, skip_cran = TRUE) {
   run_ok
 }
 
+is_testing <- function() {
+  identical(Sys.getenv("TESTTHAT"), "true")
+}
+
+# Search parent calls for a specific set of function signatures and return TRUE
+# if any one of them match.
+parent_calls_contain <- function(search = NULL, calls = sys.calls()) {
+  # escape early if there is no search. No search; no match.
+  if (length(search) == 0L || is.na(search)[[1L]]) {
+    return(FALSE)
+  }
+  # we assume no match
+  found <- FALSE
+  # calls will be arranged in order from user -> here, so the first call will
+  # be the call that triggered the chain of command.
+  for (call in calls) {
+    # the first part of the call will be the function name
+    if (!inherits(call[[1]], "name")) {
+      # but sometimes it will be an anyonymous function, such as the
+      # onWSMessage function from httpuv:
+      # https://github.com/rstudio/httpuv/blob/faada3a19965af80289919308587836d22198a24/R/httpuv.R#L285-L293
+      # in these cases, we must skip
+      next
+    }
+    fn <- as.character(call[[1L]])
+    # pkg::function is parsed as the character c("::", "pkg", "function")
+    # because "::" is a function, thus if we have 3, we take the function name
+    if (length(fn) == 3L) {
+      fn <- fn[3L]
+    } else {
+      fn <- fn[1L]
+    }
+    found <- fn %in% search || found
+    # once we find it, return early. This limits the time we spend in this loop
+    if (found) {
+      return(found)
+    }
+  }
+  # if we reach here, it should be FALSE.
+  found
+}
+
+in_production <- function(calls = sys.calls()) {
+  fns <- c("ci_deploy", "ci_build_site", "ci_build_markdown")
+  parent_calls_contain(fns, calls)
+}
+
 
 # Parse a markdown title to html
 #
@@ -99,7 +146,7 @@ isTRUE  <- function(x) is.logical(x) && length(x) == 1L && !is.na(x) && x
 
 create_lesson_readme <- function(name, path) {
 
-  writeLines(glue::glue("# {name}
+  writeLines(glue::glue("## {name}
 
       This is the lesson repository for {name}
   "), con = fs::path(path, "README.md"))
@@ -119,7 +166,7 @@ create_site_readme <- function(path) {
 
 create_description <- function(path) {
   yaml <- yaml::read_yaml(path_config(path), eval.expr = FALSE)
-  the_author <- paste(gert::git_signature_default(path), "[aut, cre]")
+  the_author <- paste("Jo Carpenter <team@carpentries.org> [aut, cre]")
   the_author <- utils::as.person(the_author)
   desc <- desc::description$new("!new")
   desc$del(c("BugReports", "LazyData"))
@@ -134,14 +181,19 @@ create_description <- function(path) {
   desc$write(fs::path(path_site(path), "DESCRIPTION"))
 }
 
-which_carpentry <- function(carpentry) {
+which_carpentry <- function(carpentry, carpentry_description = NULL) {
+  if (!is.null(carpentry_description)) {
+    return(carpentry_description)
+  }
   switch(carpentry,
     lc = "Library Carpentry",
     dc = "Data Carpentry",
     swc = "Software Carpentry",
     cp = "The Carpentries",
     incubator = "Carpentries Incubator",
-    lab = "Carpentries Lab"
+    lab = "Carpentries Lab",
+    # Default: match the input
+    carpentry
   )
 }
 
@@ -152,7 +204,9 @@ which_icon_carpentry <- function(carpentry) {
     swc = "software",
     cp = "carpentries",
     incubator = "incubator",
-    lab = "lab"
+    lab = "lab",
+    # Default: match the input
+    carpentry
   )
 }
 

@@ -16,11 +16,11 @@ test_that("Lessons built for the first time are noisy", {
   htmls <- read_all_html(sitepath)
   expect_setequal(names(htmls$learner),
     c("introduction", "index", "LICENSE", "CODE_OF_CONDUCT", "profiles",
-      "instructor-notes", "key-points", "aio", "images")
+      "instructor-notes", "key-points", "aio", "images", "reference", "404")
   )
   expect_setequal(names(htmls$instructor),
     c("introduction", "index", "LICENSE", "CODE_OF_CONDUCT", "profiles",
-      "instructor-notes", "key-points", "aio", "images")
+      "instructor-notes", "key-points", "aio", "images", "reference", "404")
   )
 
 })
@@ -33,9 +33,20 @@ if (rmarkdown::pandoc_available("2.11")) {
 
 pkg <- pkgdown::as_pkgdown(fs::path_dir(sitepath))
 
+
+test_that("The lesson contact is always team@carpentries.org", {
+  dsc <- desc::description$new(sub("docs[/]?", "DESCRIPTION", sitepath))
+  auth <- eval(parse(text = dsc$get_field("Authors@R")))
+  expect_equal(as.character(auth),
+    "Jo Carpenter <team@carpentries.org> [aut, cre]")
+})
+
+
 test_that("build_lesson() also builds the extra pages", {
   skip_if_not(rmarkdown::pandoc_available("2.11"))
   expect_true(fs::dir_exists(sitepath))
+  expect_true(fs::file_exists(fs::path(sitepath, "404.html")))
+  expect_true(fs::file_exists(fs::path(sitepath, "instructor", "404.html")))
   expect_true(fs::file_exists(fs::path(sitepath, "instructor-notes.html")))
   expect_true(fs::file_exists(fs::path(sitepath, "instructor", "instructor-notes.html")))
   expect_true(fs::file_exists(fs::path(sitepath, "key-points.html")))
@@ -44,6 +55,26 @@ test_that("build_lesson() also builds the extra pages", {
   expect_true(fs::file_exists(fs::path(sitepath, "instructor", "aio.html")))
   expect_true(fs::file_exists(fs::path(sitepath, "images.html")))
   expect_true(fs::file_exists(fs::path(sitepath, "instructor", "images.html")))
+})
+
+
+
+test_that("local site build produces 404 page with relative links", {
+
+  skip_if_not(rmarkdown::pandoc_available("2.11"))
+  # in the site branch, it does exist
+  expect_true(file.exists(file.path(sitepath, "404.html")))
+  # parse the page to find the stylesheet node
+  html <- xml2::read_html(file.path(sitepath, "404.html"))
+  stysh <- xml2::xml_find_first(html, ".//head/link[@rel='stylesheet']")
+  url <- xml2::xml_attr(stysh, "href")
+  parsed <- xml2::url_parse(url)
+
+  # test that it does not hav the form of
+  # https://[server]/lesson-example/[stylesheet]
+  expect_equal(parsed[["scheme"]], "")
+  expect_equal(parsed[["server"]], "")
+  expect_false(startsWith(parsed[["path"]], "/lesson-example"))
 })
 
 
@@ -134,6 +165,36 @@ test_that("instructor-notes page can be rebuilt", {
 
 })
 
+test_that("empty instructor notes build", {
+  skip_if_not(rmarkdown::pandoc_available("2.11"))
+  # 0. Test that the placeholder text exists in the rendered instructor notes
+  build_instructor_notes(pkg, pages = htmls, quiet = TRUE)
+  expect_true(any(grepl(
+    "This is a placeholder file.",
+    readLines(fs::path(sitepath, "instructor-notes.html"))
+  )))
+  # 1. make a copy of the instructor-notes.md to a local tempfile (use tmp <-
+  # withr::local_tempfile() and fs::file_copy()
+  tmp <- withr::local_tempfile()
+  fs::file_copy(fs::path(res, "instructors/instructor-notes.md"), tmp)
+  # 2. use withr::defer() to do the opposite, copying over the saved file back
+  # when the test finishes)
+  withr::defer({
+    fs::file_copy(tmp, fs::path(res, "instructors/instructor-notes.md"), overwrite = TRUE)
+  }, priority = "first")
+  # 3. replace the instructor-notes.md with "---\ntitle: test\n---\n" using the
+  # writeLines() function
+  writeLines("---\ntitle: test\n---\n", fs::path(res, "instructors/instructor-notes.md"))
+  # 4. test that build_instructor_notes() builds the notes and doesn't throw an
+  # error.
+  expect_no_error(build_instructor_notes(pkg, pages = htmls, quiet = TRUE))
+  # 5. test for the absence of placeholder text
+  expect_false(any(grepl(
+    "This is a placeholder file.",
+    readLines(fs::path(sitepath, "instructor-notes.html"))
+  )))
+})
+
 test_that("sitemap exists", {
   skip_if_not(rmarkdown::pandoc_available("2.11"))
   sitemap <- fs::path(sitepath, "sitemap.xml")
@@ -174,9 +235,10 @@ test_that("Lesson websites contains instructor metadata", {
 })
 
 test_that("single files can be built", {
-
-  create_episode("Second Episode!", path = tmp)
-  suppressMessages(s <- get_episodes(tmp))
+  suppressMessages({
+    create_episode("_Second_ Episode!", path = tmp, open = FALSE)
+    s <- get_episodes(tmp)
+  })
   set_episodes(tmp, s, write = TRUE)
 
   rdr <- sandpaper_site(fs::path(tmp, "episodes", "second-episode.Rmd"))
@@ -221,7 +283,7 @@ test_that("single files can be re-built", {
 
   suppressMessages({
     rdr$render(fs::path(tmp, "LICENSE.md")) %>%
-      expect_output("Writing") %>%
+      expect_message("Writing") %>%
       expect_message("Output created: .*LICENSE.html")
   })
 
@@ -261,6 +323,21 @@ test_that("HTML files are present and have the correct elements", {
         readLines(fs::path(sitepath, "index.html"))
   )))
 })
+
+
+test_that("Active episode contains sidebar number", {
+  ep <- readLines(fs::path(sitepath, "second-episode.html"))
+  xml <- xml2::read_html(paste(ep, collapse = ""))
+
+  # Instructor sidebar is formatted properly
+  sidebar <- xml2::xml_find_all(xml, ".//div[@class='sidebar']")
+  expect_length(sidebar, 1L)
+  this_ep <- xml2::xml_find_first(sidebar, ".//span[@class='current-chapter']")
+  this_title <- as.character(xml2::xml_contents(this_ep))
+  this_title <- trimws(paste(this_title, collapse = ""))
+  expect_equal(this_title, "2. <em>Second</em> Episode!")
+})
+
 
 test_that("files will not be rebuilt unless they change in content", {
 

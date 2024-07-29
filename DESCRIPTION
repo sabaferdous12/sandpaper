@@ -1,20 +1,60 @@
 Package: sandpaper
 Title: Create and Curate Carpentries Lessons
-Version: 0.11.9
+Version: 0.16.5
 Authors@R: c(
+    person(given = "Robert",
+           family = "Davey",
+           role = c("aut", "cre"),
+           email = "robertdavey@carpentries.org",
+           comment = c(ORCID = "0000-0002-5589-7754")),
+    person(given = "Erin",
+           family = "Becker",
+           role = c("aut"),
+           email = "erinbecker@carpentries.org",
+           comment = c(ORCID = "0000-0002-6832-0233")),
     person(given = "Zhian N.",
            family = "Kamvar",
-           role = c("aut", "cre"),
+           role = c("aut"),
            email = "zkamvar@carpentries.org",
            comment = c(ORCID = "0000-0003-1458-7108")),
-    person(given = "François",
-           family = "Michonneau",
+    person(given = "Julien",
+           family = "Colomb",
            role = c("ctb"),
-           email = "francois@carpentries.org"),
+           comment = c(ORCID = "0000-0002-3127-5520")),
+    person(given = "Ben",
+           family = "Companjen",
+           role = c("ctb"),
+           comment = c(ORCID = "0000-0002-7023-9047")),
     person(given = "Toby",
            family = "Hodges",
            role = c("ctb"),
            email = "tobyhodges@carpentries.org"),
+    person(given = "François",
+           family = "Michonneau",
+           role = c("ctb"),
+           email = "francois@carpentries.org"),
+    person(given = "Kelly",
+           family = "Barnes",
+           role = c("ctb"),
+           email = "kbarnes@carpentries.org"),
+    person(given = "Hugo",
+           family = "Gruson",
+           role = c("ctb"),
+           email = "hugo.gruson+R@normalesup.org"),
+    person(given = "Milan",
+           family = "Malfait",
+           role = c("ctb"),
+           email = "milan.malfait94@gmail.com",
+           comment = c(ORCID = "0000-0001-9144-3701")),
+    person(given = "Joel H.",
+           family = "Nitta",
+           role = c("aut", "trl"),
+           email = "joelnitta@gmail.com",
+           comment = c(ORCID = "0000-0003-4719-7472")),
+    person(given = "Yanina",
+           family = "Bellini Saibene",
+           role = c("ctb", "trl"),
+           comment = c(ORCID = "0000-0002-4522-7466")),
     person())
 Description: We provide tools to build a Carpentries-themed lesson repository
   into an accessible standalone static website. These include local tools and
@@ -23,7 +63,7 @@ Description: We provide tools to build a Carpentries-themed lesson repository
 License: MIT + file LICENSE
 Imports:
     pkgdown (>= 1.6.0),
-    pegboard (>= 0.2.3),
+    pegboard (>= 0.7.0),
     cli (>= 3.4.0),
     commonmark,
     fs (>= 1.5.0),
@@ -40,6 +80,7 @@ Imports:
     renv (>= 0.14.0),
     rprojroot,
     usethis (>= 2.0.0),
+    withr,
     whisker,
     callr,
     servr,
@@ -47,27 +88,26 @@ Imports:
     tools
 Suggests:
     testthat (>= 3.0.0),
+    covr,
     markdown,
     brio,
     xml2,
     xslt,
-    covr,
-    withr,
     jsonlite,
     sessioninfo,
-    varnish (>= 0.2.1),
-    mockr
+    mockr,
+    varnish (>= 0.3.0)
 Additional_repositories: https://carpentries.r-universe.dev/
 Remotes:
-  ropensci/tinkr,
   carpentries/pegboard,
-  carpentries/varnish,
-  rstudio/renv
-SystemRequirements: pandoc (>= 1.11.4) - http://pandoc.org
+  carpentries/varnish
+SystemRequirements: pandoc (>= 2.11.4) - https://pandoc.org
 Encoding: UTF-8
 LazyData: true
 Config/testthat/edition: 3
 Config/testthat/parallel: false
+Config/Needs/check: rstudio/renv
+Config/potools/style: explicit
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 URL: https://carpentries.github.io/sandpaper/, https://github.com/carpentries/sandpaper/, https://carpentries.github.io/workbench/

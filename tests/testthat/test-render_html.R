@@ -11,6 +11,19 @@ test_that("sandpaper.links can be included", {
   expect_no_match(render_html(tmp), "\\[link at the end\\]")
 })
 
+test_that("sandpaper.links can be included even with read-only template file", {
+  skip_if_not(rmarkdown::pandoc_available("2.11"))
+  tmp <- withr::local_tempfile()
+  tnk <- withr::local_tempfile()
+  writeLines("This has a [link at the end] in a separate file[^1]\n\n[^1]: :)", tmp)
+
+  perm <- fs::file_info(tmp)$permissions
+  withr::defer(fs::file_chmod(tmp, perm), priority = "first")
+  fs::file_chmod(tmp, "a-w")
+  writeLines("[link at the end]: https://example.com/link", tnk)
+  withr::local_options(list("sandpaper.links" = tnk))
+  expect_no_match(render_html(tmp), "\\[link at the end\\]")
+})
 
 test_that("tabs are preserved", {
   skip_if_not(rmarkdown::pandoc_available("2.11"))
@@ -63,27 +76,27 @@ test_that("footnotes are rendered", {
 })
 
 test_that("pandoc structure is rendered correctly", {
-  
+
   skip_if_not(rmarkdown::pandoc_available("2.11"))
   out <- fs::file_temp()
   withr::local_file(out)
 
   args <- construct_pandoc_args(example_markdown, out, to = "native")
   callr::r(function(...) rmarkdown::pandoc_convert(...), args = args)
-  if (.Platform$OS.type == "windows" && Sys.getenv("CI", unset = '') == "true") {
-    # let's see what this looks like
-    message(cat(readLines(out), sep = "\n"))
-  }
-  skip_on_os("windows")
   formation = function(x) {
-    x <- sub("[,]Div [(]\"collapseInstructor1\".+", "[instructor collapse]", x)
-    sub("[,]Div [(]\"collapseSolution1\".+", "[solution collapse]", x)
+    rgx <- "(data-bs-parent|aria-labelledby).+?(Instructor|Solution|Spoiler)1"
+    return(sub(rgx, "[\\2 hidden]", x))
   }
-  expect_snapshot(cat(readLines(out), sep = "\n"), transform = formation)
+  ver <- as.character(rmarkdown::pandoc_version())
+  expect_snapshot(
+    cat(readLines(out), sep = "\n"),
+    transform = formation,
+    variant = ver
+  )
 })
 
 test_that("paragraphs after objectives block are parsed correctly", {
-  
+
   skip_if_not(rmarkdown::pandoc_available("2.11"))
   tmp <- fs::file_temp()
   out <- fs::file_temp()
@@ -94,12 +107,8 @@ test_that("paragraphs after objectives block are parsed correctly", {
   writeLines(ex2, tmp)
   args <- construct_pandoc_args(tmp, out, to = "native")
   callr::r(function(...) rmarkdown::pandoc_convert(...), args = args)
-  if (.Platform$OS.type == "windows" && Sys.getenv("CI", unset = '') == "true") {
-    # let's see what this looks like
-    message(cat(readLines(out), sep = "\n"))
-  }
-  skip_on_os("windows")
-  expect_snapshot(cat(readLines(out), sep = "\n"))
+  ver <- as.character(rmarkdown::pandoc_version())
+  expect_snapshot(cat(readLines(out), sep = "\n"), variant = ver)
 
 })
 
@@ -128,17 +137,21 @@ test_that("render_html applies the internal lua filter", {
   expect_match(res, "div class=\"nothing\"", fixed = TRUE)
   expect_failure(expect_match(res, "Nothing</h2>", fixed = TRUE))
 
-  if (.Platform$OS.type == "windows" && Sys.getenv("CI", unset = '') == "true") {
-    # let's see what this looks like
-    message(res)
-  }
-  skip_on_os("windows")
   formation = function(x) {
-    x <- sub("[<]div id[=]\"collapseSolution1\".+", "[solution collapse]", x)
-    sub("[<]div id[=]\"collapseInstructor1\".+", "[instructor collapse]", x)
-    
+    open <- "[<]div id[=]\"collapse(Instructor|Solution|Spoiler)\\d\".+"
+    mid  <- "(data-bs-parent|aria-labelledby).+?(Instructor|Solution|Spoiler)\\d[\"]$"
+    close <- "(data-bs-parent|aria-labelledby).+?(Instructor|Solution|Spoiler)\\d.+[>]$"
+    x <- sub(open, "<div id=\"\\1-[hidden...\"", x)
+    x <- sub(mid, "...still hiding...", x)
+    x <- sub(close, "...done]>", x)
+    return(x)
   }
-  expect_snapshot(cat(res), transform = formation)
+  ver <- as.character(rmarkdown::pandoc_version())
+  non_utf8_windows <- tolower(Sys.info()[["sysname"]]) == "windows" &&
+    getRversion() < package_version("4.2.0")
+  skip_if(non_utf8_windows, 
+    message = "This version of Windows cannot handle UTF-8 strings")
+  expect_snapshot(cat(res), transform = formation, variant = ver)
 })
 
 
@@ -194,5 +207,5 @@ test_that("render_html applies external lua filters", {
   writeLines(lu, lua)
   res <- render_html(example_markdown, paste0("--lua-filter=", lua))
   expect_match(res, "<em>mowdrank</em> divs", fixed = TRUE)
-  
+
 })

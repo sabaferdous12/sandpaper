@@ -18,19 +18,6 @@
     "RENV_CONFIG_CACHE_SYMLINKS" = renv_cache_available()))
 }
 
-test_that("callr_build_episode_md() works with normal markdown", {
-
-  expect_false(fs::file_exists(o1))
-  res <- callr_build_episode_md(
-    path = t1, hash = NULL, workenv = new.env(),
-    outpath = o1, workdir = fs::path_dir(o1), root = "", quiet = FALSE
-  )
-  expect_null(res)
-  expect_true(fs::file_exists(o1))
-  expect_equal(tools::md5sum(t1), tools::md5sum(o1), ignore_attr = TRUE)
-
-})
-
 test_that("callr_build_episode_md() works with Rmarkdown", {
 
   expect_false(fs::file_exists(o2))
@@ -50,6 +37,8 @@ test_that("callr_build_episode_md() works with Rmarkdown", {
 test_that("callr_build_episode_md() works with Rmarkdown using renv", {
 
   skip_on_os("windows")
+  withr::local_options(list("renv.verbose" = TRUE))
+
   fs::file_delete(o2)
   expect_false(fs::file_exists(o2))
   suppressMessages({
@@ -57,10 +46,12 @@ test_that("callr_build_episode_md() works with Rmarkdown using renv", {
     path = t2, hash = NULL, workenv = new.env(),
     outpath = o2, workdir = fs::path_dir(o2), root = lsn, quiet = TRUE
   ) %>%
-    expect_output("\\(lesson-requirements\\)")
+    expect_output("lesson-requirements") # Looking for a report of the lesson-requirements profile from {renv}
   })
   expect_true(fs::file_exists(o2))
+  # our R expression was evaluated
   expect_match(grep("Hello", readLines(o2), value = TRUE), "Hello from R (version|Under)")
+  # The CSS code is evaluated
   expect_match(grep("css", readLines(o2), value = TRUE), "style type=.text/css.")
 
 })

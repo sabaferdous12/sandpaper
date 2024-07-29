@@ -20,7 +20,7 @@ cli::test_that_cli("set_config() will set individual items", {
   expect_snapshot(
     set_config(list("title" = "test: title", "license" = "CC0"), path = tmp)
   )
-}, config = c("plain"))
+}, configs = c("plain"))
 
 cli::test_that_cli("set_config() will write items", {
   fs::file_copy(tcfg, this_cfg, overwrite = TRUE)
@@ -33,7 +33,7 @@ cli::test_that_cli("set_config() will write items", {
 test_that("custom keys will return an error with default", {
   suppressMessages({
   expect_snapshot_error(
-    set_config(c("test-key" = "hey!", "keytest" = "yo?"), 
+    set_config(c("test-key" = "hey!", "keytest" = "yo?"),
       path = tmp, write = TRUE, create = FALSE)
   )
   })
@@ -69,7 +69,7 @@ test_that("schedule is empty by default", {
 test_that("new episodes will add to the schedule by default", {
 
   set_episodes(tmp, "introduction.Rmd", write = TRUE)
-  create_episode("new", path = tmp)
+  suppressMessages(create_episode("new", path = tmp, open = FALSE))
   expect_equal(get_episodes(tmp), c("introduction.Rmd", "new.Rmd"), ignore_attr = TRUE)
 
 })
@@ -114,7 +114,7 @@ test_that("adding episodes will concatenate the schedule", {
 
   set_episodes(tmp, "introduction.Rmd", write = TRUE)
   expect_equal(get_episodes(tmp), "introduction.Rmd")
-  create_episode("second-episode", add = TRUE, path = tmp)
+  suppressMessages(create_episode("second-episode", add = TRUE, path = tmp, open = FALSE))
   expect_equal(res, tmp, ignore_attr = TRUE)
   expect_equal(get_episodes(tmp), c("introduction.Rmd", "second-episode.Rmd"), ignore_attr = TRUE)
 
@@ -138,7 +138,7 @@ test_that("the schedule can be rearranged", {
 })
 
 test_that("yaml lists are preserved with other schedule updates", {
-  
+
   set_episodes(tmp, c("second-episode.Rmd", "introduction.Rmd"), write = TRUE)
   # regression test for https://github.com/carpentries/sandpaper/issues/53
   expect_equal(get_episodes(tmp), c("second-episode.Rmd", "introduction.Rmd"))
@@ -160,10 +160,12 @@ test_that("the schedule can be truncated", {
 
   # build the lesson here just to be absolutely sure
   withr::defer(use_package_cache(prompt = FALSE, quiet = TRUE))
-  no_package_cache()
-  expect_silent(build_lesson(tmp, quiet = TRUE, preview = FALSE))
+  suppressMessages({
+    no_package_cache()
+    build_lesson(tmp, quiet = TRUE, preview = FALSE)
+  })
   html <- xml2::read_html(fs::path(tmp, "site/docs/index.html"))
-  episodes <- xml2::xml_find_all(html, 
+  episodes <- xml2::xml_find_all(html,
     ".//div[contains(@class, 'accordion-header')]/a")
   links <- xml2::xml_attr(episodes, "href")
   expect_length(links, 1)

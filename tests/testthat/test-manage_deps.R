@@ -1,6 +1,6 @@
 lsn <- restore_fixture()
 
-cli::test_that_cli("pacakge cache message appears correct", {
+cli::test_that_cli("package cache message appears correct", {
 
   msg <- readLines(system.file("resources/WELCOME", package = "renv"))
   msg <- gsub("${RENV_PATHS_ROOT}", dQuote("/path/to/cache"), msg, fixed = TRUE)
@@ -16,14 +16,16 @@ test_that("use_package_cache() will report consent implied if renv cache is pres
   withr::local_options(list(sandpaper.use_renv = FALSE))
   expect_false(getOption("sandpaper.use_renv"))
 
-  expect_message(
-    use_package_cache(prompt = TRUE, quiet = FALSE),
-    "Consent for renv provided---consent for package cache implied."
-  )
-  expect_message(
-    use_package_cache(prompt = TRUE, quiet = FALSE),
-    "Consent to use package cache provided"
-  )
+  use_package_cache(prompt = FALSE, quiet = TRUE)
+  expect_true(getOption("sandpaper.use_renv"))
+
+  # a consent message is printed
+  suppressMessages({
+    expect_message(
+      use_package_cache(prompt = TRUE, quiet = FALSE),
+      "Consent to use package cache provided"
+    )
+  })
   expect_true(getOption("sandpaper.use_renv"))
 
 })
@@ -43,6 +45,7 @@ test_that("manage_deps() will create a renv folder", {
 
   skip_on_cran()
   skip_on_os("windows")
+  withr::local_options(list("renv.verbose" = TRUE))
   rnv <- fs::path(lsn, "renv")
   # need to move renv folder outside of the lesson or it will detect the
   # suggested packages within the package and chaos will ensue
@@ -57,9 +60,8 @@ test_that("manage_deps() will create a renv folder", {
 
   # NOTE: these tests are still not very specific here...
   suppressMessages({
-    build_markdown(lsn, quiet = FALSE) %>%
-      expect_message("Consent to use package cache provided") %>%
-      expect_output("Lockfile written to")
+    capture.output(build_markdown(lsn, quiet = FALSE)) %>%
+      expect_message("Consent to use package cache provided")
   })
 
   expect_true(fs::dir_exists(rnv))
@@ -76,12 +78,16 @@ test_that("manage_deps() will run without callr", {
 
   skip_on_cran()
   skip_on_os("windows")
+  withr::local_options(list("renv.verbose" = TRUE))
   withr::local_envvar(list(
     "RENV_PROFILE" = "lesson-requirements",
     "R_PROFILE_USER" = fs::path(tempfile(), "nada"),
     "RENV_CONFIG_CACHE_SYMLINKS" = renv_cache_available()
   ))
 
+  # 2023-08-21
+  # I found a slowdown here when running this interactively, which was
+  # fixed by setting `prompt = FALSE` when we were testing in `renv::hydrate`
   suppressMessages({
   callr_manage_deps(lsn,
     repos = renv_carpentries_repos(),
@@ -128,6 +134,7 @@ test_that("pin_version() will use_specific versions", {
   skip_on_os("windows")
   skip_if_offline()
 
+  withr::local_options(list("renv.verbose" = TRUE))
   withr::local_envvar(list(
     "RENV_PROFILE" = "lesson-requirements",
     "R_PROFILE_USER" = fs::path(tempfile(), "nada"),
@@ -143,12 +150,14 @@ test_that("pin_version() will use_specific versions", {
   # that might make provisioning packages a tricky business.
   skip_if(covr::in_covr())
 
+  withr::local_options(list("renv.verbose" = FALSE))
   suppressMessages({
-    # sessioninfo 1.2.0 dropped withr and cli as dependencies, so we should
-    # expect them to appear here
-    expect_output(res <- manage_deps(lsn), "withr")
+    capture.output(res <- manage_deps(lsn))
   })
 
+  # sessioninfo 1.2.0 dropped withr as a dependency, so we should
+  # expect it to appear here
+  expect_false(is.null(res$Packages$withr))
   expect_equal(res$Packages$sessioninfo$Version, "1.1.0")
 
 })
@@ -197,10 +206,8 @@ test_that("update_cache() will update old package versions", {
   skip_if_offline()
   skip_if(covr::in_covr())
 
-  suppressMessages({
-    res <- update_cache(path = fs::path(lsn, "episodes"), prompt = FALSE, quiet = FALSE) %>%
-      expect_output("sessioninfo")
-  })
+
+  res <- update_cache(path = fs::path(lsn, "episodes"), prompt = FALSE, quiet = FALSE)
   expect_true(
     package_version(res$sessioninfo$Version) > package_version("1.1.0")
   )

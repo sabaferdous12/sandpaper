@@ -54,7 +54,7 @@ install.packages("sandpaper", dep = TRUE)
 
 Note that this will also install development versions of the following packages:
 
-| package      | What it does | 
+| package      | What it does |
 | -------------| ------------ |
 | [{varnish}]  | html, css, and javascript templates for The Carpentries (in progress) |
 | [{tinkr}]    | manipulation of knitr markdown documents built on the commonmark xml library |
@@ -159,7 +159,7 @@ The functions in {sandpaper} have the following prefixes:
  - `create_` will create/amend files or folders in your workspace
  - `update_` will update build resources in the lesson
  - `build_` will build files from your source
- - `check_` validates either the elements of the lesson and/or episodes
+ - `validate_` will check the validity of either the elements of the lesson and/or episodes
  - `fetch_` will download files or resources from the internet
  - `reset_` removes files or information
  - `get_` will retrieve information from your source files as an R object
@@ -184,12 +184,11 @@ Accessors
 
 **Website Creation and Validation**
 
- - `check_lesson()` checks and validates the source files and lesson structure
+ - `validate_lesson()` checks and validates the source files and lesson structure
  - `build_episode_md()` renders an individual file to markdown (internal use)
  - `build_episode_html()` renders a built markdown file to html (internal use)
  - `build_lesson()` builds the lesson into a static website
  - `build_portable_lesson()` builds the lesson into a portable static website
- - `fetch_lesson()` fetches the static website from the lesson repository
 
 **Continuous Integration Utilities**
 
@@ -296,21 +295,6 @@ usethis::create_from_github(
 This will copy all of the source files to your computer and move you to the
 directory.
 
-Note that the rendered website will not be immediately available. To download
-the site as it currently appears on the web, use:
-
-```{r}
-sandpaper::fetch_lesson(markdown = TRUE, site = TRUE)
-```
-
-This will download the site and the rendered markdown files into the `site/`
-folder. To save bandwidth, you can choose to just download the markdown files
-and artifacts by settin `site = FALSE`. Now, you can edit the Rmarkdown files
-in `episodes/` and quickly render the site.
-
-To upload changes to the lesson repository, you can use the follow
-
-
 ### Maintaining a Lesson
 
 When you are maintaining a lesson, there is a high likelihood that you will
@@ -325,7 +309,7 @@ The typical workflow will look like this:
 
 
 ```{r}
-sandpaper::check_lesson() # validates the structure of the input files
+sandpaper::validate_lesson() # validates the structure of the input files
 sandpaper::build_lesson() # builds and validates lesson
 ```
 
