@@ -9,6 +9,12 @@ as_html <- function(i, instructor = FALSE) {
   if (instructor) fs::path("instructor", res) else res
 }
 
+as_pdf <- function(i, instructor = FALSE) {
+  if (length(i) == 0) return(i)
+  res <- fs::path_ext_set(fs::path_file(i), "pdf")
+  if (instructor) fs::path("instructor", res) else res
+}
+
 example_can_run <- function(need_git = FALSE, skip_cran = TRUE) {
   no_need_git <- !need_git
   run_ok <- (no_need_git || has_git()) &&
