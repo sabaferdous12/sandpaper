@@ -13,11 +13,9 @@ with_renv_factory(func, renv_path, renv_profile = "lesson-requirements")
 \code{\link[=create_lesson]{create_lesson()}}}
 
 \item{renv_profile}{Optional profile to load. Defaults to "lesson-requirements".}
-
-\item{...}{Additional arguments to be passed to \code{func}.}
 }
 \value{
-The result of evaluating \code{func(...)} after loading the renv environment.
+The function \code{func} after loading the renv environment.
 }
 \description{
 This is a \href{https://adv-r.hadley.nz/function-operators.html}{Function operator} which will
