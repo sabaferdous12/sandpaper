@@ -10,7 +10,8 @@ use_python(
   python = NULL,
   type = c("auto", "virtualenv", "conda", "system"),
   open = rlang::is_interactive(),
-  ...
+  ...,
+  quiet = FALSE
 )
 
 py_install(packages, path = ".", ...)
@@ -27,6 +28,8 @@ virtual environments will be used.}
 \item{open}{if interactive, the lesson will open in a new editor window.}
 
 \item{...}{Further arguments to be passed to \code{\link[reticulate:py_install]{reticulate::py_install()}}}
+
+\item{quiet}{if \code{TRUE}, suppresses output.}
 
 \item{packages}{Python packages to be installed as a character vecto.}
 }
