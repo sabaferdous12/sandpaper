@@ -131,8 +131,13 @@ test_that("404 page root will be lesson URL", {
   hrefs <- xml2::xml_attr(navbar, "href")
   parsed <- xml2::url_parse(hrefs)
   expect_equal(unique(parsed[["scheme"]]), "https")
-  expect_false(unique(parsed[["server"]]) == "")
-  expect_true(all(startsWith(parsed[["path"]], "/lesson-example")))
+  # L2D-specific: because of the L2D-Handbook included in the header (through varnish)
+  # unique(parsed[["server"]]) has 2 elements, bot of which should be non-empty
+  # and parsed[["path"]] can also have "L2D-Handbook"
+  expect_false(any(unique(parsed[["server"]]) == ""))
+  parsed_paths <- parsed[["path"]]
+  is_handbook <- startsWith(parsed_paths, "/L2D-Handbook/")
+  expect_true(all(startsWith(parsed_paths[!is_handbook], "/lesson-example")))
 
   # test that the sidebar items are all appopriate
   # (with exception of the instructor view toggle)
