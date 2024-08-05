@@ -17,3 +17,7 @@
 
 ^doc$
 ^Meta$
+
+^\.vscode$
+^dev$
+^\.renovaterc\.json5$

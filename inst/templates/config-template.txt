@@ -41,6 +41,12 @@ branch: {{ branch }}{{ ^branch }}main{{ /branch }}
 # Who to contact if there are any issues
 contact: {{ contact }}
 
+# Generate PDFs of episodes?
+pdf: {{ pdf }}
+
+# Generate ipynb notebooks of episodes?
+ipynb: {{ ipynb }}
+
 # Navigation ------------------------------------------------
 #
 # Use the following menu items to specify the order of

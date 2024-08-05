@@ -58,6 +58,20 @@ test_that("build_lesson() also builds the extra pages", {
 })
 
 
+test_that("build_lesson() generates PDF if requested", {
+
+  restore_fixture <- create_test_lesson(pdf = TRUE)
+  tmp <- res <- restore_fixture()
+  sitepath <- fs::path(tmp, "site", "docs")
+
+  chrome_available <- check_chrome_available()
+  skip_if_not(rmarkdown::pandoc_available("2.11"))
+  skip_if_not(chrome_available, "Chrome not available")
+
+  build_lesson(tmp, preview = FALSE, quiet = FALSE)
+  expect_true(fs::file_exists(fs::path(sitepath, "introduction.pdf")))
+})
+
 
 test_that("local site build produces 404 page with relative links", {
 
@@ -112,6 +126,24 @@ test_that("aio page can be rebuilt", {
   expect_length(content, 0L)
 
 })
+
+test_that("aio PDF can be built if Chrome available", {
+  aio <- fs::path(sitepath, "aio.html")
+  chrome_available <- check_chrome_available()
+  skip_if_not(rmarkdown::pandoc_available("2.11"))
+  skip_if_not(chrome_available, "Chrome not available")
+  skip_if_not(file.exists(aio))
+
+  html_to_pdf(aio)
+  aio_pdf <- fs::path(sitepath, "aio.pdf")
+  expect_true(file.exists(aio_pdf))
+})
+
+test_that("html_to_pdf returns warning if Chrome not available", {
+  withr::local_envvar(c("PAGEDOWN_CHROME" = "not-a-real-browser"))
+  expect_warning(html_to_pdf(fs::path(sitepath, "aio.html")), "Chrome is not available")
+})
+
 
 test_that("keypoints page can be rebuilt", {
 
@@ -453,4 +485,15 @@ test_that("episodes with HTML in the title are rendered correctly", {
         readLines(fs::path(sitepath, "second-episode.html")),
         fixed = TRUE
   )))
+})
+
+test_that("build_lesson also creates jupyter notebooks when required", {
+  skip_if_not(getRversion() >= "4.2")
+
+  ## Re-create lesson with notebooks enabled
+  tmp <- local_lesson(ipynb = TRUE)
+  build_lesson(tmp, quiet = TRUE, preview = FALSE)
+
+  built_path <- path_built(tmp)
+  expect_true(fs::file_exists(fs::path(built_path, "introduction.ipynb")))
 })

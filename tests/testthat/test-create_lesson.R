@@ -149,3 +149,13 @@ test_that("lessons cannot be created in directories that are occupied", {
   # This should fail
   expect_error(create_lesson(tmp, open = FALSE), "lesson-example is not an empty directory.")
 })
+
+test_that("`pdf = TRUE` option works for create_lesson()", {
+  lsn <- local_lesson(pdf = TRUE)
+  expect_true(get_config(lsn)$pdf)
+})
+
+test_that("`ipynb = TRUE` option works for create_lesson()", {
+  lsn <- local_lesson(ipynb = TRUE)
+  expect_true(get_config(lsn)$ipynb)
+})

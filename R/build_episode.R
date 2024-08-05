@@ -144,6 +144,7 @@ get_nav_data <- function(path_md, path_src = NULL, home = NULL,
     minutes       = as.integer(yaml$teaching) + as.integer(yaml$exercises),
     file_source   = fs::path_rel(path_src, start = home),
     this_page     = fs::path_file(this_page),
+    this_page_pdf = fs::path_file(as_pdf(this_page)),
     page_back     = page_back,
     back_title    = pb_title,
     page_forward  = page_forward,
@@ -206,6 +207,7 @@ build_episode_md <- function(path, hash = NULL, outdir = path_built(path),
   md <- fs::path_ext_set(fs::path_file(path), "md")
   outpath <- fs::path(outdir, md)
 
+  # Set up the arguments
   # shortcut if we have a markdown file
   if (file_ext(path) == "md") {
     file.copy(path, outpath, overwrite = TRUE)
@@ -233,7 +235,9 @@ build_episode_md <- function(path, hash = NULL, outdir = path_built(path),
   # ==========================================================
   #
   # Note that this process can NOT use any internal functions
+
   sho <- !(quiet || identical(Sys.getenv("TESTTHAT"), "true"))
+
   callr::r(
     func = callr_build_episode_md,
     args = args,
@@ -244,5 +248,43 @@ build_episode_md <- function(path, hash = NULL, outdir = path_built(path),
       "RENV_CONFIG_CACHE_SYMLINKS" = renv_cache_available())
   )
 
+  invisible(outpath)
+}
+
+
+#' Convert a single episode to a Jupyter notebook
+#'
+#' @param path path to the RMarkdown file.
+#' @param outdir the directory to write to/
+#' @param quiet if `TRUE`, output is suppressed, default is `TRUE` so we can use better
+#'   formatting elsewhere.
+#'
+#' @return the path to the output, invisibly
+#' @keywords internal
+build_episode_ipynb <- function(path, outdir = path_built(path),
+                                profile = "lesson-requirements", quiet = TRUE) {
+
+  if (!rlang::is_installed("jupytextR", version = "0.1.0")) {
+    rlang::inform("jupytextR is not installed, attempting to install it.")
+    BiocManager::install("milanmlft/jupytextR")
+  }
+
+  outfile <- fs::path_ext_set(fs::path_file(path), "ipynb")
+  outpath <- fs::path(outdir, outfile)
+
+  args <- list(input = path, output = outpath, quiet = quiet)
+  sho <- !(quiet || identical(Sys.getenv("TESTTHAT"), "true"))
+
+  callr::r(
+    func = function(input, output, quiet) {
+      jupytextR::jupytext(input = input, to = "ipynb", output = output, quiet = quiet)
+    },
+    args = args,
+    show = !quiet,
+    spinner = sho,
+    env = c(callr::rcmd_safe_env(),
+            "RENV_PROFILE" = profile,
+            "RENV_CONFIG_CACHE_SYMLINKS" = renv_cache_available())
+  )
   invisible(outpath)
 }

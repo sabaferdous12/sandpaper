@@ -32,6 +32,8 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
   # does not exist or update the CSS, HTML, and JS if it does exist.
   pkg <- pkgdown::as_pkgdown(path_site(path), override = override)
   built_path <- fs::path(pkg$src_path, "built")
+
+
   # NOTE: This is a kludge to prevent pkgdown from displaying a bunch of noise
   #       if the user asks for quiet.
   if (quiet) {
@@ -47,6 +49,14 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
   # NOTE: future plans to reduce build times
   rebuild_template <- TRUE || !template_check$valid()
 
+  # Building jupyter notebooks, if required ------------------------------------
+
+  cfg <- get_config(path)
+  if (cfg$ipynb) {
+    describe_progress("Building jupyter notebooks", quiet = quiet)
+    built_ipynb <- build_ipynb(path = path, quiet = quiet)
+  }
+
   # Determining what to rebuild ------------------------------------------------
   describe_progress("Scanning episodes to rebuild", quiet = quiet)
   #
@@ -55,6 +65,7 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
   db <- get_built_db(fs::path(built_path, "md5sum.txt"))
   # filter out files that we will combine to generate
   db <- reserved_db(db)
+
   # Get absolute paths for pandoc to understand
   abs_md <- fs::path(path, db$built)
   abs_src <- fs::path(path, db$file)
@@ -91,6 +102,7 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
     # restore the original functions on exit
     on.exit(eval(when_done), add = TRUE)
   }
+
   # ------------------------ end downlit shim ----------------------------
   for (i in files_to_render) {
     location <- page_location(i, abs_md, er)
@@ -112,6 +124,16 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
 
   describe_progress("Creating 404 page", quiet = quiet)
   build_404(pkg, quiet = quiet)
+
+
+  # Episode PDFs ---------------------------------------------------------------
+  if (cfg$pdf) {
+    describe_progress("Creating PDFs", quiet = quiet)
+    html_paths <- fs::path(pkg$dst_path, as_html(abs_md))
+    for (i in files_to_render) {
+      html_to_pdf(html_paths[i], quiet = quiet)
+    }
+  }
 
   # Combined pages -------------------------------------------------------------
   #
@@ -148,12 +170,19 @@ build_site <- function(path = ".", quiet = !interactive(), preview = TRUE, overr
 
   # Once we have the pre-processed templates and HTML content, we can pass these
   # to our aggregator functions:
+
   if (not_overview) {
     describe_progress("Creating keypoints summary", quiet = quiet)
     build_keypoints(pkg, pages = html_pages, quiet = quiet)
 
     describe_progress("Creating All-in-one page", quiet = quiet)
     build_aio(pkg, pages = html_pages, quiet = quiet)
+
+    if (cfg$pdf) {
+      describe_progress("Creating All-in-one PDF", quiet = quiet)
+      aio_html <- fs::path(pkg$dst_path, "aio.html")
+      html_to_pdf(input = aio_html, output = fs::path(pkg$dst_path, "aio.pdf"), quiet = quiet)
+    }
 
     describe_progress("Creating Images page", quiet = quiet)
     build_images(pkg, pages = html_pages, quiet = quiet)
