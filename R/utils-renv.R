@@ -325,9 +325,8 @@ callr_manage_deps <- function(path, repos, snapshot, lockfile_exists) {
 #' @param renv_path The path to the renv environment to load. Usually a directory created by
 #'   [`create_lesson()`]
 #' @param renv_profile Optional profile to load. Defaults to "lesson-requirements".
-#' @param ... Additional arguments to be passed to `func`.
 #'
-#' @return The result of evaluating `func(...)` after loading the renv environment.
+#' @return The function `func` after loading the renv environment.
 #'
 #' @keywords internal
 with_renv_factory <- function(func, renv_path, renv_profile = "lesson-requirements") {
