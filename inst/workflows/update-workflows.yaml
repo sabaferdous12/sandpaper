@@ -25,7 +25,7 @@ jobs:
     steps:
       - name: "validate token"
         id: validate
-        uses: carpentries/actions/check-valid-credentials@main
+        uses: LearnToDiscover/actions/check-valid-credentials@l2d
         with:
           token: ${{ secrets.SANDPAPER_WORKFLOW }}
 
@@ -40,7 +40,7 @@ jobs:
 
       - name: Update Workflows
         id: update
-        uses: carpentries/actions/update-workflows@main
+        uses: LearnToDiscover/actions/update-workflows@l2d
         with:
           clean: ${{ github.event.inputs.clean }}
 
