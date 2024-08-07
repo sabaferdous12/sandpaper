@@ -17,7 +17,7 @@ jobs:
       contents: write
     steps:
       - name: 'Download artifact'
-        uses: carpentries/actions/download-workflow-artifact@main
+        uses: LearnToDiscover/actions/download-workflow-artifact@l2d
         with:
           run: ${{ github.event.workflow_run.id }}
           name: pr
@@ -27,6 +27,6 @@ jobs:
           unzip pr.zip
           echo "NUM=$(<./NUM)" >> $GITHUB_OUTPUT
       - name: 'Remove branch'
-        uses: carpentries/actions/remove-branch@main
+        uses: LearnToDiscover/actions/remove-branch@l2d
         with:
           pr: ${{ steps.get-pr.outputs.NUM }}
