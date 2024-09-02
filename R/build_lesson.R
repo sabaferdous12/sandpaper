@@ -3,6 +3,7 @@
 #' This function orchestrates rendering generated lesson content and applying
 #' the theme for the HTML site.
 #'
+#'
 #' @param path the path to your repository (defaults to your current working
 #' directory)
 #' @param rebuild if `TRUE`, everything will be built from scratch as if there
@@ -91,15 +92,14 @@ build_lesson <- function(path = ".", rebuild = FALSE, quiet = !interactive(), pr
   #
   # Once we know we have all of the lesson components, we can build the markdown
   # sources and store them in `site/built`. Only the markdown sources that have
-  # changed in content will be rebuilt with {knitr}.
+  # changed in content will be rebuilt with `{knitr}`.
   built <- build_markdown(path = path, rebuild = rebuild, quiet = quiet, slug = slug)
 
   # Building the HTML ----------------------------------------------------------
   #
   # This step uses the contents of `site/built` to build the website in
-  # `site/docs` with {whisker} and {pkgdown}
+  # `site/docs` with {whisker} and `{pkgdown}`
   build_site(path = path, quiet = quiet, preview = preview, override = override, slug = slug, built = built)
-
 }
 
 # Determine the build slug for lessons with child documents.

@@ -1,7 +1,7 @@
 #' Build plain markdown from the RMarkdown episodes
 #'
-#' In the spirit of {hugodown}, This function will build plain markdown files
-#' as a minimal R package in the `site/` folder of your {sandpaper} lesson
+#' In the spirit of `{hugodown}`, This function will build plain markdown files
+#' as a minimal R package in the `site/` folder of your `{sandpaper}` lesson
 #' repository tagged with the hash of your file to ensure that only files that
 #' have changed are rebuilt.
 #'
@@ -72,6 +72,8 @@ build_markdown <- function(path = ".", rebuild = FALSE, quiet = FALSE, slug = NU
   cli::cli_div(theme = sandpaper_cli_theme())
   # Only build if there are markdown sources to be built.
   needs_building <- fs::path_ext(db$build) %in% c("md", "Rmd")
+
+
   if (any(needs_building)) {
     # Render the episode files to the built directory --------------------------
     renv_check_consent(path, quiet, sources)
@@ -107,14 +109,16 @@ build_markdown <- function(path = ".", rebuild = FALSE, quiet = FALSE, slug = NU
     if (should_build_handout) {
       build_handout(path, out = handout)
     }
+
   } else {
     if (!quiet) {
       cli::cli_alert_success("All files up-to-date; nothing to rebuild!")
     }
   }
+
   cli::cli_end()
 
-  # Update hash of {renv} file if it exists ------------------------------------
+  # Update hash of `{renv}` file if it exists ------------------------------------
   if (getOption("sandpaper.use_renv")) {
     hash <- renv_lockfile_hash(path, db_path)
     lf_hash <- fs::path_file(db$new$file) == "renv.lock"
@@ -136,6 +140,7 @@ build_markdown <- function(path = ".", rebuild = FALSE, quiet = FALSE, slug = NU
       update_site_timestamp(path)
     }
   }
+
 
   # We've made it this far, so the database can be updated
   update <- TRUE
@@ -184,6 +189,10 @@ get_build_sources <- function(path, outdir, slug = NULL, quiet) {
   # filter out the assets (e.g. child files) from the source list
   no_asset <- names(source_list) %nin% c("files", "data", "fig")
   sources <- unlist(source_list[no_asset], use.names = FALSE)
+
+  # filter out unreleased episodes
+  sources <- filter_out_unreleased(sources, get_config(path))
+
   names(sources) <- get_slug(sources)
   if (is.null(slug)) {
     copy_maybe(sources[["config"]], fs::path(outdir, "config.yaml"))

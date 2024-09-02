@@ -43,7 +43,7 @@ varnish_vars <- function() {
 
 }
 
-#' Set the necessary common global variables for use in the {varnish} template.
+#' Set the necessary common global variables for use in the `{varnish}` template.
 #'
 #' This will enforce four global lists:
 #'
@@ -73,6 +73,10 @@ set_globals <- function(path) {
   on.exit(.resources$set(key = NULL, old))
   set_resource_list(path)
   these_resources <- .resources$get()
+  these_resources[["episodes"]] <- filter_out_unreleased(
+    these_resources[["episodes"]],
+    get_config(path)
+  )
 
   # Sidebar information is largely duplicated across the views. The only thing
   # that is different is the name of the index node.
@@ -108,9 +112,11 @@ set_globals <- function(path) {
   instructor$resources <- c(instructor$resources, "<hr>", learner$extras)
   pkg_versions <- varnish_vars()
 
+  cfg <- get_config(path)
   learner_globals$set(key = NULL,
     c(list(
       aio = TRUE,
+      aio_pdf = cfg$pdf,
       instructor = FALSE,
       sidebar = learner_sidebar,
       more = paste(learner$extras, collapse = ""),
@@ -121,6 +127,7 @@ set_globals <- function(path) {
   instructor_globals$set(key = NULL,
     c(list(
       aio = TRUE,
+      aio_pdf = cfg$pdf,
       instructor = TRUE,
       sidebar = instructor_sidebar,
       more = paste(instructor$extras, collapse = ""),
