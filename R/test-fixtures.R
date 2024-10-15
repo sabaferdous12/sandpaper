@@ -9,6 +9,9 @@
 #' scope section of testthat article on Test
 #' Fixtures](https://testthat.r-lib.org/articles/test-fixtures.html#package).
 #'
+#' @param pdf logical; whether to create PDFs for the lesson's episodes
+#' @param ipynb logical; whether to create Jupyter notebooks for the lesson's episodes
+#'
 #' @details
 #'
 #' ## `create_test_lesson()`
@@ -16,10 +19,10 @@
 #' This creates the test lesson and calls `generate_restore_fixture()` with the
 #' path of the new test lesson.
 #'
-#' @note These are implemented in tests/testthat/setup.md
+#' @note These are implemented in tests/testthat/setup.R
 #' @keywords internal
 #' @rdname fixtures
-create_test_lesson <- function() {
+create_test_lesson <- function(pdf = FALSE, ipynb = FALSE) {
   noise <- interactive() || Sys.getenv("CI") == "true"
   if (noise) {
     t1 <- Sys.time()
@@ -42,7 +45,7 @@ create_test_lesson <- function() {
   suppressMessages({
     withr::with_envvar(list(RENV_CONFIG_CACHE_SYMLINKS = FALSE), {
       renv_output <- utils::capture.output(
-        create_lesson(repo, open = FALSE)
+        create_lesson(repo, open = FALSE, pdf = pdf, ipynb = ipynb)
       )
     })
   })

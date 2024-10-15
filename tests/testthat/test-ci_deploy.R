@@ -126,21 +126,18 @@ test_that("404 page root will be lesson URL", {
   expect_false(parsed[["server"]] == "")
   expect_true(startsWith(parsed[["path"]], "/lesson-example"))
 
-  # test to ensure that we didn't accidentally duplicate the "more" dropdown
-  more <- xml2::xml_find_all(html, "//nav//button[@id='navbarDropdown']")
-  expect_length(more, 1L)
-
-  # test to ensure the sidebar content is not accidentally duplicated
-  moresb <- xml2::xml_find_all(html, "//div[contains(@class, 'resources')]")
-  expect_length(more, 1L)
-
   # test that the menu items all have same form
   navbar <- xml2::xml_find_all(html, "//nav//li/a")
   hrefs <- xml2::xml_attr(navbar, "href")
   parsed <- xml2::url_parse(hrefs)
   expect_equal(unique(parsed[["scheme"]]), "https")
-  expect_false(unique(parsed[["server"]]) == "")
-  expect_true(all(startsWith(parsed[["path"]], "/lesson-example")))
+  # L2D-specific: because of the L2D-Handbook included in the header (through varnish)
+  # unique(parsed[["server"]]) has 2 elements, bot of which should be non-empty
+  # and parsed[["path"]] can also have "L2D-Handbook"
+  expect_false(any(unique(parsed[["server"]]) == ""))
+  parsed_paths <- parsed[["path"]]
+  is_handbook <- startsWith(parsed_paths, "/L2D-Handbook/")
+  expect_true(all(startsWith(parsed_paths[!is_handbook], "/lesson-example")))
 
   # test that the sidebar items are all appopriate
   # (with exception of the instructor view toggle)

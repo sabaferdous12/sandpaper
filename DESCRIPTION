@@ -1,6 +1,6 @@
 Package: sandpaper
 Title: Create and Curate Carpentries Lessons
-Version: 0.16.9.9000
+Version: 0.16.9.9000-1
 Authors@R: c(
     person(given = "Robert",
            family = "Davey",
@@ -65,6 +65,7 @@ Description: We provide tools to build a Carpentries-themed lesson repository
   those designed to be used in a continuous integration context so that all the
   lesson author needs to focus on is writing the content of the actual lesson.
 License: MIT + file LICENSE
+Depends: R (>= 4.0)
 Imports:
     pkgdown (>= 1.6.0),
     pegboard (>= 0.7.0),
@@ -89,7 +90,8 @@ Imports:
     callr,
     servr,
     utils,
-    tools
+    tools,
+    pagedown,
 Suggests:
     testthat (>= 3.0.0),
     covr,
@@ -100,11 +102,15 @@ Suggests:
     jsonlite,
     sessioninfo,
     mockr,
-    varnish (>= 0.3.0)
+    varnish (>= 0.3.0),
+    reticulate,
+    jupytextR (>= 0.1.0),
+    BiocManager
 Additional_repositories: https://carpentries.r-universe.dev/
 Remotes:
-  carpentries/pegboard,
-  carpentries/varnish
+    carpentries/pegboard,
+    LearnToDiscover/varnish,
+    milanmlft/jupytextR
 SystemRequirements: pandoc (>= 2.11.4) - https://pandoc.org
 Encoding: UTF-8
 LazyData: true

@@ -245,6 +245,8 @@ build_agg_page <- function(pkg, pages, title = NULL, slug = NULL, aggregate = "s
   xml2::xml_remove(xml2::xml_children(instruct_parent))
 
   the_episodes <- .resources$get()[["episodes"]]
+  the_episodes <- filter_out_unreleased(the_episodes, get_config(path))
+
   the_slugs <- get_slug(the_episodes)
   the_slugs <- if (prefix) paste0(slug, "-", the_slugs) else the_slugs
 

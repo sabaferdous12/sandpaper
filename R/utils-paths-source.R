@@ -147,6 +147,7 @@ get_resource_list <- function(path, trim = FALSE, subfolder = NULL, warn = FALSE
     res[[i]] <- parse_file_matches(reality = res[[i]], hopes = cfg[[i]],
       warn = warn, subfolder = i)
   }
+
   if (use_subfolder) res[[subfolder]] else res[names(res) != "site"]
 }
 

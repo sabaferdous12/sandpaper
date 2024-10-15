@@ -92,4 +92,3 @@ test_that("the chapter-links should be cromulent depending on the view", {
   expect_match(IN_lines, "Instructor Note\\s+this is an instructor note")
 
 })
-

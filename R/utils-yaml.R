@@ -237,7 +237,9 @@ known_yaml_items <- c(
   "episodes",
   "instructors",
   "learners",
-  "profiles"
+  "profiles",
+  "pdf",
+  "ipynb"
 )
 
 
