@@ -1,3 +1,31 @@
+# sandpaper 0.16.8 (2024-10-11)
+
+## BUG FIXES
+
+* Pin workflow to ubuntu-22.04 instead of ubuntu-latest
+  (reported @chrbknudsen #605, fixed @froggleston #606)
+* Update notes to remove excessive build warnings
+  (@milanmlft #599)
+
+## LANGUAGES
+
+* Add `R-de.po` for German translations of lesson elements
+  (@martin-raden #607)
+
+## MISC
+
+* Added @martin-raden as a contributor and translator - welcome!
+
+
+# sandpaper 0.16.7 (2024-09-04)
+
+## BUG FIXES
+
+* Add overwrite option to pr workflow to fix change in default from 
+  [update-artifact action v3 to v4](https://github.com/actions/upload-artifact#breaking-changes)
+  (@milanmlft #602)
+
+
 # sandpaper 0.16.6 (2024-08-23)
 
 ## BUG FIXES
