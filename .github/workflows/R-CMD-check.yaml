@@ -41,7 +41,7 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@e6be4b3706e0f39bc7a4cf4496a5f2c4cb840040 # v2
 
       - name: "Set up Chrome" # for PDF rendering
-        uses: browser-actions/setup-chrome@82b9ce628cc5595478a9ebadc480958a36457dc2 # v1.6.0
+        uses: browser-actions/setup-chrome@facf10a55b9caf92e0cc749b4f82bf8220989148 # v1.7.2
 
       - name: "Setup R"
         uses: r-lib/actions/setup-r@e6be4b3706e0f39bc7a4cf4496a5f2c4cb840040 # v2
