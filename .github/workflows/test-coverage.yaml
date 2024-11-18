@@ -27,7 +27,7 @@ jobs:
         uses: r-lib/actions/setup-pandoc@e6be4b3706e0f39bc7a4cf4496a5f2c4cb840040 # v2
 
       - name: "Set up Chrome" # for PDF rendering
-        uses: browser-actions/setup-chrome@c485fa3bab6be59dce18dbc18ef6ab7cbc8ff5f1 # v1.2.0
+        uses: browser-actions/setup-chrome@facf10a55b9caf92e0cc749b4f82bf8220989148 # v1.7.2
 
       - name: "Install sysreqs"
         id: run-apt
